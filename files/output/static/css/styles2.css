@@ -1,0 +1,102 @@
+.no_point {
+    list-style-type: none;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container {
+    padding-top: 3em;
+    height: 100%;
+    padding-left: 3em;
+    padding-right: 3em;
+}
+
+.header-column {
+    float: left;
+    width: 30%;
+    height: 100%;
+    overflow: scroll;
+    padding-right: 3em;
+    /*padding-right: 3em;*/
+
+}
+
+.data-column {
+    float: left;
+    width: 55%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.header-block {
+    /*overflow: hidden;*/
+    padding: 1em;
+    background-color: #f7f8f7;
+}
+
+.header-block li {
+    list-style-type: none;
+}
+
+.header-block li.active {
+    background-color: #e3e0ea;
+}
+
+.container .header-block a.header-link {
+    text-decoration: none;
+    color: #000;
+}
+
+.container .header-block a.header-link:hover {
+    text-decoration: underline;
+    color: #136e9e;
+}
+
+pre.nowrap {
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 1em;
+}
+
+pre.CodeRay {
+    background-color: #f7f7f8;
+}
+
+li > p {
+    display: inline;
+}
+
+.code-block {
+    position: relative;
+    background-color: #f7f8f7;
+}
+
+pre.code-block-text {
+    display: block;
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+    line-height: 1.4;
+}
+
+pre.code-block-text code {
+    background-color: #f7f8f7;
+    display: inline;
+}
+
+.code-description {
+    position: absolute;
+    right: 0;
+    top: 0;
+    visibility: hidden;
+    color: #a6a3ad;
+    padding: 0.5em;
+}
+
+.code-block:hover .code-description {
+    visibility: visible;
+}

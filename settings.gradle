@@ -1,0 +1,6 @@
+rootProject.name = 'kgen-doc-tools'
+
+include "parser",
+        "common",
+        "jvm_html_render",
+        "jvm_server"

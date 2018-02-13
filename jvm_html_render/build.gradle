@@ -1,0 +1,13 @@
+jar {
+    baseName = 'html_render'
+}
+
+dependencies {
+    compile("org.thymeleaf:thymeleaf:3.0.9.RELEASE")
+    compile("org.freemarker:freemarker:2.3.27-incubating")
+
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4")
+
+    compile project(":common")
+    compile project(":parser")
+}

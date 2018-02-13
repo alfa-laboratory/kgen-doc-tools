@@ -1,0 +1,7 @@
+jar {
+    baseName = 'parser'
+}
+
+dependencies {
+    compile project(":common")
+}
