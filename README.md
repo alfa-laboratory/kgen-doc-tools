@@ -1,5 +1,7 @@
 # kgen-doc-tools
 
+[![travis build](https://travis-ci.org/alfa-laboratory/kgen-doc-tools.svg?branch=master)](https://travis-ci.org/alfa-laboratory/kgen-doc-tools)
+
 Project contains utils to generate `html` documentation from `markdown` text with custom extensions (like include, title etc.)
 
 * __common__ - contains parser nodes and layout
