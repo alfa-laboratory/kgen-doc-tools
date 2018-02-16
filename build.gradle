@@ -17,14 +17,18 @@ buildscript {
 group = 'ru.alfabank.ecomm'
 version = "0.0.1"
 
-subprojects {
-    apply plugin: 'kotlin'
-    apply plugin: "org.junit.platform.gradle.plugin"
+allprojects {
+    apply plugin: 'jacoco'
 
     repositories {
         mavenLocal()
         jcenter()
     }
+}
+
+subprojects {
+    apply plugin: 'kotlin'
+    apply plugin: "org.junit.platform.gradle.plugin"
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
@@ -42,5 +46,26 @@ subprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 
-}
+    def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
 
+    jacoco {
+        applyTo(junitPlatformTestTask)
+    }
+
+    task jacocoJupTestReport(type: JacocoReport) {
+        executionData(junitPlatformTestTask)
+        sourceSets(sourceSets.main)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories = files(sourceSets.main.output)
+
+        reports {
+            xml.enabled true
+            xml.destination file("${buildDir}/reports/jacoco/report.xml")
+            html.enabled false
+            csv.enabled false
+        }
+    }
+
+    check.dependsOn jacocoJupTestReport
+    jacocoJupTestReport.dependsOn test
+}
