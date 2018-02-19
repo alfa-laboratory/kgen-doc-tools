@@ -7,8 +7,8 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 import java.util.regex.Pattern
 
 sealed class ImageLinkData(open val endSymbols: String)
-data class ImageLinkIdData(override val endSymbols: String, val id: String?) : ImageLinkData(endSymbols)
-data class ImageLinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : ImageLinkData(endSymbols)
+class ImageLinkIdData(override val endSymbols: String, val id: String?) : ImageLinkData(endSymbols)
+class ImageLinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : ImageLinkData(endSymbols)
 
 class ImageLinkLineParser(
         override val parseInstance: MarkdownParser,
