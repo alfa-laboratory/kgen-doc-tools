@@ -9,13 +9,13 @@ private sealed class Level(
         open val spaces: Int
 )
 
-private data class NumberedLevel(
+private class NumberedLevel(
         val number: Int,
         val text: String,
         override val spaces: Int
 ) : Level(spaces)
 
-private data class SymbolLevel(
+private class SymbolLevel(
         val text: String,
         override val spaces: Int
 ) : Level(spaces)

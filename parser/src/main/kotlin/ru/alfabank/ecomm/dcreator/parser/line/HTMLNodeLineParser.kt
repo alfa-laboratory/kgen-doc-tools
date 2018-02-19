@@ -7,7 +7,7 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 import java.util.function.Predicate
 import java.util.regex.Pattern
 
-data class OpenTag(val tagName: String, val fullOpenTag: String)
+class OpenTag(val tagName: String, val fullOpenTag: String)
 
 class HTMLNodeLineParser(
         override val parseInstance: MarkdownParser,

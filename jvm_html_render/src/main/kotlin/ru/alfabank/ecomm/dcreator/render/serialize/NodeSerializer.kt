@@ -14,7 +14,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaGetter
 
-class NodeSerializer(private val render: Render, private val replaceNodes: Map<String, Node>) {
+class NodeSerializer(
+        private val render: Render,
+        private val replaceNodes: Map<String, Node>
+) {
     val templates: MutableMap<KClass<out Node>, String> = mutableMapOf(
             HeaderBlockNode::class to "nodes/header_node.ftlh",
             TextNode::class to "nodes/text.ftlh",
@@ -57,8 +60,6 @@ class NodeSerializer(private val render: Render, private val replaceNodes: Map<S
         }
                 .filter { it.second != null }
                 .toMap(mutableMapOf())
-
-        parameters += "nodeId" to node.nodeId
 
         val result = render.render(templatePath, parameters)
 

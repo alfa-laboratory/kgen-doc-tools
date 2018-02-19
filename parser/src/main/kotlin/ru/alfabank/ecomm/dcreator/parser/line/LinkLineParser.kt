@@ -8,8 +8,8 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 import java.util.regex.Pattern
 
 sealed class LinkData(open val endSymbols: String)
-data class LinkIdData(override val endSymbols: String, val id: String?) : LinkData(endSymbols)
-data class LinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : LinkData(endSymbols)
+class LinkIdData(override val endSymbols: String, val id: String?) : LinkData(endSymbols)
+class LinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : LinkData(endSymbols)
 
 class LinkLineParser(
         override val parseInstance: MarkdownParser,
