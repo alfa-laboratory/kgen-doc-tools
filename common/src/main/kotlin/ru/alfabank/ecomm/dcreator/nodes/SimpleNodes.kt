@@ -1,14 +1,14 @@
 package ru.alfabank.ecomm.dcreator.nodes
 
+import ru.alfabank.ecomm.dcreator.utils.LazyMutable
 import java.util.*
 
-//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "__class")
 interface Node {
-    val nodeId: String
+    var nodeId: String
 }
 
 class NodeIdGen : Node {
-    override val nodeId: String by lazy { UUID.randomUUID().toString() }
+    override var nodeId: String by LazyMutable { UUID.randomUUID().toString() }
 }
 
 interface NestedNode : Node {
