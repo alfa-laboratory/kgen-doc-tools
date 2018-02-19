@@ -5,9 +5,11 @@ import freemarker.template.TemplateExceptionHandler
 import java.io.File
 import java.io.StringWriter
 
-class FreemarkerRender(private val layoutPath: String) : Render {
+class FreemarkerRender(private val layoutFile: File) : Render {
+    constructor(layoutPath: String) : this(File(layoutPath))
+
     private val cfg = Configuration(Configuration.VERSION_2_3_27).apply {
-        setDirectoryForTemplateLoading(File(layoutPath))
+        setDirectoryForTemplateLoading(layoutFile)
         defaultEncoding = "UTF-8"
         templateExceptionHandler = TemplateExceptionHandler.RETHROW_HANDLER
         logTemplateExceptions = false
