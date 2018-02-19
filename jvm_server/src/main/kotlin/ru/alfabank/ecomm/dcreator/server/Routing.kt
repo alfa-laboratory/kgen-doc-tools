@@ -1,6 +1,9 @@
 package ru.alfabank.ecomm.dcreator.server
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.content.files
 import io.ktor.content.static
@@ -11,10 +14,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.delete
 import io.ktor.routing.get
 import io.ktor.routing.post
-import ru.alfabank.ecomm.dcreator.server.responses.FileInfo
-import ru.alfabank.ecomm.dcreator.server.responses.FileType
-import ru.alfabank.ecomm.dcreator.server.responses.FilesResponse
-import ru.alfabank.ecomm.dcreator.server.responses.StatusResponse
+import ru.alfabank.ecomm.dcreator.server.responses.*
 import ru.alfabank.ecomm.dcreator.server.utils.doAndDisplayDiff
 import java.io.File
 import java.io.FileNotFoundException
@@ -102,8 +102,7 @@ class RenderRouterConfiguration(
         }
 
         post("createFile") {
-            val request = call.receiveText()
-            val (fileName, type) = objectMapper.readValue<NewFileRequest>(request)
+            val (fileName, type) = call.receiveRequest<NewFileRequest>()
 
             val newFile = File(inputDirectory, fileName)
             if (newFile.exists())
@@ -119,8 +118,7 @@ class RenderRouterConfiguration(
         }
 
         post("renameFile") {
-            val request = call.receiveText()
-            val (path, newName) = objectMapper.readValue<RenameRequest>(request)
+            val (path, newName) = call.receiveRequest<RenameRequest>()
 
             val file = File(inputDirectory, path)
             if (!file.exists())
@@ -132,5 +130,15 @@ class RenderRouterConfiguration(
 
             call.respond(StatusResponse(true))
         }
+    }
+
+    private suspend inline fun <reified T : Any> ApplicationCall.receiveRequest(): T {
+        val request = this.receiveText()
+        return objectMapper.readValue(request)
+    }
+
+    companion object {
+        private val objectMapper = ObjectMapper()
+                .registerKotlinModule()
     }
 }

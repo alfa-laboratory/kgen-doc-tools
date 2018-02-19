@@ -1,44 +1,47 @@
 package ru.alfabank.ecomm.dcreator.server
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
+import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import java.io.File
-
-data class NewFileRequest(val path: String, val type: String)
-
-data class RenameRequest(val path: String, val name: String)
-
-val objectMapper = ObjectMapper()
-        .registerKotlinModule()
+import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
-    val inputDirectory = File("files/input")
-    val outputDirectory = File("files/output/pages")
-    val layoutDirectory = File("files/layout/freemarker")
+    val application = Application()
 
-    val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
-    val renderRouterConfiguration = RenderRouterConfiguration(inputDirectory, documentGenerator)
+    application.start(true)
+}
 
+class Application(
+        inputDirectory: File = File("files/input"),
+        outputDirectory: File = File("files/output/pages"),
+        layoutDirectory: File = File("files/layout/freemarker"),
+        private val port: Int = 8080
+) {
+    private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
+    private val renderRouterConfiguration = RenderRouterConfiguration(inputDirectory, documentGenerator)
 
+    private var engine: ApplicationEngine? = null
 
-    embeddedServer(Netty, 8080) {
-        install(ContentNegotiation) {
-            jackson {
-                writerWithDefaultPrettyPrinter()
+    fun start(wait: Boolean = true) {
+        engine = embeddedServer(Netty, port) {
+            install(ContentNegotiation) {
+                jackson {
+                    writerWithDefaultPrettyPrinter()
+                }
             }
+
+            routing(renderRouterConfiguration.config())
         }
 
-//        install(CORS) {
-//            method(HttpMethod.Options)
-//            anyHost()
-//        }
+        engine!!.start(wait)
+    }
 
-        routing(renderRouterConfiguration.config())
-    }.start(wait = true)
+    fun stop(gracePeriod: Long = 0, timeout: Long = 3, timeUnit: TimeUnit = TimeUnit.SECONDS) {
+        engine?.stop(gracePeriod, timeout, timeUnit)
+    }
 }
