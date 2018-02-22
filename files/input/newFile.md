@@ -5,7 +5,7 @@ some text 3
 
 [link to file 2](/pages/newFile2.html "page 2")
 
-#include "newFiles/newFile.md"
+::include "newFiles/newFile.md"
 
 # languages sample 
 
