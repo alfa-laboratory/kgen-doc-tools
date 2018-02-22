@@ -49,7 +49,7 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
         private const val NAME_GROUP = "filename"
 
         private val KEYWORD_PATTERN = """
-            #include
+            ::include
         """.trimIndent()
 
         private val SPACE_PATTERN = """
