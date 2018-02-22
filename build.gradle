@@ -45,7 +45,9 @@ subprojects {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+}
 
+configure(subprojects.findAll { it.name.indexOf("common") != 0 }) {
     def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
 
     jacoco {
@@ -69,3 +71,4 @@ subprojects {
     check.dependsOn jacocoJupTestReport
     jacocoJupTestReport.dependsOn test
 }
+
