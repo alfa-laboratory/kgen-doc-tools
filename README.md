@@ -2,7 +2,7 @@
 
 [![travis build](https://travis-ci.org/alfa-laboratory/kgen-doc-tools.svg?branch=master)](https://travis-ci.org/alfa-laboratory/kgen-doc-tools)
 [![codecov](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools)
-[![MIT Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://img.shields.io/badge/licence-MIT-blue.svg)
+[![MIT Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/alfa-laboratory/kgen-doc-tools/blob/master/LICENSE)
 
 Project contains utils to generate `html` documentation from `markdown` text with custom extensions (like include, title etc.)
 
