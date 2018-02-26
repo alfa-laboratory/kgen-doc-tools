@@ -108,7 +108,7 @@ class ImageLinkLineParser(
         """.trimIndent()
 
         private val LINK_URL_TITLE_PATTERN = """
-            \((?<$LINK_URL_GROUP>[^\s\[\]\(\)]+?)\s*("(?<$LINK_TITLE_GROUP>[\w\s\d]+)")?\)
+            \((?<$LINK_URL_GROUP>[^\[\]\(\)]+?)\s*("(?<$LINK_TITLE_GROUP>[\w\s\d]+)")?\)
         """.trimIndent()
 
         private val END_SYMBOLS_PATTERN = """
