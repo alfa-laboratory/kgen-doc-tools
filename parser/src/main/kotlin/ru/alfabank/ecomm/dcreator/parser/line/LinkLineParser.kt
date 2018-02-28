@@ -33,20 +33,18 @@ class LinkLineParser(
             val linkUrlGroup = fullySuitedMatch.group(LINK_URL_GROUP)
             val linkTitleGroup = fullySuitedMatch.group(LINK_TITLE_GROUP)
 
-            if (linkIdGroup != null) {
-                return BoundSymbolsSuiteResult(
+            when {
+                linkIdGroup != null -> return BoundSymbolsSuiteResult(
                         true,
                         true,
                         LinkLineParser(parseInstance, LinkIdData(endSymbols, linkIdGroup))
                 )
-            } else if (linkUrlGroup != null) {
-                return BoundSymbolsSuiteResult(
+                linkUrlGroup != null -> return BoundSymbolsSuiteResult(
                         true,
                         true,
                         LinkLineParser(parseInstance, LinkUrlTitleData(endSymbols, linkUrlGroup, linkTitleGroup))
                 )
-            } else {
-                return BoundSymbolsSuiteResult(
+                else -> return BoundSymbolsSuiteResult(
                         true,
                         true,
                         LinkLineParser(parseInstance, LinkIdData(endSymbols, null))
