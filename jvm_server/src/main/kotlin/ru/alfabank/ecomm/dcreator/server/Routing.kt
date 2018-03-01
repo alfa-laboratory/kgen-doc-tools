@@ -39,7 +39,7 @@ class RenderRouterConfiguration(
         }
 
         static("") {
-            files("jvm_server/public_react")
+            files("jvm_server/public")
         }
 
         get("files") {
