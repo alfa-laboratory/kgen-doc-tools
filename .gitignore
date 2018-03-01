@@ -34,6 +34,7 @@ create_report/src/docs/asciidoc/pdf/generated
 */generated/pdf
 *generated*
 
+
 node_modules/
 dist/
 npm-debug.log
@@ -47,6 +48,5 @@ yarn-error.log
 
 files/output/pages/
 
-
-
-
+**/public_react/coverage/
+**/public_react/public/
