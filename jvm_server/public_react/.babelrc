@@ -1,8 +1,24 @@
 {
-  "presets": ["react", "es2015", "stage-0"],
+  "presets": ["env", "react"],
+  "plugins": [
+    "transform-runtime",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "styles": "./styles"
+      }
+    }]
+  ],
+  
   "env": {
-    "development": {
-      "presets": ["react-hmre"]
+    "test": {
+      "plugins": [
+        "transform-runtime",
+        "transform-decorators-legacy",
+        "transform-class-properties"
+      ]
     }
   }
 }
