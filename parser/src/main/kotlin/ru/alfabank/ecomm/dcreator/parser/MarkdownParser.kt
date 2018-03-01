@@ -40,10 +40,8 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
 
     val distributeNodes: MutableMap<String, List<DistributeNode>> = mutableMapOf()
 
-    fun parse(source: File): BlockNode {
-        return source.useLines { lines ->
-            parse(lines)
-        }
+    fun parse(source: File): BlockNode = source.useLines { lines ->
+        parse(lines)
     }
 
     //TODO add more block parsers (html block elements)
