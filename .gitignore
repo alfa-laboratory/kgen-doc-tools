@@ -50,3 +50,6 @@ files/output/pages/
 
 **/public_react/coverage/
 **/public_react/public/
+
+**/output/static/images/
+**/input/
