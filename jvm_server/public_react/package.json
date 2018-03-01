@@ -9,6 +9,7 @@
     "start": "webpack-dev-server --progress --profile --colors",
     "lint": "eslint --ext js --ext jsx src || exit 0",
     "dev": " webpack-dashboard -- webpack-dev-server",
+    "devNoServer": "export NODE_ENV=test && webpack --d --watch",
     "test": "export NODE_ENV=test && jest"
   },
   "repository": {
