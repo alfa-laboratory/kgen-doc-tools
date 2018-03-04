@@ -1,6 +1,9 @@
 rootProject.name = 'kgen-doc-tools'
 
-include "parser",
-        "common",
-        "jvm_html_render",
-        "jvm_server"
+apply from: "settings-flags.gradle"
+
+includeWithFlags "parser", "kotlin_common"
+includeWithFlags "common", "kotlin_common"
+includeWithFlags "jvm_parser", "kotlin_jvm", "jococo_test"
+includeWithFlags "jvm_html_render", "kotlin_jvm", "jococo_test"
+includeWithFlags "jvm_server", "kotlin_jvm", "jococo_test"
