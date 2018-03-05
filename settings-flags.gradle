@@ -69,21 +69,6 @@ static def addFlags(Set<String> actualFlags, ...flags) {
         }
     }
 
-    // 'trim' implies 'shade'
-    if (actualFlags.contains('trim')) {
-        actualFlags.add('shade')
-    }
-
-    // 'shade' implies 'relocate'.
-    if (actualFlags.contains('shade')) {
-        actualFlags.add('relocate')
-    }
-
-    // 'bom' implies 'publish'.
-    if (actualFlags.contains('bom')) {
-        actualFlags.add('publish')
-    }
-
     return Collections.unmodifiableSet(actualFlags)
 }
 
