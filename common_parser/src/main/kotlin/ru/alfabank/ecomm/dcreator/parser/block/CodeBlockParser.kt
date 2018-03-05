@@ -31,7 +31,7 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
         if (!matcher.find() || lines.size == 1)
             return emptyList()
 
-        val language = matcher.group(LANGUAGE_GROUP_NAME)
+        val language = matcher.group(LANGUAGE_GROUP_NAME)!!
 
         val codeLines = lines.drop(1)
                 .let {

@@ -3,7 +3,7 @@ package ru.alfabank.ecomm.dcreator.parser.block
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.parser.common.Modifiers
+import ru.alfabank.ecomm.dcreator.parser.common.Pattern
 import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockParser {
@@ -64,6 +64,6 @@ class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockPa
 
         private val DISTRIBUTE_LINK_PATTERN = """
             ^$SPACE_PATTERN$ID_PATTERN$SPACE_PATTERN$LINK_PATTERN$SPACE_PATTERN($TITLE_PATTERN$SPACE_PATTERN)?$
-        """.trimIndent().toPattern(Modifiers.UNICODE_CHARACTER_CLASS)
+        """.trimIndent().toPattern(Pattern.UNICODE_CHARACTER_CLASS)
     }
 }
