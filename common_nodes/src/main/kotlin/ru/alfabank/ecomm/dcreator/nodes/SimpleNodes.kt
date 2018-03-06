@@ -1,5 +1,6 @@
 package ru.alfabank.ecomm.dcreator.nodes
 
+import ru.alfabank.ecomm.dcreator.common.UUID
 import ru.alfabank.ecomm.dcreator.utils.LazyMutable
 
 interface Node {
@@ -7,7 +8,7 @@ interface Node {
 }
 
 class NodeIdGen : Node {
-    override var nodeId: String by LazyMutable { ru.alfabank.ecomm.dcreator.common.UUID.randomUUID().toString() }
+    override var nodeId: String by LazyMutable { UUID.randomUUID().print() }
 }
 
 interface NestedNode : Node {

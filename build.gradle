@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-group = 'ru.alfabank.ecomm'
+group = 'ru.alfalab.dcreator'
 version = "0.2.0"
 
 subprojects {

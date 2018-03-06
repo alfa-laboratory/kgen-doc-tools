@@ -4,7 +4,7 @@ import ru.alfabank.ecomm.dcreator.nodes.HTMLNode
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
-import ru.alfabank.ecomm.dcreator.parser.common.Modifiers
+import ru.alfabank.ecomm.dcreator.parser.common.Pattern
 import ru.alfabank.ecomm.dcreator.parser.common.Predicate
 import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
@@ -62,7 +62,7 @@ class HTMLNodeLineParser(
 
     private fun closePredicate(tag: String): Predicate = """
         </$tag>
-    """.trimIndent().toPattern(Modifiers.CASE_INSENSITIVE).asPredicate()
+    """.trimIndent().toPattern(Pattern.CASE_INSENSITIVE).asPredicate()
 
     companion object {
         private const val TAG_CLOSE = "<"
@@ -72,7 +72,7 @@ class HTMLNodeLineParser(
         private val HTML_OPEN_TAG_PARTIAL_PREDICATE = """
             ^<.*?>?$
         """.trimIndent()
-                .toPattern(Modifiers.CASE_INSENSITIVE)
+                .toPattern(Pattern.CASE_INSENSITIVE)
                 .asPredicate()
 
         private val HTML_PARAM_PATTERN = """
@@ -81,6 +81,6 @@ class HTMLNodeLineParser(
 
         private val HTML_OPEN_TAG_PATTERN = """
             ^<\s*(?<$TAG_GROUP_NAME>\w+)\s*(?:$HTML_PARAM_PATTERN)*?>$
-        """.trimIndent().toPattern(Modifiers.CASE_INSENSITIVE)
+        """.trimIndent().toPattern(Pattern.CASE_INSENSITIVE)
     }
 }

@@ -27,7 +27,7 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
 
         val fileNameMatcher = INCLUDE_PATTERN.matcher(lines.first())
         if (fileNameMatcher.find()) {
-            val fileName = fileNameMatcher.group(NAME_GROUP)
+            val fileName = fileNameMatcher.group(NAME_GROUP)!!
 
             val includeFile = File(parseInstance.fileBaseDirectory, fileName)
 

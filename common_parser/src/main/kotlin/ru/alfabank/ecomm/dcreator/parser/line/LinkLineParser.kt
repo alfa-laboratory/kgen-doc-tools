@@ -5,7 +5,7 @@ import ru.alfabank.ecomm.dcreator.nodes.LinkNode
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
-import ru.alfabank.ecomm.dcreator.parser.common.Modifiers
+import ru.alfabank.ecomm.dcreator.parser.common.Pattern
 import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 sealed class LinkData(open val endSymbols: String)
@@ -124,7 +124,7 @@ class LinkLineParser(
 
         private val END_SYMBOLS_PATTERN = """
             ^\](\s*?(($LINK_URL_TITLE_PATTERN)|($LINK_ID_PATTERN)))?$
-        """.trimIndent().toPattern(Modifiers.UNICODE_CHARACTER_CLASS)
+        """.trimIndent().toPattern(Pattern.UNICODE_CHARACTER_CLASS)
     }
 }
 
