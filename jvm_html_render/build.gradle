@@ -8,4 +8,5 @@ dependencies {
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4")
 
     compile project(":jvm_parser")
+    implementation project(':common_parser')
 }
