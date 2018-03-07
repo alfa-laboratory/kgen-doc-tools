@@ -1,11 +1,11 @@
 package ru.alfabank.ecomm.dcreator.parser
 
+import ru.alfabank.ecomm.dcreator.common.File
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.DistributeNode
 import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
 import ru.alfabank.ecomm.dcreator.parser.block.*
-import ru.alfabank.ecomm.dcreator.parser.common.File
 import ru.alfabank.ecomm.dcreator.parser.line.*
 
 @Suppress("MemberVisibilityCanBePrivate")

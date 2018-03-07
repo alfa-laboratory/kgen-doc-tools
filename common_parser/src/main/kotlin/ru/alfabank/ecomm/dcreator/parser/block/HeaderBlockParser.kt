@@ -1,10 +1,10 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.HeaderBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.Level
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 @Suppress("LeakingThis")
 open class HeaderBlockParser(override val parseInstance: MarkdownParser) : BlockParser {

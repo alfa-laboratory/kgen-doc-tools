@@ -1,5 +1,6 @@
 package ru.alfabank.ecomm.dcreator.utils
 
+import kotlin.jvm.Volatile
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

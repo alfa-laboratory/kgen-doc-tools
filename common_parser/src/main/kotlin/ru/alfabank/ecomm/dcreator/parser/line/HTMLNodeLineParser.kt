@@ -1,12 +1,12 @@
 package ru.alfabank.ecomm.dcreator.parser.line
 
+import ru.alfabank.ecomm.dcreator.common.Pattern
+import ru.alfabank.ecomm.dcreator.common.Predicate
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.HTMLNode
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
-import ru.alfabank.ecomm.dcreator.parser.common.Pattern
-import ru.alfabank.ecomm.dcreator.parser.common.Predicate
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 class OpenTag(val tagName: String, val fullOpenTag: String)
 

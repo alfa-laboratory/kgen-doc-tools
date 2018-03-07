@@ -1,12 +1,12 @@
 package ru.alfabank.ecomm.dcreator.parser.line
 
+import ru.alfabank.ecomm.dcreator.common.Pattern
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.EmptyNode
 import ru.alfabank.ecomm.dcreator.nodes.LinkNode
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
-import ru.alfabank.ecomm.dcreator.parser.common.Pattern
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 sealed class LinkData(open val endSymbols: String)
 class LinkIdData(override val endSymbols: String, val id: String?) : LinkData(endSymbols)

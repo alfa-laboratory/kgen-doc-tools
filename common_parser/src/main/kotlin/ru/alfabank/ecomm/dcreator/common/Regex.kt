@@ -1,4 +1,4 @@
-package ru.alfabank.ecomm.dcreator.parser.common
+package ru.alfabank.ecomm.dcreator.common
 
 expect class Matcher {
     fun find(): Boolean

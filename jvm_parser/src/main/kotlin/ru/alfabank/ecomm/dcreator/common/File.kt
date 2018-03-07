@@ -1,4 +1,4 @@
-package ru.alfabank.ecomm.dcreator.parser.common
+package ru.alfabank.ecomm.dcreator.common
 
 actual class File actual constructor(parent: File, path: String) {
     private val file = java.io.File(parent.toPath(), path)

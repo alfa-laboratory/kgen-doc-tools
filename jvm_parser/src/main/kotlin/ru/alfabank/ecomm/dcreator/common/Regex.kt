@@ -1,4 +1,4 @@
-package ru.alfabank.ecomm.dcreator.parser.common
+package ru.alfabank.ecomm.dcreator.common
 
 import java.util.regex.Matcher as JMatcher
 import java.util.regex.Pattern as JPattern

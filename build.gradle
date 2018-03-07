@@ -1,12 +1,12 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.30'
+        kotlinVersion = '1.2.40-dev-754'
         junitVersion = '5.0.3'
     }
     repositories {
         mavenLocal()
         jcenter()
-        mavenCentral()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
@@ -21,6 +21,7 @@ subprojects {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
     }
 }
 
@@ -30,6 +31,7 @@ configure(projectsWithFlags('kotlin_common')) {
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion")
 
+        testCompile("org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion")
         testCompile("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
     }
 }

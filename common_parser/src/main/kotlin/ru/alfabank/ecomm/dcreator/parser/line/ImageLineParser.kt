@@ -1,11 +1,11 @@
 package ru.alfabank.ecomm.dcreator.parser.line
 
+import ru.alfabank.ecomm.dcreator.common.Pattern
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.ImageLinkNode
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
-import ru.alfabank.ecomm.dcreator.parser.common.Pattern
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 sealed class ImageLinkData(open val endSymbols: String)
 class ImageLinkIdData(override val endSymbols: String, val id: String?) : ImageLinkData(endSymbols)

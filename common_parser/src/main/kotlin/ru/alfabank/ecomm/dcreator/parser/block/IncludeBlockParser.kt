@@ -1,10 +1,10 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
+import ru.alfabank.ecomm.dcreator.common.File
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.parser.common.File
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {

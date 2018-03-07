@@ -1,10 +1,9 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
+import ru.alfabank.ecomm.dcreator.common.Matcher
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.*
-
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.parser.common.Matcher
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 private sealed class Level(
         open val spaces: Int

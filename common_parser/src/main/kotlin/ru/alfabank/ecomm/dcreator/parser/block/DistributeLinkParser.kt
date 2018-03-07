@@ -1,10 +1,10 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
+import ru.alfabank.ecomm.dcreator.common.Pattern
+import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.parser.common.Pattern
-import ru.alfabank.ecomm.dcreator.parser.common.toPattern
 
 class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
