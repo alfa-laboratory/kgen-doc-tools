@@ -1,7 +1,9 @@
 package ru.alfabank.ecomm.dcreator.common
 
-actual class File actual constructor(parent: File, path: String) {
-    private val file = java.io.File(parent.toPath(), path)
+import java.io.File as JFile
+
+actual class File {
+    private val file: JFile
 
     actual fun toPath(): String = file.absolutePath
 
@@ -10,4 +12,12 @@ actual class File actual constructor(parent: File, path: String) {
     }
 
     actual fun exists(): Boolean = file.exists()
+
+    actual constructor(parent: File, path: String) {
+        file = JFile(parent.toPath(), path)
+    }
+
+    actual constructor(path: String) {
+        file = JFile(path)
+    }
 }
