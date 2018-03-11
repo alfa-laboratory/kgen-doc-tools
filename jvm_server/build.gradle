@@ -2,8 +2,15 @@ buildscript {
     ext.ktor_version = '0.9.1'
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
+}
+
 jar {
     baseName = 'jvm_server'
+    manifest {
+        attributes 'Main-Class': 'ru.alfabank.ecomm.dcreator.server.ApplicationKt'
+    }
 }
 
 repositories {

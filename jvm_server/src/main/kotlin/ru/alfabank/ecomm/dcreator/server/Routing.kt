@@ -10,6 +10,7 @@ import io.ktor.content.static
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.routing.Routing
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -20,6 +21,9 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.time.LocalTime
+
+private const val publicFolder = "jvm_server/public_react/public"
+private val indexFile =  File(publicFolder, "index.html")
 
 class RenderRouterConfiguration(
         private val inputDirectory: File,
@@ -39,7 +43,18 @@ class RenderRouterConfiguration(
         }
 
         static("") {
-            files("jvm_server/public")
+            files(publicFolder)
+            get {
+                call.respondFile(indexFile)
+            }
+        }
+
+        get("portal") {
+            call.respondFile(indexFile)
+        }
+
+        get("portal/*") {
+            call.respondFile(indexFile)
         }
 
         get("files") {
@@ -110,7 +125,7 @@ class RenderRouterConfiguration(
 
             val result = when (type) {
                 "file" -> newFile.createNewFile()
-                "folder" -> newFile.mkdir()
+                "publicFolder" -> newFile.mkdir()
                 else -> false
             }
 
