@@ -18,7 +18,7 @@ dependencies {
 
     compile("ch.qos.logback:logback-classic:1.2.1")
 
-    compile project(":parser")
+    compile project(":jvm_parser")
     compile project(":jvm_html_render")
 }
 
