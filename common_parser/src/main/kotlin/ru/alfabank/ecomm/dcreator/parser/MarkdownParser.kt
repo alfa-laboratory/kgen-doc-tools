@@ -1,6 +1,7 @@
 package ru.alfabank.ecomm.dcreator.parser
 
 import ru.alfabank.ecomm.dcreator.common.File
+import ru.alfabank.ecomm.dcreator.common.withLines
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.DistributeNode
@@ -40,7 +41,7 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
 
     val distributeNodes: MutableMap<String, List<DistributeNode>> = mutableMapOf()
 
-    fun parse(source: File): BlockNode = source.useLines { lines ->
+    fun parse(source: File): BlockNode = source.withLines { lines ->
         parse(lines)
     }
 

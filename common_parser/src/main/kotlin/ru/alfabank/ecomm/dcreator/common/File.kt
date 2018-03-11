@@ -5,7 +5,7 @@ expect class File {
 
     constructor(path: String)
 
-    fun toPath(): String
-    fun <R> useLines(action: (Sequence<String>) -> R): R
     fun exists(): Boolean
 }
+
+expect fun  <R> File.withLines(action: (Sequence<String>) -> R): R
