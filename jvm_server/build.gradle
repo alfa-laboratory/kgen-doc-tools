@@ -2,8 +2,16 @@ buildscript {
     ext.ktor_version = '0.9.1'
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id "com.moowork.node" version "1.2.0"
+}
+
 jar {
     baseName = 'jvm_server'
+    manifest {
+        attributes 'Main-Class': 'ru.alfabank.ecomm.dcreator.server.ApplicationKt'
+    }
 }
 
 repositories {
@@ -26,4 +34,60 @@ kotlin {
     experimental {
         coroutines "enable"
     }
+}
+
+def publicFolder = file("${project.projectDir}/public")
+
+def filesLayoutFolder = file("${project.rootDir}/files")
+def filesResourceFile = file("${project.projectDir}/src/main/resources")
+
+def staticFolder = file("${project.projectDir}/src/main/resources/static")
+
+def copyFiles = ["dist", "css", "images", "index.html"]
+
+node {
+    workDir = publicFolder
+    npmWorkDir = publicFolder
+    nodeModulesDir = publicFolder
+}
+
+task installDependencies(type: NpmTask) {
+    args = ['install']
+}
+
+task buildPublic(type: NpmTask, dependsOn: 'installDependencies') {
+    args = ['run', 'build']
+}
+
+task copyResources(type: Copy) {
+    staticFolder.deleteDir()
+    staticFolder.mkdirs()
+
+    copyFiles.forEach { fileToCopy ->
+        copy {
+            def srcFile = file(publicFolder.path + "/" + fileToCopy)
+            from srcFile
+
+            if (srcFile.isFile())
+                into(staticFolder.path)
+            else
+                into(staticFolder.path + "/" + fileToCopy)
+        }
+    }
+}
+
+task zipFilesDir(type: Zip) {
+    from filesLayoutFolder
+    archiveName 'files.zip'
+    destinationDir(filesResourceFile)
+}
+
+task buildWithResources {
+    dependsOn shadowJar
+    dependsOn buildPublic
+    dependsOn copyResources
+    dependsOn zipFilesDir
+    tasks.findByName('copyResources').mustRunAfter buildPublic
+    tasks.findByName('zipFilesDir').mustRunAfter copyResources
+    tasks.findByName('shadowJar').mustRunAfter copyResources
 }

@@ -6,10 +6,13 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.content.files
+import io.ktor.content.resources
 import io.ktor.content.static
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -21,25 +24,39 @@ import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.time.LocalTime
 
+private const val staticFolder = "static"
+private val indexFile = ClassLoader::class.java.getResourceAsStream("/$staticFolder/index.html")
+        .reader().readText()
+
+private val contentType = ContentType.parse("text/html; charset=UTF-8")
+
 class RenderRouterConfiguration(
+        private val workDir: File,
         private val inputDirectory: File,
         private val documentGenerator: DocumentGenerator
 ) {
     fun config(): Routing.() -> Unit = {
-        static("node_modules") {
-            files("files/output/node_modules")
-        }
-
         static("static") {
-            files("files/output/static")
+            files(File(workDir, "output/static"))
         }
 
         static("pages") {
-            files("files/output/pages")
+            files(File(workDir, "output/pages"))
         }
 
         static("") {
-            files("jvm_server/public")
+            resources(staticFolder)
+            get {
+                call.respondText(text = indexFile, contentType = contentType)
+            }
+        }
+
+        get("portal") {
+            call.respondText(text = indexFile, contentType = contentType)
+        }
+
+        get("portal/*") {
+            call.respondText(text = indexFile, contentType = contentType)
         }
 
         get("files") {
@@ -110,7 +127,7 @@ class RenderRouterConfiguration(
 
             val result = when (type) {
                 "file" -> newFile.createNewFile()
-                "folder" -> newFile.mkdir()
+                "staticFolder" -> newFile.mkdir()
                 else -> false
             }
 
