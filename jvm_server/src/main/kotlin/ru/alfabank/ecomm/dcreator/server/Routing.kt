@@ -6,11 +6,12 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.content.files
+import io.ktor.content.resources
 import io.ktor.content.static
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
-import io.ktor.response.respondFile
+import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.delete
 import io.ktor.routing.get
@@ -22,8 +23,9 @@ import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.time.LocalTime
 
-private const val publicFolder = "jvm_server/public_react/public"
-private val indexFile =  File(publicFolder, "index.html")
+private const val staticFolder = "/static"
+private val indexFile =  ClassLoader::class.java.getResourceAsStream("$staticFolder/index.html")
+        .reader().readText()
 
 class RenderRouterConfiguration(
         private val inputDirectory: File,
@@ -43,18 +45,18 @@ class RenderRouterConfiguration(
         }
 
         static("") {
-            files(publicFolder)
+            resources(staticFolder)
             get {
-                call.respondFile(indexFile)
+                call.respondText(indexFile)
             }
         }
 
         get("portal") {
-            call.respondFile(indexFile)
+            call.respondText(indexFile)
         }
 
         get("portal/*") {
-            call.respondFile(indexFile)
+            call.respondText(indexFile)
         }
 
         get("files") {
@@ -125,7 +127,7 @@ class RenderRouterConfiguration(
 
             val result = when (type) {
                 "file" -> newFile.createNewFile()
-                "publicFolder" -> newFile.mkdir()
+                "staticFolder" -> newFile.mkdir()
                 else -> false
             }
 

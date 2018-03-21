@@ -4,6 +4,7 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.2'
+    id "com.moowork.node" version "1.2.0"
 }
 
 jar {
@@ -33,4 +34,48 @@ kotlin {
     experimental {
         coroutines "enable"
     }
+}
+
+def publicFolder = file("${project.projectDir}/public")
+def staticFolder = file("${project.projectDir}/src/main/resources/static")
+
+def copyFiles = ["dist", "index.html"]
+
+node {
+    workDir = publicFolder
+    npmWorkDir = publicFolder
+    nodeModulesDir = publicFolder
+}
+
+task installDependencies(type: NpmTask) {
+    args = ['install']
+}
+
+task buildPublic(type: NpmTask, dependsOn: 'installDependencies') {
+    args = ['run', 'build']
+}
+
+task copyResources(type: Copy) {
+    staticFolder.deleteDir()
+    staticFolder.mkdirs()
+
+    copyFiles.forEach { fileToCopy ->
+        copy {
+            def srcFile = file(publicFolder.path + "/" + fileToCopy)
+            from srcFile
+
+            if (srcFile.isFile())
+                into(staticFolder.path)
+            else
+                into(staticFolder.path + "/" + fileToCopy)
+        }
+    }
+}
+
+task buildWithResources {
+    dependsOn shadowJar
+    dependsOn buildPublic
+    dependsOn copyResources
+    tasks.findByName('copyResources').mustRunAfter buildPublic
+    tasks.findByName('shadowJar').mustRunAfter copyResources
 }
