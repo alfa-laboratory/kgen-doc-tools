@@ -37,9 +37,13 @@ kotlin {
 }
 
 def publicFolder = file("${project.projectDir}/public")
+
+def filesLayoutFolder = file("${project.rootDir}/files")
+def filesResourceFile = file("${project.projectDir}/src/main/resources")
+
 def staticFolder = file("${project.projectDir}/src/main/resources/static")
 
-def copyFiles = ["dist", "index.html"]
+def copyFiles = ["dist", "css", "images", "index.html"]
 
 node {
     workDir = publicFolder
@@ -72,10 +76,18 @@ task copyResources(type: Copy) {
     }
 }
 
+task zipFilesDir(type: Zip) {
+    from filesLayoutFolder
+    archiveName 'files.zip'
+    destinationDir(filesResourceFile)
+}
+
 task buildWithResources {
     dependsOn shadowJar
     dependsOn buildPublic
     dependsOn copyResources
+    dependsOn zipFilesDir
     tasks.findByName('copyResources').mustRunAfter buildPublic
+    tasks.findByName('zipFilesDir').mustRunAfter copyResources
     tasks.findByName('shadowJar').mustRunAfter copyResources
 }
