@@ -26,12 +26,17 @@ fun main(args: Array<String>) {
     if (workDir.list().isEmpty())
         unpackFiles(workDir)
 
-    Application(workDir).apply {
+    val mode = if (args.size >= 2 && args[1] == "test")
+        ApplicationMode.TEST
+    else
+        ApplicationMode.PROD
+
+    Application(workDir, mode = mode).apply {
         start(true)
     }
 }
 
-fun unpackFiles(workDir: File) {
+private fun unpackFiles(workDir: File) {
     ZipInputStream(zipFiles).use { zipInputStream ->
         while (true) {
             val entry: ZipEntry = zipInputStream.nextEntry ?: break
@@ -52,15 +57,25 @@ fun unpackFiles(workDir: File) {
     }
 }
 
+enum class ApplicationMode(val publicFolder: File = File("")) {
+    TEST(File("jvm_server/public")),
+    PROD;
+}
+
 class Application(
         workDir: File,
         inputDirectory: File = File(workDir, "input"),
         outputDirectory: File = File(workDir, "output/pages"),
         layoutDirectory: File = File(workDir, "layout/freemarker"),
+        mode: ApplicationMode = ApplicationMode.PROD,
         private val port: Int = 8080
 ) {
     private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
-    private val renderRouterConfiguration = RenderRouterConfiguration(workDir, inputDirectory, documentGenerator)
+    private val renderRouterConfiguration = RenderRouterConfiguration(
+            workDir,
+            inputDirectory,
+            documentGenerator,
+            mode)
 
     private var engine: ApplicationEngine? = null
 
