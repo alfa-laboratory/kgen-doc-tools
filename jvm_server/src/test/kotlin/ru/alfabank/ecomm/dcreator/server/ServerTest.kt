@@ -12,6 +12,7 @@ class ServerTest {
             File("../files/input"),
             File("../files/output/pages"),
             File("../files/layout/freemarker"),
+            ApplicationMode.PROD,
             SERVER_PORT
     )
 
