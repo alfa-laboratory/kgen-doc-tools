@@ -12,6 +12,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
 import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.response.respondText
 import io.ktor.routing.Routing
 import io.ktor.routing.delete
@@ -24,16 +25,11 @@ import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.time.LocalTime
 
-private const val staticFolder = "static"
-private val indexFile = ClassLoader::class.java.getResourceAsStream("/$staticFolder/index.html")
-        .reader().readText()
-
-private val contentType = ContentType.parse("text/html; charset=UTF-8")
-
 class RenderRouterConfiguration(
         private val workDir: File,
         private val inputDirectory: File,
-        private val documentGenerator: DocumentGenerator
+        private val documentGenerator: DocumentGenerator,
+        private val mode: ApplicationMode
 ) {
     fun config(): Routing.() -> Unit = {
         static("static") {
@@ -44,19 +40,41 @@ class RenderRouterConfiguration(
             files(File(workDir, "output/pages"))
         }
 
-        static("") {
-            resources(staticFolder)
-            get {
-                call.respondText(text = indexFile, contentType = contentType)
+        when(mode) {
+            ApplicationMode.TEST -> {
+                val indexFile = File(mode.publicFolder, "index.html")
+
+                static("") {
+                    files(mode.publicFolder)
+                    get {
+                        call.respondFile(indexFile)
+                    }
+                }
+
+                get("portal") {
+                    call.respondFile(indexFile)
+                }
+
+                get("portal/*") {
+                    call.respondFile(indexFile)
+                }
             }
-        }
+            ApplicationMode.PROD -> {
+                static("") {
+                    resources(staticFolder)
+                    get {
+                        call.respondText(text = staticIndexFileText, contentType = contentType)
+                    }
+                }
 
-        get("portal") {
-            call.respondText(text = indexFile, contentType = contentType)
-        }
+                get("portal") {
+                    call.respondText(text = staticIndexFileText, contentType = contentType)
+                }
 
-        get("portal/*") {
-            call.respondText(text = indexFile, contentType = contentType)
+                get("portal/*") {
+                    call.respondText(text = staticIndexFileText, contentType = contentType)
+                }
+            }
         }
 
         get("files") {
@@ -157,5 +175,11 @@ class RenderRouterConfiguration(
     companion object {
         private val objectMapper = ObjectMapper()
                 .registerKotlinModule()
+
+        private const val staticFolder = "static"
+        private val staticIndexFileText = ClassLoader::class.java.getResourceAsStream("/$staticFolder/index.html")
+                .reader().readText()
+
+        private val contentType = ContentType.parse("text/html; charset=UTF-8")
     }
 }
