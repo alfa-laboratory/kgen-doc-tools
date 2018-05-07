@@ -16,32 +16,34 @@ class IncludeBlockParserTest {
 
         val actual = parser.parse(File("../common_parser/src/test/resources/multifiles/file1.md"))
 
-        val expected = BlockLayout(listOf(
+        val expected = BlockLayout(
+            listOf(
                 listOf(
-                        TextNode("file 1 some text line 1"),
-                        TextNode("file 1 some text line 2")
+                    TextNode("file 1 some text line 1"),
+                    TextNode("file 1 some text line 2")
                 ).toTextBlockNode(),
                 listOf(
-                        TextNode("file 2 some text line 1"),
-                        TextNode("file 2 some text line 2")
+                    TextNode("file 2 some text line 1"),
+                    TextNode("file 2 some text line 2")
                 ).toTextBlockNode(),
                 listOf(
-                        TextNode("file 3 some text line 1"),
-                        TextNode("file 3 some text line 2")
+                    TextNode("file 3 some text line 1"),
+                    TextNode("file 3 some text line 2")
                 ).toTextBlockNode(),
                 listOf(
-                        TextNode("file 3 some text line 3"),
-                        TextNode("file 3 some text line 4")
+                    TextNode("file 3 some text line 3"),
+                    TextNode("file 3 some text line 4")
                 ).toTextBlockNode(),
                 listOf(
-                        TextNode("file 2 some text line 3"),
-                        TextNode("file 2 some text line 4")
+                    TextNode("file 2 some text line 3"),
+                    TextNode("file 2 some text line 4")
                 ).toTextBlockNode(),
                 listOf(
-                        TextNode("file 1 some text line 3"),
-                        TextNode("file 1 some text line 4")
+                    TextNode("file 1 some text line 3"),
+                    TextNode("file 1 some text line 4")
                 ).toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expected, actual)
     }

@@ -7,9 +7,9 @@ import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 
 class DocumentGenerator(
-        private val inputDirectory: File,
-        private val outputDirectory: File,
-        layoutDirectory: File
+    private val inputDirectory: File,
+    private val outputDirectory: File,
+    layoutDirectory: File
 ) {
     private val freemarkerRender = FreemarkerRender(layoutDirectory)
 
@@ -23,13 +23,13 @@ class DocumentGenerator(
         }
 
         val relativePath = generateFile
-                .parentFile
-                .toRelativeString(inputDirectory).let {
-            if (it.isEmpty())
-                ""
-            else
-                "$it/"
-        }
+            .parentFile
+            .toRelativeString(inputDirectory).let {
+                if (it.isEmpty())
+                    ""
+                else
+                    "$it/"
+            }
 
         val outputFile = File(outputDirectory, "$relativePath${generateFile.nameWithoutExtension}.html")
 

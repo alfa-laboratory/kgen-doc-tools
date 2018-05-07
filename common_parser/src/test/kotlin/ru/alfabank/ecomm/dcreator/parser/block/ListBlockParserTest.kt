@@ -15,30 +15,34 @@ class ListBlockParserTest {
     @Test
     fun `test inner list`() {
         val simpleList = sequenceOf(
-                "text for line 1",
-                "text for line 2",
-                "",
-                " - text for line 4",
-                " - text for line 5",
-                " - text for line 6",
-                "",
-                "text for line 8"
+            "text for line 1",
+            "text for line 2",
+            "",
+            " - text for line 4",
+            " - text for line 5",
+            " - text for line 6",
+            "",
+            "text for line 8"
         )
 
         val actualResult = parser.parse(simpleList)
 
-        val expectResult = BlockLayout(listOf(
+        val expectResult = BlockLayout(
+            listOf(
                 listOf(
-                        TextNode("text for line 1"),
-                        TextNode("text for line 2")
+                    TextNode("text for line 1"),
+                    TextNode("text for line 2")
                 ).toTextBlockNode(),
-                ListsBLockNode(listOf(
+                ListsBLockNode(
+                    listOf(
                         UnOrderedListNode(TextNode("text for line 4")),
                         UnOrderedListNode(TextNode("text for line 5")),
                         UnOrderedListNode(TextNode("text for line 6"))
-                )),
+                    )
+                ),
                 TextNode("text for line 8").toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expectResult, actualResult)
     }
@@ -46,34 +50,55 @@ class ListBlockParserTest {
     @Test
     fun `test nested lists`() {
         val simpleList = sequenceOf(
-                "- text for line 1",
-                "  - text for line 2",
-                "    - text for line 3",
-                "       - text for line 4",
-                "  - text for line 5",
-                "- text for line 6"
+            "- text for line 1",
+            "  - text for line 2",
+            "    - text for line 3",
+            "       - text for line 4",
+            "  - text for line 5",
+            "- text for line 6"
         )
         val actualResult = parser.parse(simpleList)
 
-        val expectResult = ListsBLockNode(listOf(
-                UnOrderedListNode(BlockLayout(listOf(
-                        TextNode("text for line 1").toTextBlockNode(),
-                        ListsBLockNode(listOf(
-                                UnOrderedListNode(BlockLayout(listOf(
-                                        TextNode("text for line 2").toTextBlockNode(),
-                                        ListsBLockNode(listOf(
-                                                UnOrderedListNode(BlockLayout(listOf(
-                                                        TextNode("text for line 3").toTextBlockNode(),
-                                                        ListsBLockNode(listOf(
-                                                                UnOrderedListNode(TextNode("text for line 4"))
-                                                        ))
-                                                )))))
-                                ))),
-                                UnOrderedListNode(TextNode("text for line 5"))
-                        ))
-                ))),
+        val expectResult = ListsBLockNode(
+            listOf(
+                UnOrderedListNode(
+                    BlockLayout(
+                        listOf(
+                            TextNode("text for line 1").toTextBlockNode(),
+                            ListsBLockNode(
+                                listOf(
+                                    UnOrderedListNode(
+                                        BlockLayout(
+                                            listOf(
+                                                TextNode("text for line 2").toTextBlockNode(),
+                                                ListsBLockNode(
+                                                    listOf(
+                                                        UnOrderedListNode(
+                                                            BlockLayout(
+                                                                listOf(
+                                                                    TextNode("text for line 3").toTextBlockNode(),
+                                                                    ListsBLockNode(
+                                                                        listOf(
+                                                                            UnOrderedListNode(TextNode("text for line 4"))
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    UnOrderedListNode(TextNode("text for line 5"))
+                                )
+                            )
+                        )
+                    )
+                ),
                 UnOrderedListNode(TextNode("text for line 6"))
-        ))
+            )
+        )
 
         assertEquals(expectResult, actualResult)
     }

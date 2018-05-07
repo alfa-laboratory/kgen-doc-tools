@@ -14,27 +14,27 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
     private val defaultBlockParser = DefaultBlockParser(this)
 
     val blockParsers = mutableListOf(
-            HeaderBlockParser(this),
-            CodeBlockParser(this),
-            ListBlockParser(this),
-            DistributeLinkParser(this),
-            BlockquotesParser(this),
-            TableBlockParser(this),
-            IncludeBlockParser(this)
+        HeaderBlockParser(this),
+        CodeBlockParser(this),
+        ListBlockParser(this),
+        DistributeLinkParser(this),
+        BlockquotesParser(this),
+        TableBlockParser(this),
+        IncludeBlockParser(this)
     )
 
     val lineParsers: MutableList<LineParser> = mutableListOf(
-            BoldLineParserStar(this),
-            BoldLineParserUnderscore(this),
-            ItalicLineParserStar(this),
-            ItalicLineParserUnderscore(this),
-            StrikethroughLineParser(this),
-            UnderlineLineParser(this),
-            CodeLineSingleQuoteParser(this),
-            CodeLineDoubleQuoteParser(this),
-            HTMLNodeLineParser(this),
-            LinkLineParser(this),
-            ImageLinkLineParser(this)
+        BoldLineParserStar(this),
+        BoldLineParserUnderscore(this),
+        ItalicLineParserStar(this),
+        ItalicLineParserUnderscore(this),
+        StrikethroughLineParser(this),
+        UnderlineLineParser(this),
+        CodeLineSingleQuoteParser(this),
+        CodeLineDoubleQuoteParser(this),
+        HTMLNodeLineParser(this),
+        LinkLineParser(this),
+        ImageLinkLineParser(this)
     )
 
     val lineParser = LineParserImpl(lineParsers)

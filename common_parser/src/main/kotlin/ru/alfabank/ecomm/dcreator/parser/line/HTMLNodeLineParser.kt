@@ -11,8 +11,8 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 class OpenTag(val tagName: String, val fullOpenTag: String)
 
 class HTMLNodeLineParser(
-        override val parseInstance: MarkdownParser,
-        private val usedTag: OpenTag? = null
+    override val parseInstance: MarkdownParser,
+    private val usedTag: OpenTag? = null
 ) : LineParser {
     override fun openSymbolsSuited(startSymbols: String): BoundSymbolsSuiteResult {
         val partySuited = HTML_OPEN_TAG_PARTIAL_PREDICATE.test(startSymbols)
@@ -22,9 +22,9 @@ class HTMLNodeLineParser(
             val openTagName = openTagMatch.group(TAG_GROUP_NAME)!!
 
             BoundSymbolsSuiteResult(
-                    partySuited,
-                    true,
-                    HTMLNodeLineParser(parseInstance, OpenTag(openTagName, startSymbols))
+                partySuited,
+                true,
+                HTMLNodeLineParser(parseInstance, OpenTag(openTagName, startSymbols))
             )
         } else
             BoundSymbolsSuiteResult(partySuited, false)
@@ -53,7 +53,7 @@ class HTMLNodeLineParser(
     override val parserId: String = "HTMLNodeLineParser"
 
     override fun parse(line: String): ParseLineResult? {
-        val tag =  usedTag ?: throw RuntimeException("unexpected behaviour")
+        val tag = usedTag ?: throw RuntimeException("unexpected behaviour")
 
         return ParseLineResult(HTMLNode("${tag.fullOpenTag}$line</${tag.tagName}>"))
     }
@@ -72,8 +72,8 @@ class HTMLNodeLineParser(
         private val HTML_OPEN_TAG_PARTIAL_PREDICATE = """
             ^<.*?>?$
         """.trimIndent()
-                .toPattern(Pattern.CASE_INSENSITIVE)
-                .asPredicate()
+            .toPattern(Pattern.CASE_INSENSITIVE)
+            .asPredicate()
 
         private val HTML_PARAM_PATTERN = """
             \w+?=".*"

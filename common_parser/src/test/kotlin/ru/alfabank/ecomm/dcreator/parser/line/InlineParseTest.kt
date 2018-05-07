@@ -40,20 +40,32 @@ class SimpleTest {
         assertEquals(BoldNode(RowLayout(listOf(TextNode(" "), ItalicNode(TextNode("регистрационная "))))), testCombine3)
 
         val testCombine4 = lineParser.parse("** _ регистрационная _**")
-        assertEquals(BoldNode(RowLayout(listOf(TextNode(" "), ItalicNode(TextNode(" регистрационная "))))), testCombine4)
+        assertEquals(
+            BoldNode(RowLayout(listOf(TextNode(" "), ItalicNode(TextNode(" регистрационная "))))),
+            testCombine4
+        )
 
         //combine reverse
         val testCombineReverse = lineParser.parse("_**регистрационная**_")
         assertEquals(ItalicNode(BoldNode(TextNode("регистрационная"))), testCombineReverse)
 
         val testCombineReverse2 = lineParser.parse("_ **регистрационная**_")
-        assertEquals(ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode("регистрационная"))))), testCombineReverse2)
+        assertEquals(
+            ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode("регистрационная"))))),
+            testCombineReverse2
+        )
 
         val testCombineReverse3 = lineParser.parse("_ **регистрационная** _")
-        assertEquals(ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode("регистрационная")), TextNode(" ")))), testCombineReverse3)
+        assertEquals(
+            ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode("регистрационная")), TextNode(" ")))),
+            testCombineReverse3
+        )
 
         val testCombineReverse4 = lineParser.parse("_ ** регистрационная **_")
-        assertEquals(ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode(" регистрационная "))))), testCombineReverse4)
+        assertEquals(
+            ItalicNode(RowLayout(listOf(TextNode(" "), BoldNode(TextNode(" регистрационная "))))),
+            testCombineReverse4
+        )
 
         //underline
         val underline = lineParser.parse("++some text++")
@@ -74,14 +86,18 @@ class SimpleTest {
         assertEquals(CodeSampleNode(" **some code** "), testCode2)
 
         val testCode3 = lineParser.parse("some *text*` _ **some code** _ ` mo**re other** text")
-        assertEquals(RowLayout(listOf(
-                TextNode("some "),
-                ItalicNode(TextNode("text")),
-                CodeSampleNode(" _ **some code** _ "),
-                TextNode(" mo"),
-                BoldNode(TextNode("re other")),
-                TextNode(" text")
-        )), testCode3)
+        assertEquals(
+            RowLayout(
+                listOf(
+                    TextNode("some "),
+                    ItalicNode(TextNode("text")),
+                    CodeSampleNode(" _ **some code** _ "),
+                    TextNode(" mo"),
+                    BoldNode(TextNode("re other")),
+                    TextNode(" text")
+                )
+            ), testCode3
+        )
     }
 
     @Test
@@ -93,31 +109,43 @@ class SimpleTest {
         assertEquals(HTMLNode("<a href=\"http://localhost\">text</a>"), testHtmlA)
 
         val testHtmlComplex = lineParser.parse("some text **boldText** <tr class=\"clazz1\"> **text*</tr> endText")
-        assertEquals(RowLayout(listOf(
-                TextNode("some text "),
-                BoldNode(TextNode("boldText")),
-                TextNode(" "),
-                HTMLNode("<tr class=\"clazz1\"> **text*</tr>"),
-                TextNode(" endText")
-        )), testHtmlComplex)
+        assertEquals(
+            RowLayout(
+                listOf(
+                    TextNode("some text "),
+                    BoldNode(TextNode("boldText")),
+                    TextNode(" "),
+                    HTMLNode("<tr class=\"clazz1\"> **text*</tr>"),
+                    TextNode(" endText")
+                )
+            ), testHtmlComplex
+        )
 
         val testHtmlComplex2 = lineParser.parse("some text **boldText** <tr class=\"clazz1\" **text*</tr> endText")
-        assertEquals(RowLayout(listOf(
-                TextNode("some text "),
-                BoldNode(TextNode("boldText")),
-                TextNode(" <tr class=\"clazz1\" "),
-                ItalicNode(TextNode("*text")),
-                TextNode("</tr> endText")
-        )), testHtmlComplex2)
+        assertEquals(
+            RowLayout(
+                listOf(
+                    TextNode("some text "),
+                    BoldNode(TextNode("boldText")),
+                    TextNode(" <tr class=\"clazz1\" "),
+                    ItalicNode(TextNode("*text")),
+                    TextNode("</tr> endText")
+                )
+            ), testHtmlComplex2
+        )
 
         val testHtmlComplex3 = lineParser.parse("some text **boldText** <a class=\"clazz1\" **text*</a> endText")
-        assertEquals(RowLayout(listOf(
-                TextNode("some text "),
-                BoldNode(TextNode("boldText")),
-                TextNode(" <a class=\"clazz1\" "),
-                ItalicNode(TextNode("*text")),
-                TextNode("</a> endText")
-        )), testHtmlComplex3)
+        assertEquals(
+            RowLayout(
+                listOf(
+                    TextNode("some text "),
+                    BoldNode(TextNode("boldText")),
+                    TextNode(" <a class=\"clazz1\" "),
+                    ItalicNode(TextNode("*text")),
+                    TextNode("</a> endText")
+                )
+            ), testHtmlComplex3
+        )
     }
 
     @Test
@@ -128,9 +156,9 @@ class SimpleTest {
 
         val actual = lineParser.parse(complex)
         val expected = LinkNode(
-                ImageLinkNode("N|Solid", "https://cldup.com/dTxpPi9lDf.thumb.png"),
-                "https://nodesource.com/products/nsolid",
-                "some title"
+            ImageLinkNode("N|Solid", "https://cldup.com/dTxpPi9lDf.thumb.png"),
+            "https://nodesource.com/products/nsolid",
+            "some title"
         )
 
         assertEquals(expected, actual)
@@ -143,18 +171,22 @@ class SimpleTest {
         """.trimIndent()
 
         val actual = lineParser.parse(complex)
-        val expected = RowLayout(listOf(
+        val expected = RowLayout(
+            listOf(
                 TextNode("some begin text"),
                 LinkNode(
-                        RowLayout(listOf(
-                                BoldNode(TextNode("asdfasd")),
-                                TextNode(" "),
-                                ImageLinkNode("N|Solid", "https://cldup.com/dTxpPi9lDf.thumb.png")
-                        )),
-                        "https://nodesource.com/products/nsolid",
-                        "some title"
+                    RowLayout(
+                        listOf(
+                            BoldNode(TextNode("asdfasd")),
+                            TextNode(" "),
+                            ImageLinkNode("N|Solid", "https://cldup.com/dTxpPi9lDf.thumb.png")
+                        )
+                    ),
+                    "https://nodesource.com/products/nsolid",
+                    "some title"
                 )
-        ))
+            )
+        )
 
         assertEquals(expected, actual)
     }

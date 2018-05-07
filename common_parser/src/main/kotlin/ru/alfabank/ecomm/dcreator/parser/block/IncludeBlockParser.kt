@@ -11,7 +11,8 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
         if (lines.size == 1) {
             val firstLine = lines.first()
             if (firstLine.length > KEYWORD_PATTERN.length
-                    && firstLine.take(KEYWORD_PATTERN.length) == KEYWORD_PATTERN)
+                && firstLine.take(KEYWORD_PATTERN.length) == KEYWORD_PATTERN
+            )
                 return BlockSuiteResult(true)
         }
 

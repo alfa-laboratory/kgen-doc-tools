@@ -52,13 +52,13 @@ open class HeaderBlockParser(override val parseInstance: MarkdownParser) : Block
         }
 
         return listOf(
-                HeaderBlockNode(headerLevel, parseInstance.lineParser.parseForLineResult(headerText).node)
+            HeaderBlockNode(headerLevel, parseInstance.lineParser.parseForLineResult(headerText).node)
         )
     }
 
     private fun linesIsHeader(lastLine: String): Boolean = lastLine.isNotEmpty() && lastLine
-            .trim()
-            .all { it == HEADER_H2_SYMBOL || it == HEADER_H1_SYMBOL }
+        .trim()
+        .all { it == HEADER_H2_SYMBOL || it == HEADER_H1_SYMBOL }
 
     companion object {
         private const val HEADER_SYMBOL: Char = '#'

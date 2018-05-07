@@ -20,7 +20,8 @@ open class DefaultBlockParser(override val parseInstance: MarkdownParser) : Bloc
         }.filter { it != EmptyNode }
 
         if (parsedLines.isEmpty()
-                || (parsedLines.size == 1 && parsedLines.first() == EmptyNode))
+            || (parsedLines.size == 1 && parsedLines.first() == EmptyNode)
+        )
             return emptyList()
 
         return listOf(TextBlockNode(parsedLines))

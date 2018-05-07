@@ -18,10 +18,10 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
     }
 
     private data class Rows(
-            val content: List<String>,
-            val header: String? = null,
-            val footer: String? = null,
-            val modifiers: String? = null
+        val content: List<String>,
+        val header: String? = null,
+        val footer: String? = null,
+        val modifiers: String? = null
     )
 
     override fun parseLines(lines: List<String>): List<BlockNode> {
@@ -42,7 +42,8 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
             }
 
             val (content, footerLine) = if (otherContent.size >= 2
-                    && isModifierColumn(otherContent[otherContent.lastIndex - 1])) {
+                && isModifierColumn(otherContent[otherContent.lastIndex - 1])
+            ) {
                 otherContent.dropLast(2) to otherContent.last()
             } else {
                 otherContent to null
@@ -74,19 +75,19 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         val (content, header, footer, modifiers) = rows
 
         val (headerColumns, footerColumns) = listOf(header, footer)
-                .map { it?.parserRow() }
+            .map { it?.parserRow() }
 
         val contentColumns = content.map { it.parserRow() }
 
         val modifiersParsed = modifiers
-                ?.let { parseTableRow(it) }
-                ?.mapNotNull { it.parseModifier() }
+            ?.let { parseTableRow(it) }
+            ?.mapNotNull { it.parseModifier() }
 
         return TableBlockNode(
-                content = contentColumns,
-                header = headerColumns,
-                footer = footerColumns,
-                modifier = modifiersParsed
+            content = contentColumns,
+            header = headerColumns,
+            footer = footerColumns,
+            modifier = modifiersParsed
         )
     }
 
@@ -109,8 +110,8 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
     }
 
     private fun String.parserRow(): List<Node> = this
-            .let { parseTableRow(it) }
-            .map { parseInstance.lineParser.parse(it) }
+        .let { parseTableRow(it) }
+        .map { parseInstance.lineParser.parse(it) }
 
     private fun parseTableRow(line: String): List<String> {
         val columnMatcher = COLUMN_FIND_PATTERN.matcher(line)

@@ -33,14 +33,14 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
     private fun List<Node>.merge(): Node {
         val nodes = this.filter { it != EmptyNode }
-                .fold(listOf()) { acc: List<Node>, node: Node ->
-                    if (acc.lastOrNull() is TextNode && node is TextNode) {
-                        val textNode = acc.last() as TextNode
-                        acc.dropLast(1) + TextNode(textNode.text + node.text)
-                    } else {
-                        acc + node
-                    }
+            .fold(listOf()) { acc: List<Node>, node: Node ->
+                if (acc.lastOrNull() is TextNode && node is TextNode) {
+                    val textNode = acc.last() as TextNode
+                    acc.dropLast(1) + TextNode(textNode.text + node.text)
+                } else {
+                    acc + node
                 }
+            }
 
         return when {
             nodes.isEmpty() -> EmptyNode
@@ -52,9 +52,9 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
     data class ParseLineNodesResult(val nodes: List<Node>, val findUnboundParser: Boolean)
 
     private tailrec fun parseLine(
-            line: String,
-            prevNodes: List<Node> = emptyList(),
-            findUnboundParser: Boolean = false
+        line: String,
+        prevNodes: List<Node> = emptyList(),
+        findUnboundParser: Boolean = false
     ): ParseLineNodesResult {
         if (line.isEmpty())
             return ParseLineNodesResult(prevNodes, findUnboundParser = findUnboundParser)
@@ -76,33 +76,33 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
             if (node != null) {
                 parseLine(
-                        notParsedLine,
-                        prevNodes + listOf(TextNode.from(textLine), node),
-                        findUnboundParser = findUnboundParser || localFindUnboundParser
+                    notParsedLine,
+                    prevNodes + listOf(TextNode.from(textLine), node),
+                    findUnboundParser = findUnboundParser || localFindUnboundParser
                 )
             } else {
                 //move to 1 symbol forward
                 parseLine(
-                        line.substring(index + 1),
-                        prevNodes + listOf(TextNode.from(line.substring(0, index + 1))),
-                        findUnboundParser = findUnboundParser || localFindUnboundParser
+                    line.substring(index + 1),
+                    prevNodes + listOf(TextNode.from(line.substring(0, index + 1))),
+                    findUnboundParser = findUnboundParser || localFindUnboundParser
                 )
             }
         }
     }
 
     data class ParseResult(
-            val notParserString: String,
-            val resultNode: Node?,
-            val skipSymbols: Int = 0,
-            val findUnboundParser: Boolean = false
+        val notParserString: String,
+        val resultNode: Node?,
+        val skipSymbols: Int = 0,
+        val findUnboundParser: Boolean = false
     )
 
     private fun parseLineByParsers(
-            lineToProcess: String,
-            suitedParsers: List<LineParser> = emptyList(),
-            startCheckIndex: Int = 1,
-            parentParser: LineParser? = null
+        lineToProcess: String,
+        suitedParsers: List<LineParser> = emptyList(),
+        startCheckIndex: Int = 1,
+        parentParser: LineParser? = null
     ): ParseResult {
         if (lineToProcess.isEmpty())
             return ParseResult("", null)
@@ -151,9 +151,10 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
                             if (fullySuited) {
                                 val newSkipLength = parseResult.skipSymbols + parentParser.endSymbolsLength()
                                 ParseResult(
-                                        lineToProcess.substring(newSkipLength),
-                                        parentParser.combine(parseResult.resultNode),
-                                        newSkipLength + parentParser.openSymbolsLength())
+                                    lineToProcess.substring(newSkipLength),
+                                    parentParser.combine(parseResult.resultNode),
+                                    newSkipLength + parentParser.openSymbolsLength()
+                                )
                             } else
                                 null
                         }
@@ -187,9 +188,10 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
                 val result = usedParser.parse(parseString)
                 if (result != null && result.node != EmptyNode && !result.findUnboundParser) {
                     return ParseResult(
-                            notParserString,
-                            result.node,
-                            parseString.length + usedParser.endSymbolsLength() + usedParser.openSymbolsLength())
+                        notParserString,
+                        result.node,
+                        parseString.length + usedParser.endSymbolsLength() + usedParser.openSymbolsLength()
+                    )
                 }
             }
         }
@@ -201,35 +203,35 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
     private fun tryParse(allParsers: MutableList<Pair<Int, List<LineParser>>>, lineToProcess: String): ParseResult? {
         allParsers.reversed()
-                .forEach { (index, parsers) ->
+            .forEach { (index, parsers) ->
 
-                    parsers.forEach { parser ->
-                        if (index <= lineToProcess.length) {
-                            val result = parseLineByParsers(lineToProcess.substring(index), parentParser = parser)
+                parsers.forEach { parser ->
+                    if (index <= lineToProcess.length) {
+                        val result = parseLineByParsers(lineToProcess.substring(index), parentParser = parser)
 
-                            if (result.resultNode != null) {
-                                return result
-                            }
+                        if (result.resultNode != null) {
+                            return result
                         }
                     }
                 }
+            }
 
         return null
     }
 
     private fun findSuitedParser(
-            line: String
+        line: String
     ): FindSuitedResult {
         val childParsers = lineParsers
 
         val newPartialSuitedParsers = childParsers
-                .map { it to it.openSymbolsSuited(line) }
-                .filter { (_, suited) -> suited.partySuited }
+            .map { it to it.openSymbolsSuited(line) }
+            .filter { (_, suited) -> suited.partySuited }
 
         if (newPartialSuitedParsers.isNotEmpty()) {
             val fullySuitedParsers = newPartialSuitedParsers
-                    .filter { it.second.fullySuited }
-                    .map { it.second.parseInstance ?: it.first }
+                .filter { it.second.fullySuited }
+                .map { it.second.parseInstance ?: it.first }
 
             return FindSuitedResult(true, fullySuitedParsers)
         }

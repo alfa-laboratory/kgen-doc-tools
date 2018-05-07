@@ -14,18 +14,18 @@ class CodeBlockTest {
     @Test
     fun `test parsing of code block`() {
         val code = sequenceOf(
-                "```javascript",
-                "some code line 1",
-                "",
-                "some code line 3",
-                "```"
+            "```javascript",
+            "some code line 1",
+            "",
+            "some code line 3",
+            "```"
         )
         val actualResult = parser.parse(code)
 
         val expectedCodeLines = listOf(
-                "some code line 1",
-                "",
-                "some code line 3"
+            "some code line 1",
+            "",
+            "some code line 3"
         )
         val expectedResult = CodeBlockNode("javascript", expectedCodeLines.joinToString("\n"))
 
@@ -35,14 +35,14 @@ class CodeBlockTest {
     @Test
     fun `test parsing of code block without language name`() {
         val code = sequenceOf(
-                "```",
-                "some code line 1",
-                "```"
+            "```",
+            "some code line 1",
+            "```"
         )
         val actualResult = parser.parse(code)
 
         val expectedCodeLines = listOf(
-                "some code line 1"
+            "some code line 1"
         )
         val expectedResult = CodeBlockNode("", expectedCodeLines.joinToString("\n"))
 
@@ -52,26 +52,28 @@ class CodeBlockTest {
     @Test
     fun `test parsing of code block with text`() {
         val code = sequenceOf(
-                "some text",
-                "```javascript",
-                "some code line 1",
-                "some code line 2",
-                "some code line 3",
-                "```",
-                "some another text"
+            "some text",
+            "```javascript",
+            "some code line 1",
+            "some code line 2",
+            "some code line 3",
+            "```",
+            "some another text"
         )
         val actualResult = parser.parse(code)
 
         val expectedCodeLines = listOf(
-                "some code line 1",
-                "some code line 2",
-                "some code line 3"
+            "some code line 1",
+            "some code line 2",
+            "some code line 3"
         )
-        val expectedResult = BlockLayout(listOf(
+        val expectedResult = BlockLayout(
+            listOf(
                 TextNode("some text").toTextBlockNode(),
                 CodeBlockNode("javascript", expectedCodeLines.joinToString("\n")),
                 TextNode("some another text").toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expectedResult, actualResult)
     }

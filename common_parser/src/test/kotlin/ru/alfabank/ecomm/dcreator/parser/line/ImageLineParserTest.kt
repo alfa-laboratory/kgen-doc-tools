@@ -17,8 +17,14 @@ class ImageLineParserTest {
         val linkResult2 = lineParser.parse("![some id] (http://someuri.com)")
         assertEquals(ImageLinkNode("some id", "http://someuri.com"), linkResult2)
 
-        val linkResultWithSpaces = lineParser.parse("![some id] (/static/images/manual/Оплата с помощью связки на платежной странице.png)")
-        assertEquals(ImageLinkNode("some id", "/static/images/manual/Оплата с помощью связки на платежной странице.png"), linkResultWithSpaces)
+        val linkResultWithSpaces =
+            lineParser.parse("![some id] (/static/images/manual/Оплата с помощью связки на платежной странице.png)")
+        assertEquals(
+            ImageLinkNode(
+                "some id",
+                "/static/images/manual/Оплата с помощью связки на платежной странице.png"
+            ), linkResultWithSpaces
+        )
 
         val linkResult3 = lineParser.parse("![some id][id1]")
         val expectNode3 = ImageLinkNode("some id")

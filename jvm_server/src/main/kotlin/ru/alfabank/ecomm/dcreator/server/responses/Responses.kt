@@ -13,6 +13,6 @@ enum class FileType {
 data class FileInfo(val name: String, val type: FileType)
 
 data class FilesResponse(
-        override val status: Boolean,
-        val files: List<FileInfo>
+    override val status: Boolean,
+    val files: List<FileInfo>
 ) : Response

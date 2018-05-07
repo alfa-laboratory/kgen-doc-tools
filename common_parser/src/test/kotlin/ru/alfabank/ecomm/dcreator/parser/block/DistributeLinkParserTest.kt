@@ -22,20 +22,26 @@ class DistributeLinkParserTest {
 
         val actualResult = parser.parse(src.split("\n").asSequence())
 
-        val expectedResult = TextBlockNode(listOf(
-                RowLayout(listOf(
+        val expectedResult = TextBlockNode(
+            listOf(
+                RowLayout(
+                    listOf(
                         TextNode("  some big text "),
                         LinkNode(TextNode("text link 1"), "http://someurl.com", "title 123"),
                         TextNode(" before text "),
                         LinkNode(TextNode("link2"), "http://someurl2.com", "some title")
-                )),
-                RowLayout(listOf(
+                    )
+                ),
+                RowLayout(
+                    listOf(
                         TextNode("  text 2 "),
                         ImageLinkNode("image text", "http://someurl.com", "some another title"),
                         TextNode("before text "),
                         LinkNode(TextNode("link id1"), "http://someurl.com")
-                ))
-        ))
+                    )
+                )
+            )
+        )
 
         assertEquals(expectedResult, actualResult)
     }

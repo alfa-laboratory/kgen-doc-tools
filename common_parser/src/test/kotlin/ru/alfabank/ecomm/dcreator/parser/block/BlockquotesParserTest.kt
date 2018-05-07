@@ -15,18 +15,22 @@ class BlockquotesParserTest {
     @Test
     fun `test only blockquotes`() {
         val src = sequenceOf(
-                "> line1",
-                "> line2",
-                "> line3"
+            "> line1",
+            "> line2",
+            "> line3"
         )
 
         val actual = parser.parse(src)
 
-        val expected = BlockquotesBlockNode(TextBlockNode(listOf(
-                TextNode(" line1"),
-                TextNode(" line2"),
-                TextNode(" line3")
-        )))
+        val expected = BlockquotesBlockNode(
+            TextBlockNode(
+                listOf(
+                    TextNode(" line1"),
+                    TextNode(" line2"),
+                    TextNode(" line3")
+                )
+            )
+        )
 
         assertEquals(expected, actual)
     }
@@ -34,24 +38,28 @@ class BlockquotesParserTest {
     @Test
     fun `test blockquotes with text`() {
         val src = sequenceOf(
-                "text line",
-                " > line1",
-                " > line2",
-                " > line3",
-                "end line"
+            "text line",
+            " > line1",
+            " > line2",
+            " > line3",
+            "end line"
         )
 
         val actual = parser.parse(src)
 
-        val expected = BlockLayout(listOf(
+        val expected = BlockLayout(
+            listOf(
                 TextNode("text line").toTextBlockNode(),
-                BlockquotesBlockNode(listOf(
+                BlockquotesBlockNode(
+                    listOf(
                         TextNode(" line1"),
                         TextNode(" line2"),
                         TextNode(" line3")
-                ).toTextBlockNode()),
+                    ).toTextBlockNode()
+                ),
                 TextNode("end line").toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expected, actual)
     }
