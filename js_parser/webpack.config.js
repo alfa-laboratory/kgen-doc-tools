@@ -1,9 +1,6 @@
-let config = require('./build/WebPackHelper.js');
 let path = require('path');
 
-let currentDir = path.resolve(".");
-let node_directory = '/node_modules/';
-let webpack = require(currentDir + node_directory + 'webpack');
+let webpack = require('webpack');
 
 let defined = {
     "PRODUCTION": true
@@ -12,11 +9,11 @@ let defined = {
 // let UglifyJSPlugin = require(currentDir + node_directory + "uglifyjs-webpack-plugin");
 
 var webpackConfig = {
-    entry: config.moduleName,
+    entry: 'js_parser',
     target: 'node',
     output: {
-        path: path.resolve('./bundle'),
-        publicPath: '/build/',
+        path: path.resolve('./build/bundle'),
+        publicPath: './build/',
         filename: 'main.bundle.js'
     },
     // resolve: {
@@ -25,10 +22,9 @@ var webpackConfig = {
     // },
     resolve: {
         modules: [
-            path.resolve("classes/kotlin/main"),
-            path.resolve("../src/main/resources"),
+            path.resolve("build/classes/kotlin/main"),
+            path.resolve("src/main/resources"),
             path.resolve("node_modules"),
-            path.resolve("node_modules_imported")
         ]
     },
     module: {
@@ -41,7 +37,7 @@ var webpackConfig = {
     ]
 };
 
-webpackConfig.resolve.modules.unshift(path.resolve("./kotlin-js-min/main"), path.resolve("./kotlin-js-min/main"));
+webpackConfig.resolve.modules.unshift(path.resolve("./build/kotlin-js-min/main"), path.resolve("./build/kotlin-js-min/test"));
 
 module.exports = webpackConfig;
 

@@ -7,6 +7,7 @@ buildscript {
         mavenLocal()
         jcenter()
         maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
@@ -35,12 +36,25 @@ configure(projectsWithFlags('kotlin_common')) {
 
 configure(projectsWithFlags('kotlin_js')) {
     apply plugin: 'kotlin-platform-js'
+    apply plugin: 'kotlin-dce-js'
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-js:$kotlinVersion")
-        compile("org.jetbrains.kotlinx:kotlinx-html-js:0.6.6")
 
-        testCompile("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
+        testCompile("org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion")
+//        compile("org.jetbrains.kotlinx:kotlinx-html-js:0.6.6")
+    }
+
+    compileKotlin2Js.kotlinOptions {
+        moduleKind = "commonjs"
+        sourceMap = true
+//        outputFile = "node/index.js"
+    }
+
+    compileTestKotlin2Js.kotlinOptions {
+        metaInfo = true
+        sourceMap = true
+        moduleKind = "commonjs"
     }
 }
 

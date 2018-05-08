@@ -1,21 +1,22 @@
 package ru.alfabank.ecomm.dcreator.parser
 
-import fs.readFileSync
+import fs.readFile
 
 fun main(args: Array<String>) {
-    println("Hello JavaScript!")
+    println("Hello JavaScript! 222")
 
     val currentPath = path.resolve(".")
     println(currentPath)
 
-    val result = readFileSync("./src/test/kotlin/ru/alfabank/ecomm/dcreator/common/Test.kt", "UTF-8")
-    println(result)
+    readFile("./js_parser/src/test/kotlin/ru/alfabank/ecomm/dcreator/common/Test.kt") { err, data ->
+        println(data.toString())
 
-    val intMax = Int.MAX_VALUE
-    println(intMax)
+        val intMax = Int.MAX_VALUE
+        println(intMax)
 
-    val longMax = Long.MAX_VALUE
-    println(longMax)
+        val longMax = Long.MAX_VALUE
+        println(longMax)
+    }
 
 //    val express = require("express")
 //    val app = express()
