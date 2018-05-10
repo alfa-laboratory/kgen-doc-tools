@@ -24,7 +24,7 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         val modifiers: String? = null
     )
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         if (lines.isEmpty())
             return emptyList()
 

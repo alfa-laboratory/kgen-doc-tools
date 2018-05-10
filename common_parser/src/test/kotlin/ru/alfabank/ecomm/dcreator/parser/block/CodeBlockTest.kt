@@ -1,18 +1,19 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.CodeBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import ru.alfabank.ecomm.dcreator.utils.toTextBlockNode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CodeBlockTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun `test parsing of code block`() {
+    fun test_parsing_of_code_block() = runTest {
         val code = sequenceOf(
             "```javascript",
             "some code line 1",
@@ -33,7 +34,7 @@ class CodeBlockTest {
     }
 
     @Test
-    fun `test parsing of code block without language name`() {
+    fun test_parsing_of_code_block_without_language_name() = runTest {
         val code = sequenceOf(
             "```",
             "some code line 1",
@@ -50,7 +51,7 @@ class CodeBlockTest {
     }
 
     @Test
-    fun `test parsing of code block with text`() {
+    fun test_parsing_of_code_block_with_text() = runTest {
         val code = sequenceOf(
             "some text",
             "```javascript",

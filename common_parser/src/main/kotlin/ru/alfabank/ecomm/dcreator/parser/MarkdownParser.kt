@@ -41,13 +41,13 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
 
     val distributeNodes: MutableMap<String, List<DistributeNode>> = mutableMapOf()
 
-    fun parse(source: File): BlockNode = source.withLines { lines ->
+    suspend fun parse(source: File): BlockNode = source.withLines { lines ->
         parse(lines)
     }
 
     //TODO add more block parsers (html block elements)
     //TODO(mega) add nested table
-    fun parse(lines: Sequence<String>): BlockNode {
+    suspend fun parse(lines: Sequence<String>): BlockNode {
         val linesBuffer = mutableListOf<String>()
         var currentBlockParser: BlockParser? = null
         val parsedNodes = mutableListOf<BlockNode>()
@@ -130,7 +130,7 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
         return null
     }
 
-    private fun parseNodes(currentParser: BlockParser?, linesBuffer: MutableList<String>): List<BlockNode> {
+    private suspend fun parseNodes(currentParser: BlockParser?, linesBuffer: MutableList<String>): List<BlockNode> {
         val blockParser = currentParser ?: defaultBlockParser
 
         return blockParser.parseLines(linesBuffer).also {

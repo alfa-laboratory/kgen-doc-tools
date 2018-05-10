@@ -1,7 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render
 
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertLinesMatch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
@@ -10,6 +10,7 @@ import ru.alfabank.ecomm.dcreator.render.serialize.FreemarkerRender
 import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.assertEquals
 
 class FileRenderTest {
 
@@ -26,7 +27,7 @@ class FileRenderTest {
     }
 
     @Test
-    fun `test file render`() {
+    fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
 
         val freemarkerRender = FreemarkerRender("../files/layout/freemarker")
@@ -62,7 +63,7 @@ class FileRenderTest {
                 .split("\n")
                 .map { it.trim() }
 
-        assertLinesMatch(expectedText, preparedActualText)
+        assertEquals(expectedText, preparedActualText)
     }
 
     companion object {

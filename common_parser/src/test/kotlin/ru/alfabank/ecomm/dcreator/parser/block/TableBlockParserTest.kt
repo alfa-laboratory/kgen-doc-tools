@@ -1,15 +1,16 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TableBlockParserTest {
     val parser = MarkdownParser()
 
     @Test
-    fun `test table with start-end symbols`() {
+    fun test_table_with_start_end_symbols() = runTest {
         val lines = sequenceOf(
             "| Plugin | README | column number 3 | column number 4 |",
             "| :----- | :----: | ----: | ---- |",
@@ -52,7 +53,7 @@ class TableBlockParserTest {
     }
 
     @Test
-    fun `test table without start-end symbols`() {
+    fun test_table_without_start_end_symbols() = runTest {
         val lines = sequenceOf(
             " Plugin | README ",
             " :----- | :----: ",
@@ -82,7 +83,7 @@ class TableBlockParserTest {
     }
 
     @Test
-    fun `table table with footer`() {
+    fun table_table_with_footer() = runTest {
         val lines = sequenceOf(
             " Plugin | README ",
             " :----- | :----: ",

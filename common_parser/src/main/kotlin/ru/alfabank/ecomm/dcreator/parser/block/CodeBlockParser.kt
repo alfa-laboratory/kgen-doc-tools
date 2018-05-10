@@ -24,7 +24,7 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
         return BlockSuiteResult(indexOfEnd < 0 || indexOfEnd == lines.size - 2)
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         val firstLine = lines.first()
 
         val matcher = CODE_START_PATTERN.matcher(firstLine)

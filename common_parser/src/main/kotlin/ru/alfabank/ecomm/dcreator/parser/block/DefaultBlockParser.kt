@@ -11,7 +11,7 @@ open class DefaultBlockParser(override val parseInstance: MarkdownParser) : Bloc
 
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult = BlockSuiteResult(false)
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         if (lines.isEmpty())
             return listOf(EmptyBlockNode)
 

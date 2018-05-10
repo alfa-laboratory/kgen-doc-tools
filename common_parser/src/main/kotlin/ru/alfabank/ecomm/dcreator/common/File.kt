@@ -8,4 +8,4 @@ expect class File {
     fun exists(): Boolean
 }
 
-expect fun <R> File.withLines(action: (Sequence<String>) -> R): R
+expect suspend fun <R> File.withLines(action: suspend (Sequence<String>) -> R): R

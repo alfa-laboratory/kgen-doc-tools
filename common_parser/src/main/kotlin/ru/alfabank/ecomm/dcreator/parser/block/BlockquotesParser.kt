@@ -18,7 +18,7 @@ class BlockquotesParser(override val parseInstance: MarkdownParser) : BlockParse
         return BlockSuiteResult(suitableResult)
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         val content = lines.map { line ->
             val matcher = QUITE_LINE_PATTERN.matcher(line)
             if (matcher.find()) {

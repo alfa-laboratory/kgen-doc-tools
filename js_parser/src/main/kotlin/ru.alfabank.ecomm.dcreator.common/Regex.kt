@@ -1,28 +1,39 @@
-//package ru.alfabank.ecomm.dcreator.common
-//
-//import java.util.regex.Matcher as JMatcher
-//import java.util.regex.Pattern as JPattern
-//
-//actual class Matcher(private val matcher: JMatcher) {
-//    actual fun find(): Boolean = matcher.find()
-//    actual fun group(groupName: String): String? = matcher.group(groupName)
-//}
-//
-//actual class Pattern(private val pattern: JPattern) {
-//    actual fun matcher(firstLine: String): Matcher = Matcher(pattern.matcher(firstLine))
-//    actual fun asPredicate(): Predicate = Predicate(pattern.asPredicate()::test)
-//
-//    actual companion object {
-//        actual val UNICODE_CHARACTER_CLASS: Int = java.util.regex.Pattern.UNICODE_CHARACTER_CLASS
-//        actual val CASE_INSENSITIVE: Int = java.util.regex.Pattern.CASE_INSENSITIVE
-//    }
-//}
-//
-//actual class Predicate(private val predicate: (String) -> Boolean) : (String) -> Boolean {
-//    override fun invoke(p1: String): Boolean = predicate(p1)
-//    actual fun test(str: String): Boolean = predicate(str)
-//}
-//
-//actual fun String.toPattern(): Pattern = Pattern(JPattern.compile(this))
-//
-//actual fun String.toPattern(flags: Int): Pattern = Pattern(JPattern.compile(this, flags))
+package ru.alfabank.ecomm.dcreator.common
+
+import ru.alfabank.ecomm.dcreator.js.types.RegexpResult
+import ru.alfabank.ecomm.dcreator.js.types.namedRegexp
+
+actual class Matcher(private val pattern: Pattern, private val line: String) {
+    private var findResult: RegexpResult? = null
+
+    actual fun find(): Boolean {
+        findResult = pattern.regexp.exec(line)
+
+        return findResult != null
+    }
+
+    actual fun group(groupName: String): String? = findResult?.group(groupName)
+}
+
+actual class Pattern(private val regex: String, private val flags: Int? = null) {
+    //TODO add flags
+    val regexp = namedRegexp(regex, "g")
+
+    actual fun matcher(firstLine: String): Matcher = Matcher(this, firstLine)
+    actual fun asPredicate(): Predicate = Predicate(this)
+
+    actual companion object {
+        actual val UNICODE_CHARACTER_CLASS: Int = 0
+        actual val CASE_INSENSITIVE: Int = 1
+    }
+}
+
+actual class Predicate(val pattern: Pattern) {
+    actual operator fun invoke(str: String): Boolean = pattern.regexp.test(str)
+
+    actual fun test(str: String): Boolean = pattern.regexp.test(str)
+}
+
+actual fun String.toPattern(): Pattern = Pattern(this)
+
+actual fun String.toPattern(flags: Int): Pattern = Pattern(this, flags)

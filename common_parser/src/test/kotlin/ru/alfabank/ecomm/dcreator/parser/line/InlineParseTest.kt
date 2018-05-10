@@ -1,16 +1,16 @@
 package ru.alfabank.ecomm.dcreator.parser.line
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class SimpleTest {
     private val parser = MarkdownParser()
     private val lineParser = parser.lineParser
 
     @Test
-    fun `simple bounds test`() {
+    fun simple_bounds_test() {
         val testItalic = lineParser.parse("_регистрационная_")
         assertEquals(ItalicNode(TextNode("регистрационная")), testItalic)
 
@@ -78,7 +78,7 @@ class SimpleTest {
     }
 
     @Test
-    fun `simple code tests`() {
+    fun simple_code_tests() {
         val testCode = lineParser.parse("`some code `")
         assertEquals(CodeSampleNode("some code "), testCode)
 
@@ -101,7 +101,7 @@ class SimpleTest {
     }
 
     @Test
-    fun `simple html tests`() {
+    fun simple_html_tests() {
         val testHtml = lineParser.parse("<tr class=\"clazz1\"> text</tr>")
         assertEquals(HTMLNode("<tr class=\"clazz1\"> text</tr>"), testHtml)
 
@@ -149,7 +149,7 @@ class SimpleTest {
     }
 
     @Test
-    fun `complex links test 1`() {
+    fun complex_links_test_1() {
         val complex = """
             [![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid "some title")
         """.trimIndent()
@@ -165,7 +165,7 @@ class SimpleTest {
     }
 
     @Test
-    fun `complex links test 2`() {
+    fun complex_links_test_2() {
         val complex = """
             some begin text[**asdfasd** ![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid "some title")
         """.trimIndent()

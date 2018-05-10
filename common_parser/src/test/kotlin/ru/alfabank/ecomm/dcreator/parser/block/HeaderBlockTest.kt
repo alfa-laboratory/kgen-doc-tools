@@ -1,19 +1,20 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.HeaderBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.Level
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import ru.alfabank.ecomm.dcreator.utils.toTextBlockNode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class HeaderBlockTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun `test single line header block`() {
+    fun test_single_line_header_block() = runTest {
         val singleLineHeader = sequenceOf("# some text")
         val singleLineResult = parser.parse(singleLineHeader)
         assertEquals(HeaderBlockNode(level = Level.ONE, node = TextNode(text = " some text")), singleLineResult)
@@ -36,62 +37,66 @@ class HeaderBlockTest {
     }
 
     @Test
-    fun `test two line header block`() {
+    fun test_two_line_header_block() = runTest {
         val twoLineHeader = sequenceOf(
-                " some text",
-                "----------"
+            " some text",
+            "----------"
         )
         val twoLineHeaderResult = parser.parse(twoLineHeader)
         assertEquals(HeaderBlockNode(level = Level.ONE, node = TextNode(text = " some text")), twoLineHeaderResult)
 
 
         val twoLineHeader2 = sequenceOf(
-                " some text",
-                "============"
+            " some text",
+            "============"
         )
         val twoLineHeaderResult2 = parser.parse(twoLineHeader2)
         assertEquals(HeaderBlockNode(level = Level.TWO, node = TextNode(text = " some text")), twoLineHeaderResult2)
     }
 
     @Test
-    fun `test complex cases for single line header`() {
+    fun test_complex_cases_for_single_line_header() = runTest {
         val testLines = sequenceOf(
-                " some text",
-                " some text2",
-                "# some header",
-                "another text"
+            " some text",
+            " some text2",
+            "# some header",
+            "another text"
         )
         val actualResult = parser.parse(testLines)
-        val expectedResult = BlockLayout(listOf(
+        val expectedResult = BlockLayout(
+            listOf(
                 listOf(
-                        TextNode(" some text"),
-                        TextNode(" some text2")
+                    TextNode(" some text"),
+                    TextNode(" some text2")
                 ).toTextBlockNode(),
                 HeaderBlockNode(level = Level.ONE, node = TextNode(text = " some header")),
                 TextNode("another text").toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expectedResult, actualResult)
     }
 
     @Test
-    fun `test complex cases for multi line header`() {
+    fun test_complex_cases_for_multi_line_header() = runTest {
         val testLines = sequenceOf(
-                " some text",
-                " some text2",
-                " some header",
-                " ===============",
-                "another text"
+            " some text",
+            " some text2",
+            " some header",
+            " ===============",
+            "another text"
         )
         val actualResult = parser.parse(testLines)
-        val expectedResult = BlockLayout(listOf(
+        val expectedResult = BlockLayout(
+            listOf(
                 listOf(
-                        TextNode(" some text"),
-                        TextNode(" some text2")
+                    TextNode(" some text"),
+                    TextNode(" some text2")
                 ).toTextBlockNode(),
                 HeaderBlockNode(level = Level.TWO, node = TextNode(text = " some header")),
                 TextNode("another text").toTextBlockNode()
-        ))
+            )
+        )
 
         assertEquals(expectedResult, actualResult)
     }

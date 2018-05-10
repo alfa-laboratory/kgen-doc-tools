@@ -1,15 +1,16 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class DistributeLinkParserTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun `test distribute nodes`() {
+    fun test_distribute_nodes() = runTest {
         val src = """
             |  some big text [text link 1] [id1] before text [link2]
             |  text 2 ![image text] before text [link id1]

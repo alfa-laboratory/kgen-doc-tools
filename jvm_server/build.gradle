@@ -30,12 +30,6 @@ dependencies {
     compile project(":jvm_html_render")
 }
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
-
 def publicFolder = file("${project.projectDir}/public")
 
 def filesLayoutFolder = file("${project.rootDir}/files")

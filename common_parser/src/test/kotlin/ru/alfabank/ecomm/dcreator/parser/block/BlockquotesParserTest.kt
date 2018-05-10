@@ -1,19 +1,20 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.BlockquotesBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.TextBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import ru.alfabank.ecomm.dcreator.utils.toTextBlockNode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class BlockquotesParserTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun `test only blockquotes`() {
+    fun test_only_blockquotes() = runTest {
         val src = sequenceOf(
             "> line1",
             "> line2",
@@ -36,7 +37,7 @@ class BlockquotesParserTest {
     }
 
     @Test
-    fun `test blockquotes with text`() {
+    fun test_lockquotes_with_text() = runTest {
         val src = sequenceOf(
             "text line",
             " > line1",

@@ -1,32 +1,48 @@
 package ru.alfabank.ecomm.dcreator.parser
 
-import fs.readFile
+import ru.alfabank.ecomm.dcreator.js.types.RegexpResult
+import ru.alfabank.ecomm.dcreator.js.types.UUID
+import ru.alfabank.ecomm.dcreator.js.types.namedRegexp
+
+//import fs.readFile
+
+//import ru.alfabank.ecomm.dcreator.js.types.require
+
+//private val namedRegexp = require<NamedRegexp>("named-js-regexp")
 
 fun main(args: Array<String>) {
     println("Hello JavaScript! 222")
-
-    val currentPath = path.resolve(".")
-    println(currentPath)
-
-    readFile("./js_parser/src/test/kotlin/ru/alfabank/ecomm/dcreator/common/Test.kt") { err, data ->
-        println(data.toString())
-
-        val intMax = Int.MAX_VALUE
-        println(intMax)
-
-        val longMax = Long.MAX_VALUE
-        println(longMax)
-    }
-
-//    val express = require("express")
-//    val app = express()
 //
-//    app.get("/", { req, res ->
-//        res.type("text/plain")
-//        res.send("i am a beautiful butterfly")
-//    })
+//    val currentPath = path.resolve(".")
+//    println(currentPath)
 //
-//    app.listen(3000, {
-//        println("Listening on port 3000")
-//    })
+//    readFile("./js_parser/src/test/kotlin/ru/alfabank/ecomm/dcreator/common/Test.kt") { err, data ->
+//        println(data.toString())
+//
+//        val intMax = Int.MAX_VALUE
+//        println(intMax)
+//
+//        val longMax = Long.MAX_VALUE
+//        println(longMax)
+//    }
+
+    val testRegex = namedRegexp("(?<hours>\\d\\d?):(?<minutes>\\d\\d?)(:(?<seconds>\\d\\d?))?", "g")
+    var result: RegexpResult?
+
+    do {
+        result = testRegex.exec("1:2; 3:4")
+
+        if (result !=null) {
+            println(result.group("hours"))
+            println(result.group("minutes") ?: "notFound")
+            println(result.group("seconds") ?: "notFound")
+        }
+    } while (result != null)
+
+    println("==========")
+    println(testRegex.test(""))
+    println(testRegex.test("1:2"))
+
+    println("==========")
+    println(UUID.v4())
 }

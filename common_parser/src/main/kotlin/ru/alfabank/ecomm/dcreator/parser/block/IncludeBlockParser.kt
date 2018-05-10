@@ -19,7 +19,7 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
         return BlockSuiteResult(false)
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         if (lines.size != 1)
             throw RuntimeException("unexpected behaviour")
 

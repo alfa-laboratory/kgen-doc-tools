@@ -15,7 +15,8 @@ expect class Pattern {
     }
 }
 
-expect class Predicate : (String) -> Boolean {
+expect class Predicate  {
+    operator fun invoke(str: String): Boolean
     fun test(str: String): Boolean
 }
 

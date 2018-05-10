@@ -20,7 +20,7 @@ open class HeaderBlockParser(override val parseInstance: MarkdownParser) : Block
         return BlockSuiteResult(result)
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> = when {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> = when {
         lines.size == 1 -> parseSingleHeaderLine(lines.first())
         lines.size == 2 -> {
             val (firstLine, secondLine) = lines

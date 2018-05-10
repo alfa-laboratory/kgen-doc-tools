@@ -13,7 +13,7 @@ class DocumentGenerator(
 ) {
     private val freemarkerRender = FreemarkerRender(layoutDirectory)
 
-    fun generateHtmlFromMd(generateFile: File) {
+    suspend fun generateHtmlFromMd(generateFile: File) {
         if (!generateFile.isFile)
             return
 
@@ -41,7 +41,7 @@ class DocumentGenerator(
             outputFile.createNewFile()
         }
 
-        val node = MarkdownParser(inputDirectory).parse(generateFile)
+        val node =  MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
         val (result, replaceNodes) = headerProcessor.process(node)

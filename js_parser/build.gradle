@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-//    expectedBy project(":common_parser")
-//    expectedBy project(":common_nodes")
+    expectedBy project(":common_parser")
+    expectedBy project(":common_nodes")
 }
 
 def nodeModules = project.getProjectDir().getPath() + "/node_modules/"

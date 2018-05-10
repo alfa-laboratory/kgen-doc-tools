@@ -1,17 +1,18 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
 import ru.alfabank.ecomm.dcreator.common.File
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import ru.alfabank.ecomm.dcreator.utils.toTextBlockNode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class IncludeBlockParserTest {
 
     @Test
-    fun `test multiple files include`() {
+    fun test_multiple_files_include() = runTest {
         val parser = MarkdownParser(File("../common_parser/src/test/resources/multifiles"))
 
         val actual = parser.parse(File("../common_parser/src/test/resources/multifiles/file1.md"))

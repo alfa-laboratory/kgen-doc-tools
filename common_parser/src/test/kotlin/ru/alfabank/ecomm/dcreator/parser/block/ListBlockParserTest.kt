@@ -1,19 +1,20 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.ListsBLockNode
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.nodes.UnOrderedListNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import ru.alfabank.ecomm.dcreator.utils.toTextBlockNode
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ListBlockParserTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun `test inner list`() {
+    fun test_inner_list() = runTest {
         val simpleList = sequenceOf(
             "text for line 1",
             "text for line 2",
@@ -48,7 +49,7 @@ class ListBlockParserTest {
     }
 
     @Test
-    fun `test nested lists`() {
+    fun test_nested_lists() = runTest {
         val simpleList = sequenceOf(
             "- text for line 1",
             "  - text for line 2",

@@ -40,7 +40,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
 
     data class LineParseResult(val spaces: Int, val number: Int?, val symbol: Boolean, val text: String)
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         val lineMatch = START_LEVEL_PATTERN.matcher(lines.first())
         if (lineMatch.find()) {
             val (sumSpaces, number, symbolExists, text) = parseMatch(lineMatch)
@@ -70,7 +70,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return LineParseResult(sumSpaces, number, symbol != null, text)
     }
 
-    private tailrec fun parseOtherLines(
+    private suspend fun parseOtherLines(
         level: Level,
         lines: List<String>,
         prevNodes: List<BlockNode> = emptyList()
@@ -133,7 +133,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return prevNodes + nodes
     }
 
-    private fun parseLevel(level: Level, buffer: MutableList<String>): ListNode = when (level) {
+    private suspend fun parseLevel(level: Level, buffer: MutableList<String>): ListNode = when (level) {
         is NumberedLevel -> OrderedListNode(level.number, levelText(level.text, buffer).parse())
         is SymbolLevel -> UnOrderedListNode(levelText(level.text, buffer).parse())
     }
@@ -142,7 +142,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return mutableListOf(text).apply { addAll(buffer) }
     }
 
-    private fun List<String>.parse(): Node {
+    private suspend fun List<String>.parse(): Node {
         val result = parseInstance.parse(this.asSequence())
 
         return when {
