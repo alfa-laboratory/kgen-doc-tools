@@ -1,13 +1,14 @@
 package ru.alfabank.ecomm.dcreator.common
 
+import ru.alfabank.ecomm.dcreator.js.types.Regexp
 import ru.alfabank.ecomm.dcreator.js.types.RegexpResult
 import ru.alfabank.ecomm.dcreator.js.types.namedRegexp
 
-actual class Matcher(private val pattern: Pattern, private val line: String) {
+actual class Matcher(private val regexp: Regexp, private val line: String) {
     private var findResult: RegexpResult? = null
 
     actual fun find(): Boolean {
-        findResult = pattern.regexp.exec(line)
+        findResult = regexp.exec(line)
 
         return findResult != null
     }
@@ -15,12 +16,17 @@ actual class Matcher(private val pattern: Pattern, private val line: String) {
     actual fun group(groupName: String): String? = findResult?.group(groupName)
 }
 
-actual class Pattern(private val regex: String, private val flags: Int? = null) {
-    //TODO add flags
-    val regexp = namedRegexp(regex, "g")
+actual class Pattern(regexString: String, flags: Int? = null) {
+    private val regexp: () -> Regexp = {
+        when (flags) {
+            UNICODE_CHARACTER_CLASS -> namedRegexp(regexString, "g", "u")
+            CASE_INSENSITIVE -> namedRegexp(regexString, "g", "i")
+            else -> namedRegexp(regexString, "g")
+        }
+    }
 
-    actual fun matcher(firstLine: String): Matcher = Matcher(this, firstLine)
-    actual fun asPredicate(): Predicate = Predicate(this)
+    actual fun matcher(firstLine: String): Matcher = Matcher(regexp(), firstLine)
+    actual fun asPredicate(): Predicate = Predicate(regexp)
 
     actual companion object {
         actual val UNICODE_CHARACTER_CLASS: Int = 0
@@ -28,10 +34,10 @@ actual class Pattern(private val regex: String, private val flags: Int? = null) 
     }
 }
 
-actual class Predicate(val pattern: Pattern) {
-    actual operator fun invoke(str: String): Boolean = pattern.regexp.test(str)
+actual class Predicate(val regexp: () -> Regexp) {
+    actual operator fun invoke(str: String): Boolean = regexp().test(str)
 
-    actual fun test(str: String): Boolean = pattern.regexp.test(str)
+    actual fun test(str: String): Boolean = regexp().test(str)
 }
 
 actual fun String.toPattern(): Pattern = Pattern(this)

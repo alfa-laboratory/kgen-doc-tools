@@ -41,7 +41,7 @@ configure(projectsWithFlags('kotlin_common')) {
 
 configure(projectsWithFlags('kotlin_js')) {
     apply plugin: 'kotlin-platform-js'
-    apply plugin: 'kotlin-dce-js'
+//    apply plugin: 'kotlin-dce-js'
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-js:$kotlinVersion")

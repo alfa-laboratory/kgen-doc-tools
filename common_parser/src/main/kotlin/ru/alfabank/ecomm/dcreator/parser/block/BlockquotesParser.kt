@@ -51,7 +51,7 @@ class BlockquotesParser(override val parseInstance: MarkdownParser) : BlockParse
         """.trimIndent().toPattern().asPredicate()
 
         private val QUITE_LINE_PATTERN = """
-             ^$SPACE_PATTERN$QUOTE_SYMBOL(?<$TEXT_GROUP>.*)$
+             ^$SPACE_PATTERN$QUOTE_SYMBOL(?<$TEXT_GROUP>.+)$
         """.trimIndent().toPattern()
     }
 }
