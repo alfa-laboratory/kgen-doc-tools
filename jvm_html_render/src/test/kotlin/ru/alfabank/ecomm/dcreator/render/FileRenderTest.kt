@@ -33,13 +33,15 @@ class FileRenderTest {
         val freemarkerRender = FreemarkerRender("../files/layout/freemarker")
 
         val generateFile = File(inputDirectory, "testFile.md").apply {
-            writeText("""
+            writeText(
+                """
                 # Header line 1
                 ** bold text **
                 _ italic text _
 
                 # Header line 2
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         val node = MarkdownParser(inputDirectory).parse(generateFile)
@@ -56,12 +58,12 @@ class FileRenderTest {
         val nodesData = freemarkerRender.render("index.ftlh", preparedResult)
 
         val preparedActualText = nodesData.replace(UUID_REGEX, "00000")
-                .split("\n")
-                .map { it.trim() }
+            .split("\n")
+            .map { it.trim() }
 
         val expectedText = File(this::class.java.getResource("/expect.html").file).readText()
-                .split("\n")
-                .map { it.trim() }
+            .split("\n")
+            .map { it.trim() }
 
         assertEquals(expectedText, preparedActualText)
     }
