@@ -52,17 +52,17 @@ class NodeSerializer(
 
         val properties = node::class.declaredMemberProperties
 
-        val parameters = properties.map { property ->
-            val fieldName = property.name
-            val fieldValue = property.javaGetter!!.invoke(node)
+        val parameters = properties
+            .map { property ->
+                val fieldName = property.name
+                val fieldValue = property.javaGetter!!.invoke(node)
 
-            fieldName to processValue(fieldValue)
-        }
+                fieldName to processValue(fieldValue)
+            }
             .filter { it.second != null }
             .toMap(mutableMapOf())
 
-        val result = render.render(templatePath, parameters)
-
+        val result: String = render.render(templatePath, parameters)
         return result
     }
 

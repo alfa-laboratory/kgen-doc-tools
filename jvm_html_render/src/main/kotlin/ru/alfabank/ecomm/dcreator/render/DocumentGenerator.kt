@@ -1,4 +1,4 @@
-package ru.alfabank.ecomm.dcreator.server
+package ru.alfabank.ecomm.dcreator.render
 
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.render.process.HeaderProcessor
@@ -22,14 +22,9 @@ class DocumentGenerator(
             return
         }
 
-        val relativePath = generateFile
-            .parentFile
-            .toRelativeString(inputDirectory).let {
-                if (it.isEmpty())
-                    ""
-                else
-                    "$it/"
-            }
+        val relativePath = generateFile.parentFile
+            .toRelativeString(inputDirectory)
+            .let { if (it.isEmpty()) "" else "$it/" }
 
         val outputFile = File(outputDirectory, "$relativePath${generateFile.nameWithoutExtension}.html")
 
@@ -41,7 +36,7 @@ class DocumentGenerator(
             outputFile.createNewFile()
         }
 
-        val node =  MarkdownParser(inputDirectory).parse(generateFile)
+        val node = MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
         val (result, replaceNodes) = headerProcessor.process(node)
