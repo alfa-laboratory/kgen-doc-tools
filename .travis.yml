@@ -2,8 +2,7 @@ matrix:
   include:
     - language: java
       sudo: false
-      jdk:
-      - oraclejdk8
+      jdk: oraclejdk8
       cache:
         directories:
           - $HOME/.gradle/caches/
@@ -16,10 +15,8 @@ matrix:
       after_success:
         - bash <(curl -s https://codecov.io/bash)
 
-#    - language: node_js
-#      node_js:
-#        - "10"
-#      before_install:
-#        - "curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/dca8e51fafd60d9e5a8285b07ca34a63f22a5ed4/configure.sh | /bin/sh"
-#      before_script:
-#        - "export PATH=$HOME/.meteor:$PATH"
+    - language: node_js
+      node_js: 10
+      cache:
+        directories:
+          - $HOME/node_modules
