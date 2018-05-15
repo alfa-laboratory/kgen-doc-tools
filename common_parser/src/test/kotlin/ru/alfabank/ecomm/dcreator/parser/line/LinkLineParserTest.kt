@@ -1,25 +1,31 @@
 package ru.alfabank.ecomm.dcreator.parser.line
 
-import ru.alfabank.ecomm.dcreator.common.Test
-import ru.alfabank.ecomm.dcreator.common.assertEquals
 import ru.alfabank.ecomm.dcreator.nodes.LinkNode
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class LinkLineParserTest {
     private val parser = MarkdownParser()
     private val lineParser = parser.lineParser
 
     @Test
-    fun `simple links test`() {
+    fun simple_links_test() {
         val linkResult = lineParser.parse("[some id фывафы] (http://someuri.com  \"title\")")
         assertEquals(LinkNode(TextNode("some id фывафы"), "http://someuri.com", "title"), linkResult)
 
         val linkResult2 = lineParser.parse("[some id] (http://someuri.com)")
         assertEquals(LinkNode(TextNode("some id"), "http://someuri.com"), linkResult2)
 
-        val linkResultWithSpaces = lineParser.parse("[some id] (/static/images/manual/Оплата с помощью связки на платежной странице.png)")
-        assertEquals(LinkNode(TextNode("some id"), "/static/images/manual/Оплата с помощью связки на платежной странице.png"), linkResultWithSpaces)
+        val linkResultWithSpaces =
+            lineParser.parse("[some id] (/static/images/manual/Оплата с помощью связки на платежной странице.png)")
+        assertEquals(
+            LinkNode(
+                TextNode("some id"),
+                "/static/images/manual/Оплата с помощью связки на платежной странице.png"
+            ), linkResultWithSpaces
+        )
 
         val linkResult3 = lineParser.parse("[some id][id1]")
         val expectNode3 = LinkNode(TextNode("some id"))

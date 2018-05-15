@@ -63,19 +63,20 @@ enum class ApplicationMode(val publicFolder: File = File("")) {
 }
 
 class Application(
-        workDir: File,
-        inputDirectory: File = File(workDir, "input"),
-        outputDirectory: File = File(workDir, "output/pages"),
-        layoutDirectory: File = File(workDir, "layout/freemarker"),
-        mode: ApplicationMode = ApplicationMode.PROD,
-        private val port: Int = 8080
+    workDir: File,
+    inputDirectory: File = File(workDir, "input"),
+    outputDirectory: File = File(workDir, "output/pages"),
+    layoutDirectory: File = File(workDir, "layout/freemarker"),
+    mode: ApplicationMode = ApplicationMode.PROD,
+    private val port: Int = 8080
 ) {
     private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
     private val renderRouterConfiguration = RenderRouterConfiguration(
-            workDir,
-            inputDirectory,
-            documentGenerator,
-            mode)
+        workDir,
+        inputDirectory,
+        documentGenerator,
+        mode
+    )
 
     private var engine: ApplicationEngine? = null
 

@@ -1,11 +1,16 @@
-language: java
+language:
+  - java
+  - node_js
 sudo: false
 jdk:
-- oraclejdk8
+  - oraclejdk8
+node_js:
+  - 10
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/node_modules
 before_script:
   - chmod +x gradlew
 script:

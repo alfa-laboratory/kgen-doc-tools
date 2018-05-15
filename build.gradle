@@ -1,21 +1,22 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.40'
-        junitVersion = '5.0.3'
+        kotlinVersion = '1.2.41'
+        kotlinDevVersion = '1.2.60-dev-36'
+        junitVersion = '5.2.0'
     }
     repositories {
         mavenLocal()
         jcenter()
         maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.1")
     }
 }
 
 group = 'ru.alfalab.dcreator'
-version = "0.2.0"
+version = "0.3.0"
 
 subprojects {
     repositories {
@@ -30,27 +31,55 @@ configure(projectsWithFlags('kotlin_common')) {
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.22.5")
+
+        testCompile("org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion")
+        testCompile("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
     }
+
+    kotlin.experimental.coroutines "enable"
 }
 
 configure(projectsWithFlags('kotlin_js')) {
     apply plugin: 'kotlin-platform-js'
+    apply plugin: 'kotlin-dce-js'
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-js:$kotlinVersion")
-        compile("org.jetbrains.kotlinx:kotlinx-html-js:0.6.6")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:0.22.5")
 
-        testCompile("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
+        testCompile("org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion")
+//        compile("org.jetbrains.kotlinx:kotlinx-html-js:0.6.6")
     }
+
+    compileKotlin2Js.kotlinOptions {
+        moduleKind = "commonjs"
+        sourceMap = true
+//        outputFile = "node/index.js"
+    }
+
+    compileTestKotlin2Js.kotlinOptions {
+        metaInfo = true
+        sourceMap = true
+        moduleKind = "commonjs"
+    }
+
+    kotlin.experimental.coroutines "enable"
 }
 
 configure(projectsWithFlags('kotlin_jvm')) {
     apply plugin: 'kotlin-platform-jvm'
-    apply plugin: "org.junit.platform.gradle.plugin"
+
+    test {
+        useJUnitPlatform()
+    }
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5")
 
+        testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
+        testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinDevVersion")
         testCompile("com.nhaarman:mockito-kotlin-kt1.1:1.5.0")
         testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
@@ -63,19 +92,15 @@ configure(projectsWithFlags('kotlin_jvm')) {
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
+
+    kotlin.experimental.coroutines "enable"
 }
 
 configure(projectsWithFlags('jococo_test')) {
     apply plugin: 'jacoco'
 
-    def junitPlatformTestTask = (JavaExec) project.tasks.getByName('junitPlatformTest')
-
-    jacoco {
-        applyTo(junitPlatformTestTask)
-    }
-
     task jacocoJupTestReport(type: JacocoReport) {
-        executionData(junitPlatformTestTask)
+        executionData(test)
         sourceSets(sourceSets.main)
         sourceDirectories = files(sourceSets.main.allSource.srcDirs)
         classDirectories = files(sourceSets.main.output)
@@ -88,7 +113,7 @@ configure(projectsWithFlags('jococo_test')) {
         }
     }
 
-    check.dependsOn jacocoJupTestReport
+//    check.dependsOn jacocoJupTestReport
     jacocoJupTestReport.dependsOn test
 }
 

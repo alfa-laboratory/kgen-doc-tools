@@ -36,9 +36,9 @@ enum class Direction { Left, Center, Right }
 data class ColumnAlignModifier(val direction: Direction) : ColumnModifier
 
 data class TableBlockNode(
-        val content: List<TableRow>,
-        val header: TableRow? = null,
-        val footer: TableRow? = null,
-        val modifier: List<ColumnModifier>? = null,
-        override val nodes: List<Node> = (content.flatten() + (header ?: emptyList()) + (footer ?: emptyList()))
+    val content: List<TableRow>,
+    val header: TableRow? = null,
+    val footer: TableRow? = null,
+    val modifier: List<ColumnModifier>? = null,
+    override val nodes: List<Node> = (content.flatten() + (header ?: emptyList()) + (footer ?: emptyList()))
 ) : BlockNode, Node by NodeIdGen(), NestedNodeList<Node>

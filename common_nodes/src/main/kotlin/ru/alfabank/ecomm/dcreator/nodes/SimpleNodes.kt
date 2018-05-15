@@ -45,15 +45,15 @@ data class CodeSampleNode(val text: String) : Node by NodeIdGen()
 sealed class DistributeNode(open var url: String? = null, open var title: String? = null)
 
 data class LinkNode(
-        override val node: Node,
-        override var url: String? = null,
-        override var title: String? = null
+    override val node: Node,
+    override var url: String? = null,
+    override var title: String? = null
 ) : Node by NodeIdGen(), DistributeNode(url, title), NestedNode
 
 data class ImageLinkNode(
-        val text: String,
-        override var url: String? = null,
-        override var title: String? = null
+    val text: String,
+    override var url: String? = null,
+    override var title: String? = null
 ) : Node by NodeIdGen(), DistributeNode(url, title)
 
 //lists

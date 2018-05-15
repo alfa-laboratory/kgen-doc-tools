@@ -25,7 +25,4 @@
     hljs.initHighlightingOnLoad();
 </script>
 
-
-
 <#include "footer.ftlh">
-

@@ -1,10 +1,10 @@
 package ru.alfabank.ecomm.dcreator.server
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
 import java.io.File
 import java.net.ServerSocket
+import kotlin.test.assertTrue
 
 class ServerTest {
     private val application = Application(
@@ -24,7 +24,7 @@ class ServerTest {
         }
     }
 
-    @Test
+    @BeforeEach
     fun `application test`() {
         application.start(false)
 

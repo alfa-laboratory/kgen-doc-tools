@@ -1,7 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render
 
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertLinesMatch
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
@@ -10,6 +10,7 @@ import ru.alfabank.ecomm.dcreator.render.serialize.FreemarkerRender
 import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.assertEquals
 
 class FileRenderTest {
 
@@ -26,19 +27,21 @@ class FileRenderTest {
     }
 
     @Test
-    fun `test file render`() {
+    fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
 
         val freemarkerRender = FreemarkerRender("../files/layout/freemarker")
 
         val generateFile = File(inputDirectory, "testFile.md").apply {
-            writeText("""
+            writeText(
+                """
                 # Header line 1
                 ** bold text **
                 _ italic text _
 
                 # Header line 2
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         val node = MarkdownParser(inputDirectory).parse(generateFile)
@@ -55,14 +58,14 @@ class FileRenderTest {
         val nodesData = freemarkerRender.render("index.ftlh", preparedResult)
 
         val preparedActualText = nodesData.replace(UUID_REGEX, "00000")
-                .split("\n")
-                .map { it.trim() }
+            .split("\n")
+            .map { it.trim() }
 
         val expectedText = File(this::class.java.getResource("/expect.html").file).readText()
-                .split("\n")
-                .map { it.trim() }
+            .split("\n")
+            .map { it.trim() }
 
-        assertLinesMatch(expectedText, preparedActualText)
+        assertEquals(expectedText, preparedActualText)
     }
 
     companion object {

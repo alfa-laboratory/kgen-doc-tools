@@ -10,11 +10,12 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 
 sealed class LinkData(open val endSymbols: String)
 class LinkIdData(override val endSymbols: String, val id: String?) : LinkData(endSymbols)
-class LinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : LinkData(endSymbols)
+class LinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) :
+    LinkData(endSymbols)
 
 class LinkLineParser(
-        override val parseInstance: MarkdownParser,
-        private val linkData: LinkData? = null
+    override val parseInstance: MarkdownParser,
+    private val linkData: LinkData? = null
 ) : LineParser {
     override fun openSymbolsSuited(startSymbols: String): BoundSymbolsSuiteResult {
         val suitedResult = startSymbols == OPEN_SYMBOL
@@ -36,19 +37,19 @@ class LinkLineParser(
 
             when {
                 linkIdGroup != null -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        LinkLineParser(parseInstance, LinkIdData(endSymbols, linkIdGroup))
+                    true,
+                    true,
+                    LinkLineParser(parseInstance, LinkIdData(endSymbols, linkIdGroup))
                 )
                 linkUrlGroup != null -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        LinkLineParser(parseInstance, LinkUrlTitleData(endSymbols, linkUrlGroup, linkTitleGroup))
+                    true,
+                    true,
+                    LinkLineParser(parseInstance, LinkUrlTitleData(endSymbols, linkUrlGroup, linkTitleGroup))
                 )
                 else -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        LinkLineParser(parseInstance, LinkIdData(endSymbols, null))
+                    true,
+                    true,
+                    LinkLineParser(parseInstance, LinkIdData(endSymbols, null))
                 )
             }
         }

@@ -15,36 +15,36 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaGetter
 
 class NodeSerializer(
-        private val render: Render,
-        private val replaceNodes: Map<String, Node>
+    private val render: Render,
+    private val replaceNodes: Map<String, Node>
 ) {
     val templates: MutableMap<KClass<out Node>, String> = mutableMapOf(
-            HeaderBlockNode::class to "nodes/header_node.ftlh",
-            TextNode::class to "nodes/text.ftlh",
-            BoldNode::class to "nodes/bold.ftlh",
-            ItalicNode::class to "nodes/italic.ftlh",
-            StrikethroughNode::class to "nodes/strikethrough.ftlh",
-            UnderlineNode::class to "nodes/underline.ftlh",
-            HTMLNode::class to "nodes/htmlnode.ftlh",
-            CodeSampleNode::class to "nodes/code_sample.ftlh",
-            CodeBlockNode::class to "nodes/code_block.ftlh",
-            LinkNode::class to "nodes/link.ftlh",
-            ImageLinkNode::class to "nodes/image_link.ftlh",
-            ListsBLockNode::class to "nodes/lists.ftlh",
-            OrderedListNode::class to "nodes/ordered_list_item.ftlh",
-            UnOrderedListNode::class to "nodes/un_ordered_list_item.ftlh",
-            BlockLayout::class to "nodes/block_layout.ftlh",
-            RowLayout::class to "nodes/row_layout.ftlh",
-            TextBlockNode::class to "nodes/text_block.ftlh",
-            BlockquotesBlockNode::class to "nodes/blockquotesblock.ftlh",
-            TableBlockNode::class to "nodes/table.ftlh",
-            HeaderLink::class to "special/header_link.ftlh",
-            HeaderAnchor::class to "special/header_anchor.ftlh"
+        HeaderBlockNode::class to "nodes/header_node.ftlh",
+        TextNode::class to "nodes/text.ftlh",
+        BoldNode::class to "nodes/bold.ftlh",
+        ItalicNode::class to "nodes/italic.ftlh",
+        StrikethroughNode::class to "nodes/strikethrough.ftlh",
+        UnderlineNode::class to "nodes/underline.ftlh",
+        HTMLNode::class to "nodes/htmlnode.ftlh",
+        CodeSampleNode::class to "nodes/code_sample.ftlh",
+        CodeBlockNode::class to "nodes/code_block.ftlh",
+        LinkNode::class to "nodes/link.ftlh",
+        ImageLinkNode::class to "nodes/image_link.ftlh",
+        ListsBLockNode::class to "nodes/lists.ftlh",
+        OrderedListNode::class to "nodes/ordered_list_item.ftlh",
+        UnOrderedListNode::class to "nodes/un_ordered_list_item.ftlh",
+        BlockLayout::class to "nodes/block_layout.ftlh",
+        RowLayout::class to "nodes/row_layout.ftlh",
+        TextBlockNode::class to "nodes/text_block.ftlh",
+        BlockquotesBlockNode::class to "nodes/blockquotesblock.ftlh",
+        TableBlockNode::class to "nodes/table.ftlh",
+        HeaderLink::class to "special/header_link.ftlh",
+        HeaderAnchor::class to "special/header_anchor.ftlh"
     )
 
     fun writeNodeToString(node: Node): String {
         val templatePath = templates[node::class]
-                ?: throw RuntimeException("not found template for: ${node::class}")
+            ?: throw RuntimeException("not found template for: ${node::class}")
 
         if (node.nodeId in replaceNodes) {
             return writeNodeToString(replaceNodes[node.nodeId]!!)
@@ -58,8 +58,8 @@ class NodeSerializer(
 
             fieldName to processValue(fieldValue)
         }
-                .filter { it.second != null }
-                .toMap(mutableMapOf())
+            .filter { it.second != null }
+            .toMap(mutableMapOf())
 
         val result = render.render(templatePath, parameters)
 
@@ -70,9 +70,9 @@ class NodeSerializer(
         addSerializer(Node::class.java, NodeSerializer())
     }
     private val mapper = ObjectMapper()
-            .registerKotlinModule()
-            .configure(SerializationFeature.INDENT_OUTPUT, true)
-            .registerModule(module)
+        .registerKotlinModule()
+        .configure(SerializationFeature.INDENT_OUTPUT, true)
+        .registerModule(module)
 
     private inner class NodeSerializer<T : Node> : JsonSerializer<T>() {
 

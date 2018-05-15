@@ -14,40 +14,40 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
     private val defaultBlockParser = DefaultBlockParser(this)
 
     val blockParsers = mutableListOf(
-            HeaderBlockParser(this),
-            CodeBlockParser(this),
-            ListBlockParser(this),
-            DistributeLinkParser(this),
-            BlockquotesParser(this),
-            TableBlockParser(this),
-            IncludeBlockParser(this)
+        HeaderBlockParser(this),
+        CodeBlockParser(this),
+        ListBlockParser(this),
+        DistributeLinkParser(this),
+        BlockquotesParser(this),
+        TableBlockParser(this),
+        IncludeBlockParser(this)
     )
 
     val lineParsers: MutableList<LineParser> = mutableListOf(
-            BoldLineParserStar(this),
-            BoldLineParserUnderscore(this),
-            ItalicLineParserStar(this),
-            ItalicLineParserUnderscore(this),
-            StrikethroughLineParser(this),
-            UnderlineLineParser(this),
-            CodeLineSingleQuoteParser(this),
-            CodeLineDoubleQuoteParser(this),
-            HTMLNodeLineParser(this),
-            LinkLineParser(this),
-            ImageLinkLineParser(this)
+        BoldLineParserStar(this),
+        BoldLineParserUnderscore(this),
+        ItalicLineParserStar(this),
+        ItalicLineParserUnderscore(this),
+        StrikethroughLineParser(this),
+        UnderlineLineParser(this),
+        CodeLineSingleQuoteParser(this),
+        CodeLineDoubleQuoteParser(this),
+        HTMLNodeLineParser(this),
+        LinkLineParser(this),
+        ImageLinkLineParser(this)
     )
 
     val lineParser = LineParserImpl(lineParsers)
 
     val distributeNodes: MutableMap<String, List<DistributeNode>> = mutableMapOf()
 
-    fun parse(source: File): BlockNode = source.withLines { lines ->
+    suspend fun parse(source: File): BlockNode = source.withLines { lines ->
         parse(lines)
     }
 
     //TODO add more block parsers (html block elements)
     //TODO(mega) add nested table
-    fun parse(lines: Sequence<String>): BlockNode {
+    suspend fun parse(lines: Sequence<String>): BlockNode {
         val linesBuffer = mutableListOf<String>()
         var currentBlockParser: BlockParser? = null
         val parsedNodes = mutableListOf<BlockNode>()
@@ -130,7 +130,7 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
         return null
     }
 
-    private fun parseNodes(currentParser: BlockParser?, linesBuffer: MutableList<String>): List<BlockNode> {
+    private suspend fun parseNodes(currentParser: BlockParser?, linesBuffer: MutableList<String>): List<BlockNode> {
         val blockParser = currentParser ?: defaultBlockParser
 
         return blockParser.parseLines(linesBuffer).also {

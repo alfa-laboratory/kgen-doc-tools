@@ -33,7 +33,7 @@ class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockPa
         }
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> = emptyList()
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> = emptyList()
 
     override val parserId: String = "DistributeLinkParser"
 

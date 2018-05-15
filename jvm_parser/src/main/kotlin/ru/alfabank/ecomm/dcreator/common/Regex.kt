@@ -18,8 +18,8 @@ actual class Pattern(private val pattern: JPattern) {
     }
 }
 
-actual class Predicate(private val predicate: (String) -> Boolean) : (String) -> Boolean {
-    override fun invoke(p1: String): Boolean = predicate(p1)
+actual class Predicate(private val predicate: (String) -> Boolean) {
+    actual operator fun invoke(str: String): Boolean = predicate(str)
     actual fun test(str: String): Boolean = predicate(str)
 }
 

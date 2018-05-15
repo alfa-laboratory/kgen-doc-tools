@@ -26,10 +26,10 @@ import java.nio.file.Files
 import java.time.LocalTime
 
 class RenderRouterConfiguration(
-        private val workDir: File,
-        private val inputDirectory: File,
-        private val documentGenerator: DocumentGenerator,
-        private val mode: ApplicationMode
+    private val workDir: File,
+    private val inputDirectory: File,
+    private val documentGenerator: DocumentGenerator,
+    private val mode: ApplicationMode
 ) {
     fun config(): Routing.() -> Unit = {
         static("static") {
@@ -40,7 +40,7 @@ class RenderRouterConfiguration(
             files(File(workDir, "output/pages"))
         }
 
-        when(mode) {
+        when (mode) {
             ApplicationMode.TEST -> {
                 val indexFile = File(mode.publicFolder, "index.html")
 
@@ -174,11 +174,11 @@ class RenderRouterConfiguration(
 
     companion object {
         private val objectMapper = ObjectMapper()
-                .registerKotlinModule()
+            .registerKotlinModule()
 
         private const val staticFolder = "static"
         private val staticIndexFileText = ClassLoader::class.java.getResourceAsStream("/$staticFolder/index.html")
-                .reader().readText()
+            .reader().readText()
 
         private val contentType = ContentType.parse("text/html; charset=UTF-8")
     }

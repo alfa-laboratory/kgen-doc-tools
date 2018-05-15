@@ -4,7 +4,6 @@ jar {
 
 dependencies {
     compile("org.freemarker:freemarker:2.3.27-incubating")
-
     compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.4")
 
     compile project(":jvm_parser")

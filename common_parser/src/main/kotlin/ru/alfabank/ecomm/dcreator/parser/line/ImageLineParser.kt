@@ -9,11 +9,12 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 
 sealed class ImageLinkData(open val endSymbols: String)
 class ImageLinkIdData(override val endSymbols: String, val id: String?) : ImageLinkData(endSymbols)
-class ImageLinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) : ImageLinkData(endSymbols)
+class ImageLinkUrlTitleData(override val endSymbols: String, val url: String, val title: String? = null) :
+    ImageLinkData(endSymbols)
 
 class ImageLinkLineParser(
-        override val parseInstance: MarkdownParser,
-        private val linkData: ImageLinkData? = null
+    override val parseInstance: MarkdownParser,
+    private val linkData: ImageLinkData? = null
 ) : LineParser {
     override fun openSymbolsSuited(startSymbols: String): BoundSymbolsSuiteResult {
         val partySuited = startSymbols.first() == OPEN_SYMBOL.first() && startSymbols.length <= OPEN_SYMBOL.length
@@ -36,19 +37,19 @@ class ImageLinkLineParser(
 
             when {
                 linkIdGroup != null -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        ImageLinkLineParser(parseInstance, ImageLinkIdData(endSymbols, linkIdGroup))
+                    true,
+                    true,
+                    ImageLinkLineParser(parseInstance, ImageLinkIdData(endSymbols, linkIdGroup))
                 )
                 linkUrlGroup != null -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        ImageLinkLineParser(parseInstance, ImageLinkUrlTitleData(endSymbols, linkUrlGroup, linkTitleGroup))
+                    true,
+                    true,
+                    ImageLinkLineParser(parseInstance, ImageLinkUrlTitleData(endSymbols, linkUrlGroup, linkTitleGroup))
                 )
                 else -> return BoundSymbolsSuiteResult(
-                        true,
-                        true,
-                        ImageLinkLineParser(parseInstance, ImageLinkIdData(endSymbols, null))
+                    true,
+                    true,
+                    ImageLinkLineParser(parseInstance, ImageLinkIdData(endSymbols, null))
                 )
             }
         }

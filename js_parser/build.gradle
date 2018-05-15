@@ -1,4 +1,58 @@
-//dependencies {
-//    expectedBy project(":common_parser")
-//    expectedBy project(":common_nodes")
+plugins {
+    id "com.moowork.node" version "1.2.0"
+}
+
+dependencies {
+    expectedBy project(":common_parser")
+    expectedBy project(":common_nodes")
+}
+
+def nodeModules = project.getProjectDir().getPath() + "/node_modules/"
+
+node {
+//    version = "$node_version"
+//    npmVersion = "$npm_version"
+//    download = true
+    nodeModulesDir = file(nodeModules)
+}
+
+// Configures testing for JS modules
+
+//task prepareNodePackage(type: Copy) {
+//    from("npm") {
+//        include 'package.json'
+//        expand project.properties
+//    }
+//    from("npm") {
+//        exclude 'package.json'
+//    }
+//    into nodeModules
 //}
+//
+//npmInstall.dependsOn prepareNodePackage
+
+task populateNodeModules(type: Copy, dependsOn: [compileKotlin2Js, npmInstall]) {
+    from compileKotlin2Js.destinationDir
+    into nodeModules
+
+    afterEvaluate {
+        configurations.testCompile.each {
+            if (it.absolutePath.endsWith(".jar")) {
+                from zipTree(it.absolutePath).matching {
+                    include '*.js'
+                    include '*.js.map'
+                }
+            }
+        }
+    }
+}
+
+task runMocha(type: NodeTask, dependsOn: [compileTestKotlin2Js, populateNodeModules]) {
+    script = file(nodeModules + '/mocha/bin/mocha')
+    args = [compileTestKotlin2Js.outputFile]
+}
+
+test.dependsOn runMocha
+
+
+

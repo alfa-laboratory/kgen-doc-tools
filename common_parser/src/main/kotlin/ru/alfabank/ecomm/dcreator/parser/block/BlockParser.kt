@@ -11,5 +11,5 @@ interface BlockParser : Parser {
 
     fun isLinesSuitable(lines: List<String>): BlockSuiteResult
 
-    fun parseLines(lines: List<String>): List<BlockNode>
+    suspend fun parseLines(lines: List<String>): List<BlockNode>
 }

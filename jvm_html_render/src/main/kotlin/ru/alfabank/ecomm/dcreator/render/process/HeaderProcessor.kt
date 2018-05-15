@@ -3,16 +3,16 @@ package ru.alfabank.ecomm.dcreator.render.process
 import ru.alfabank.ecomm.dcreator.nodes.*
 
 data class HeaderLink(
-        override val node: Node,
-        val level: Level,
-        val linkId: String,
-        val childs: MutableList<HeaderLink>
+    override val node: Node,
+    val level: Level,
+    val linkId: String,
+    val childs: MutableList<HeaderLink>
 ) : Node by NodeIdGen(), NestedNode, BlockNode
 
 data class HeaderAnchor(
-        override val node: Node,
-        val level: Level,
-        val linkId: String
+    override val node: Node,
+    val level: Level,
+    val linkId: String
 ) : Node by NodeIdGen(), NestedNode, BlockNode
 
 class HeaderProcessor : NodeProcessor {
@@ -23,15 +23,13 @@ class HeaderProcessor : NodeProcessor {
             else -> emptyList()
         }
 
-        val headerNodes = childNodes
-                .filter { it is HeaderBlockNode }
-                .map { it as HeaderBlockNode }
+        val headerNodes = childNodes.filterIsInstance(HeaderBlockNode::class.java)
 
         val (headerLinks, anchors) = processHeaders(headerNodes)
 
         val result = mapOf(
-                "data" to node,
-                "headers" to BlockLayout(headerLinks)
+            "data" to node,
+            "headers" to BlockLayout(headerLinks)
         )
 
         return ProcessResult(result, anchors)
@@ -79,7 +77,8 @@ class HeaderProcessor : NodeProcessor {
         }
     }
 
-    private fun HeaderBlockNode.toHeaderLink() = HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
+    private fun HeaderBlockNode.toHeaderLink() =
+        HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
 
     //make it valid quertySelector (first digit symbol is not allowed)
     private fun String.toSelector(): String = "q$this"

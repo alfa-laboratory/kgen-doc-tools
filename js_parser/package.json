@@ -1,0 +1,20 @@
+{
+  "name": "js_parser",
+  "version": "0.0.0",
+  "description": "simple description",
+  "main": "js_parser",
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "dependencies": {
+    "named-js-regexp": "^1.3.3",
+    "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "webpack": "*",
+    "webpack-cli": "*",
+    "webpack-dev-server": "*",
+    "phantomjs-prebuilt": "*"
+  }
+}

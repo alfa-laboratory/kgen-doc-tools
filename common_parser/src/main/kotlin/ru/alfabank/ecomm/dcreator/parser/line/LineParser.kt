@@ -5,7 +5,11 @@ import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 import ru.alfabank.ecomm.dcreator.parser.Parser
 
-data class BoundSymbolsSuiteResult(val partySuited: Boolean, val fullySuited: Boolean, val parseInstance: LineParser? = null)
+data class BoundSymbolsSuiteResult(
+    val partySuited: Boolean,
+    val fullySuited: Boolean,
+    val parseInstance: LineParser? = null
+)
 
 interface LineParser : Parser {
     val parseInstance: MarkdownParser

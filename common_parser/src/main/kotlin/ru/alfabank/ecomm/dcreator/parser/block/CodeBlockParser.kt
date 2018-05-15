@@ -19,12 +19,12 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
             return BlockSuiteResult(false)
 
         val indexOfEnd = lines.drop(1)
-                .indexOfFirst { CODE_END_PREDICATE.test(it) }
+            .indexOfFirst { CODE_END_PREDICATE.test(it) }
 
         return BlockSuiteResult(indexOfEnd < 0 || indexOfEnd == lines.size - 2)
     }
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         val firstLine = lines.first()
 
         val matcher = CODE_START_PATTERN.matcher(firstLine)
@@ -34,15 +34,15 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
         val language = matcher.group(LANGUAGE_GROUP_NAME)!!
 
         val codeLines = lines.drop(1)
-                .let {
-                    if (!CODE_END_PREDICATE.test(it.last()))
-                        it
-                    else
-                        it.dropLast(1)
-                }
+            .let {
+                if (!CODE_END_PREDICATE.test(it.last()))
+                    it
+                else
+                    it.dropLast(1)
+            }
 
         return listOf(
-                CodeBlockNode(language, codeLines.joinToString("\n"))
+            CodeBlockNode(language, codeLines.joinToString("\n"))
         )
     }
 

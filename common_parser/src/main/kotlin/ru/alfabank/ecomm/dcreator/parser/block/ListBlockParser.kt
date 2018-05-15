@@ -6,18 +6,18 @@ import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 
 private sealed class Level(
-        open val spaces: Int
+    open val spaces: Int
 )
 
 private class NumberedLevel(
-        val number: Int,
-        val text: String,
-        override val spaces: Int
+    val number: Int,
+    val text: String,
+    override val spaces: Int
 ) : Level(spaces)
 
 private class SymbolLevel(
-        val text: String,
-        override val spaces: Int
+    val text: String,
+    override val spaces: Int
 ) : Level(spaces)
 
 class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
@@ -40,7 +40,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
 
     data class LineParseResult(val spaces: Int, val number: Int?, val symbol: Boolean, val text: String)
 
-    override fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
         val lineMatch = START_LEVEL_PATTERN.matcher(lines.first())
         if (lineMatch.find()) {
             val (sumSpaces, number, symbolExists, text) = parseMatch(lineMatch)
@@ -70,7 +70,11 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return LineParseResult(sumSpaces, number, symbol != null, text)
     }
 
-    private tailrec fun parseOtherLines(level: Level, lines: List<String>, prevNodes: List<BlockNode> = emptyList()): List<BlockNode> {
+    private suspend fun parseOtherLines(
+        level: Level,
+        lines: List<String>,
+        prevNodes: List<BlockNode> = emptyList()
+    ): List<BlockNode> {
         val buffer = mutableListOf<String>()
 
         for ((index, line) in lines.withIndex()) {
@@ -86,7 +90,11 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
 
                     when {
                         number != null && !symbolExists ->
-                            return parseOtherLines(NumberedLevel(number, text, level.spaces), lines.drop(index + 1), newPrevNodes)
+                            return parseOtherLines(
+                                NumberedLevel(number, text, level.spaces),
+                                lines.drop(index + 1),
+                                newPrevNodes
+                            )
                         number == null && symbolExists ->
                             return parseOtherLines(SymbolLevel(text, level.spaces), lines.drop(index + 1), newPrevNodes)
                     }
@@ -125,7 +133,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return prevNodes + nodes
     }
 
-    private fun parseLevel(level: Level, buffer: MutableList<String>): ListNode = when (level) {
+    private suspend fun parseLevel(level: Level, buffer: MutableList<String>): ListNode = when (level) {
         is NumberedLevel -> OrderedListNode(level.number, levelText(level.text, buffer).parse())
         is SymbolLevel -> UnOrderedListNode(levelText(level.text, buffer).parse())
     }
@@ -134,7 +142,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
         return mutableListOf(text).apply { addAll(buffer) }
     }
 
-    private fun List<String>.parse(): Node {
+    private suspend fun List<String>.parse(): Node {
         val result = parseInstance.parse(this.asSequence())
 
         return when {
