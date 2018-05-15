@@ -31,7 +31,7 @@ node {
 //
 //npmInstall.dependsOn prepareNodePackage
 
-task populateNodeModules(type: Copy, dependsOn: [compileKotlin2Js]) {
+task populateNodeModules(type: Copy, dependsOn: [compileKotlin2Js, npmInstall]) {
     from compileKotlin2Js.destinationDir
     into nodeModules
 
