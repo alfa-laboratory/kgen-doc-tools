@@ -36,7 +36,7 @@ class DocumentGenerator(
             outputFile.createNewFile()
         }
 
-        val node = MarkdownParser(inputDirectory).parse(generateFile)
+        val (serviceNodes, node) = MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
         val (result, replaceNodes) = headerProcessor.process(node)

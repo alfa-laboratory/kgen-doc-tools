@@ -9,6 +9,11 @@ data class BlockSuiteResult(val isSuitable: Boolean, val result: BlockNode? = nu
 interface BlockParser : Parser {
     val parseInstance: MarkdownParser
 
+    /**
+     *  @return BlockSuiteResult - where:
+     *      `isSuitable` is params, indicating when lines is suitable or not
+     *      `result` is result of parsing, when checking is very expensive and need to collect result by first check
+     */
     fun isLinesSuitable(lines: List<String>): BlockSuiteResult
 
     suspend fun parseLines(lines: List<String>): List<BlockNode>
