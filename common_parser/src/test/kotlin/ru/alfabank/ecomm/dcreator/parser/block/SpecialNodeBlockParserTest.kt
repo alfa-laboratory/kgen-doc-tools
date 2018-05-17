@@ -10,7 +10,7 @@ class SpecialNodeBlockParserTest {
     private val parser = MarkdownParser()
 
     @Test
-    fun createDeployment() = runTest {
+    fun `test_special_parser`() = runTest {
         val src = sequenceOf(
             """
                 :::layout "some layout"
