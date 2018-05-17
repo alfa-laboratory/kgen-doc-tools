@@ -50,4 +50,9 @@ class DocumentGenerator(
         val nodesData = freemarkerRender.render("index.ftlh", preparedResult)
         outputFile.writeText(nodesData)
     }
+
+    private enum class LAYOUTS(val layout: String) {
+        DEFAULT("default"),
+        TABS("tabs")
+    }
 }

@@ -9,8 +9,8 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
         if (lines.size == 1) {
             val firstLine = lines.first()
-            if (firstLine.length > KEYWORD_PATTERN.length
-                && firstLine.take(KEYWORD_PATTERN.length) == KEYWORD_PATTERN
+            if (firstLine.length > START_SYMBOLS.length
+                && firstLine.take(START_SYMBOLS.length) == START_SYMBOLS
             ) {
                 return BlockSuiteResult(true)
             }
@@ -24,7 +24,7 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
             throw RuntimeException("unexpected behaviour")
 
         val lineToParse = lines.first().let {
-            it.substring(KEYWORD_PATTERN.length, it.length)
+            it.substring(START_SYMBOLS.length, it.length)
         }
 
         val (tag: String, param1: String, param2: String?) = parseLine(lineToParse)
@@ -57,7 +57,7 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
     override val parserId: String = "SpecialNodeBlockParser"
 
     companion object {
-        private const val KEYWORD_PATTERN = ":::"
+        private const val START_SYMBOLS = ":::"
 
         private const val LAYOUT_TAG_NAME = "layout"
         private const val TITLE_TAG_NAME = "title"
