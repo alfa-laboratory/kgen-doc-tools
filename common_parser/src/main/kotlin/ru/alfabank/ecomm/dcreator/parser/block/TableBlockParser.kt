@@ -3,6 +3,8 @@ package ru.alfabank.ecomm.dcreator.parser.block
 import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
@@ -24,9 +26,9 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         val modifiers: String? = null
     )
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult {
         if (lines.isEmpty())
-            return emptyList()
+            return emptyList<BlockNode>().toParseResult()
 
         val headerLine = lines.first()
 
@@ -52,7 +54,7 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
             Rows(content, header = header, footer = footerLine, modifiers = modifierLine)
         }
 
-        return listOf(parseTableLines(rows))
+        return listOf(parseTableLines(rows)).toParseResult()
     }
 
     private fun isModifierColumn(column: String): Boolean {

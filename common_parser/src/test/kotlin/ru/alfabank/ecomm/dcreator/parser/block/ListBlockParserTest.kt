@@ -26,7 +26,7 @@ class ListBlockParserTest {
             "text for line 8"
         )
 
-        val actualResult = parser.parse(simpleList)
+        val (actualResult, _) = parser.parse(simpleList)
 
         val expectResult = BlockLayout(
             listOf(
@@ -58,7 +58,7 @@ class ListBlockParserTest {
             "  - text for line 5",
             "- text for line 6"
         )
-        val actualResult = parser.parse(simpleList)
+        val (actualResult, _) = parser.parse(simpleList)
 
         val expectResult = ListsBLockNode(
             listOf(

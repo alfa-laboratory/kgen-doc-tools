@@ -5,6 +5,8 @@ import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.HeaderBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.Level
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 @Suppress("LeakingThis")
 open class HeaderBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
@@ -20,14 +22,14 @@ open class HeaderBlockParser(override val parseInstance: MarkdownParser) : Block
         return BlockSuiteResult(result)
     }
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> = when {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult = when {
         lines.size == 1 -> parseSingleHeaderLine(lines.first())
         lines.size == 2 -> {
             val (firstLine, secondLine) = lines
             parseMultiLineHeader(firstLine, secondLine)
         }
         else -> emptyList()
-    }
+    }.toParseResult()
 
     private fun parseMultiLineHeader(firstLine: String, secondLine: String): List<BlockNode> {
         val headerNode = when (secondLine.trimStart().first()) {

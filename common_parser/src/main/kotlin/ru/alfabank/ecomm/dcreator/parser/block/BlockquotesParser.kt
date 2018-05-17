@@ -1,10 +1,11 @@
 package ru.alfabank.ecomm.dcreator.parser.block
 
 import ru.alfabank.ecomm.dcreator.common.toPattern
-import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.BlockquotesBlockNode
 import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 class BlockquotesParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
@@ -18,7 +19,7 @@ class BlockquotesParser(override val parseInstance: MarkdownParser) : BlockParse
         return BlockSuiteResult(suitableResult)
     }
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult {
         val content = lines.map { line ->
             val matcher = QUITE_LINE_PATTERN.matcher(line)
             if (matcher.find()) {
@@ -28,12 +29,12 @@ class BlockquotesParser(override val parseInstance: MarkdownParser) : BlockParse
             }
         }
 
-        val parseNode = parseInstance.parse(content.asSequence())
+        val (parseNode, serviceNodes) = parseInstance.parse(content.asSequence())
 
         if (parseNode == EmptyBlockNode)
-            return emptyList()
+            return PartialParseResult(emptyList(), serviceNodes)
 
-        return listOf(BlockquotesBlockNode(parseNode))
+        return listOf(BlockquotesBlockNode(parseNode)).toParseResult()
     }
 
     override val parserId: String = "BlockquotesParser"

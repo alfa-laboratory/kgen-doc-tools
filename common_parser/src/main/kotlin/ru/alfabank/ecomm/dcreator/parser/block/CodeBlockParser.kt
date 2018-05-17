@@ -4,6 +4,8 @@ import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.CodeBlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
     override val parserId: String = "CodeBlockParser"
@@ -24,12 +26,12 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
         return BlockSuiteResult(indexOfEnd < 0 || indexOfEnd == lines.size - 2)
     }
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult {
         val firstLine = lines.first()
 
         val matcher = CODE_START_PATTERN.matcher(firstLine)
         if (!matcher.find() || lines.size == 1)
-            return emptyList()
+            return emptyList<BlockNode>().toParseResult()
 
         val language = matcher.group(LANGUAGE_GROUP_NAME)!!
 
@@ -43,7 +45,7 @@ open class CodeBlockParser(override val parseInstance: MarkdownParser) : BlockPa
 
         return listOf(
             CodeBlockNode(language, codeLines.joinToString("\n"))
-        )
+        ).toParseResult()
     }
 
     companion object {

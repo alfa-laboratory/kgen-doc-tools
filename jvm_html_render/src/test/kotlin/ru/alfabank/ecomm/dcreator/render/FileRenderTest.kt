@@ -44,7 +44,7 @@ class FileRenderTest {
             )
         }
 
-        val node = MarkdownParser(inputDirectory).parse(generateFile)
+        val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
         val (result, replaceNodes) = headerProcessor.process(node)
