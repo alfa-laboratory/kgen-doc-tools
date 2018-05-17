@@ -27,19 +27,19 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
             it.substring(KEYWORD_PATTERN.length, it.length)
         }
 
-        val (tag: String, name: String, value: String?) = parseLine(lineToParse)
+        val (tag: String, param1: String, param2: String?) = parseLine(lineToParse)
 
         val parseResult: ServiceNode = when {
-            tag == LAYOUT_TAG_NAME -> LayoutServiceNode(name)
-            tag == TITLE_TAG_NAME -> TitleServiceNode(name)
-            tag == INCLUDE_TAG_NAME && value != null -> IncludeServiceNode(name, value)
-            else -> SimpleSeviceNode(name, value)
+            tag == LAYOUT_TAG_NAME -> LayoutServiceNode(param1)
+            tag == TITLE_TAG_NAME -> TitleServiceNode(param1)
+            tag == INCLUDE_TAG_NAME && param2 != null -> IncludeServiceNode(param1, param2)
+            else -> SimpleServiceNode(param1, param2)
         }
 
         return PartialParseResult(emptyList(), listOf(parseResult))
     }
 
-    data class LineParseResult(val tag: String, val name: String, val value: String?)
+    data class LineParseResult(val tag: String, val param1: String, val param2: String?)
 
     private fun parseLine(lineToParse: String): LineParseResult {
         val matcher = PARSE_PATTERN.matcher(lineToParse)
@@ -49,8 +49,8 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
 
         return LineParseResult(
             matcher.group(TAG_GROUP)!!,
-            matcher.group(NAME_GROUP)!!,
-            matcher.group(VALUE_GROUP)
+            matcher.group(PARAM1_GROUP)!!,
+            matcher.group(PARAM2_GROUP)
         )
     }
 
@@ -64,23 +64,23 @@ class SpecialNodeBlockParser(override val parseInstance: MarkdownParser) : Block
         private const val INCLUDE_TAG_NAME = "include"
 
         private const val TAG_GROUP = "tag"
-        private const val NAME_GROUP = "name"
-        private const val VALUE_GROUP = "value"
+        private const val PARAM1_GROUP = "param1"
+        private const val PARAM2_GROUP = "param2"
 
         private val SPACE_PATTERN = """
             [\s\t]
         """.trimIndent()
 
         private val TAG_PATTERN = """
-            (?<$TAG_GROUP>[a-z]+)
+            (?<$TAG_GROUP>[a-zA-Z]+)
         """.trimIndent()
 
         private val NAME_PATTERN = """
-            "(?<$NAME_GROUP>.+)"
+            "(?<$PARAM1_GROUP>[^"]+)"
         """.trimIndent()
 
         private val VALUE_PATTERN = """
-            "(?<$VALUE_GROUP>.+)"
+            (,"(?<$PARAM2_GROUP>[^"]+)")
         """.trimIndent()
 
         private val PARSE_PATTERN = """

@@ -2,7 +2,7 @@ package ru.alfabank.ecomm.dcreator.nodes
 
 interface ServiceNode : Node
 
-data class SimpleSeviceNode(
+data class SimpleServiceNode(
     val name: String,
     val value: String?
 ) : ServiceNode, Node by NodeIdGen()
