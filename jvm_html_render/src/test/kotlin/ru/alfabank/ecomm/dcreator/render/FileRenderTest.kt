@@ -30,7 +30,7 @@ class FileRenderTest {
     fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
 
-        val freemarkerRender = FreemarkerRender("../files/layout/freemarker")
+        val freemarkerRender = FreemarkerRender("../files/layout/default")
 
         val generateFile = File(inputDirectory, "testFile.md").apply {
             writeText(
