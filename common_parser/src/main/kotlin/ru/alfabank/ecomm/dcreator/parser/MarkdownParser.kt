@@ -23,6 +23,7 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
     private val defaultBlockParser = DefaultBlockParser(this)
 
     val blockParsers = mutableListOf(
+        SpecialNodeBlockParser(this),
         HeaderBlockParser(this),
         CodeBlockParser(this),
         ListBlockParser(this),
@@ -138,7 +139,7 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
             }
         }
 
-        return ParseResult(resultNode, emptyList())
+        return ParseResult(resultNode, serviceNodes)
     }
 
     private fun findBlockParser(linesBuffer: List<String>, parsedNodes: MutableList<BlockNode>): BlockParser? {

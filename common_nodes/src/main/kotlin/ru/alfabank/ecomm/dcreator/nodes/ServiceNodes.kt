@@ -4,7 +4,7 @@ interface ServiceNode : Node
 
 data class SimpleSeviceNode(
     val name: String,
-    val value: String
+    val value: String?
 ) : ServiceNode, Node by NodeIdGen()
 
 data class LayoutServiceNode(
