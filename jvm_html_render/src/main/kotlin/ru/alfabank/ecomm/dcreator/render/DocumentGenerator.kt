@@ -25,22 +25,32 @@ class DocumentGenerator(
     private val freemarkerRenders: MutableMap<String, FreemarkerRender> = mutableMapOf()
     private val nodeProcessors: MutableMap<String, NodeProcessor> = mutableMapOf()
 
+    inner class RelativePath(
+        private val srcFile: File
+    ) {
+        fun toRelativeLink(): String {
+            val relativePath = srcFile.parentFile
+                .toRelativeString(inputDirectory)
+                .let { if (it.isEmpty()) "" else "$it/" }
+
+            return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
+        }
+
+        fun copyPath(newName: String, postFix: String): RelativePath {
+            val newFileName = File(newName).nameWithoutExtension
+            val newFile = File(srcFile.parent, "$newFileName$postFix")
+
+            return RelativePath(newFile)
+        }
+    }
+
     suspend fun generateHtmlFromMd(generateFile: File) {
-        val nodesData = renderFile(generateFile)
+        val nodesData: List<ProcessingData> = renderFile(generateFile)
         if (nodesData.isEmpty())
             return
 
-        val relativePath = generateFile.parentFile
-            .toRelativeString(inputDirectory)
-            .let { if (it.isEmpty()) "" else "$it/" }
-
-        nodesData.forEach { (data, _, prefix) ->
-            val relativeFileName = if (prefix.isEmpty())
-                toRelativeFileName(relativePath, generateFile)
-            else
-                prefix
-
-            val outputFile = File(outputDirectory, relativeFileName)
+        nodesData.forEach { (data, _, relativePath) ->
+            val outputFile = File(outputDirectory, relativePath)
 
             outputFile.parentFile.apply {
                 if (!exists()) mkdirs()
@@ -59,6 +69,8 @@ class DocumentGenerator(
             initRenders()
         }
 
+        val relativePath = RelativePath(generateFile)
+
         if (!generateFile.isFile)
             return emptyList()
 
@@ -76,8 +88,8 @@ class DocumentGenerator(
         val freemarkerRender = layoutNode?.let { freemarkerRenders[it.layout] }
             ?: freemarkerRenders[DEFAULT_LAYOUT]!!
 
-        return nodeProcessor.process(node, serviceNodes)
-            .map { (relativeLink, result, replaceNodes, localServiceNodes) ->
+        return nodeProcessor.process(node, serviceNodes, relativePath)
+            .map { (localRelativePath, result, replaceNodes, localServiceNodes) ->
                 val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
                 val preparedResult = result.mapValues { value ->
                     nodeSerializer.writeNodeToString(value.value)
@@ -86,7 +98,7 @@ class DocumentGenerator(
                 ProcessingData(
                     data = freemarkerRender.render(INDEX_FILE_NAME, preparedResult),
                     serviceNodes = localServiceNodes,
-                    relativeFileName = relativeLink
+                    relativePath = localRelativePath
                 )
             }
     }
@@ -94,19 +106,6 @@ class DocumentGenerator(
     private fun generateHtmlFromMd(generateFile: String): List<ProcessingData> = runBlocking {
         renderFile(File(inputDirectory, generateFile))
     }
-
-    private fun toRelativeLink(name: String): String {
-        val srcFile = File(inputDirectory, name)
-
-        val relativePath = srcFile.parentFile
-            .toRelativeString(inputDirectory)
-            .let { if (it.isEmpty()) "" else "$it/" }
-
-        return toRelativeFileName(relativePath, srcFile)
-    }
-
-    private fun toRelativeFileName(relativePath: String, srcFile: File) =
-        "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
 
     private fun findLayoutNode(serviceNodes: List<ServiceNode>): LayoutServiceNode? = serviceNodes
         .asSequence()
@@ -128,7 +127,7 @@ class DocumentGenerator(
         }
 
         nodeProcessors += DEFAULT_LAYOUT to HeaderProcessor()
-        nodeProcessors += TABS_LAYOUT to TabsProcessor(this::generateHtmlFromMd, this::toRelativeLink)
+        nodeProcessors += TABS_LAYOUT to TabsProcessor(this::generateHtmlFromMd)
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render.process
 
 import ru.alfabank.ecomm.dcreator.nodes.*
+import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
 data class HeaderLink(
     override val node: Node,
@@ -16,7 +17,11 @@ data class HeaderAnchor(
 ) : Node by NodeIdGen(), NestedNode, BlockNode
 
 class HeaderProcessor : NodeProcessor {
-    override fun process(node: Node, serviceNodes: List<ServiceNode>): List<ProcessResult> {
+    override fun process(
+        node: Node,
+        serviceNodes: List<ServiceNode>,
+        relativePath: DocumentGenerator.RelativePath
+    ): List<ProcessResult> {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
             is NestedNode -> listOf(node.node)
@@ -33,7 +38,7 @@ class HeaderProcessor : NodeProcessor {
         )
         findTitle(serviceNodes)?.let { result += "title" to SimpleNode(it.title) }
 
-        return listOf(ProcessResult("",result, anchors, serviceNodes))
+        return listOf(ProcessResult(relativePath.toRelativeLink(), result, anchors, serviceNodes))
     }
 
     private fun processHeaders(headerNodes: List<HeaderBlockNode>): Pair<List<BlockNode>, Map<String, Node>> {

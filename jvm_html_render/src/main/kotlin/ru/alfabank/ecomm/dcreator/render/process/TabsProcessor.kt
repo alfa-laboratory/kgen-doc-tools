@@ -1,6 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render.process
 
 import ru.alfabank.ecomm.dcreator.nodes.*
+import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
 data class TabNodes(
     val tabs: List<TabNode>
@@ -13,15 +14,23 @@ data class TabNode(
 ) : Node by NodeIdGen()
 
 class TabsProcessor(
-    private val generateData: (String) -> List<ProcessingData>,
-    private val generateLink: (String) -> String
+    private val generateData: (String) -> List<ProcessingData>
 ) : NodeProcessor {
-    override fun process(node: Node, serviceNodes: List<ServiceNode>): List<ProcessResult> {
+    override fun process(
+        node: Node,
+        serviceNodes: List<ServiceNode>,
+        relativePath: DocumentGenerator.RelativePath
+    ): List<ProcessResult> {
         val fileToTabNodes: List<Pair<String, TabNode>> = serviceNodes.filterIsInstance<IncludeServiceNode>()
             .mapIndexed { index, (name, file) ->
-                val relativeLink = if (index == 0) SELF_LINK else generateLink("${file}_link$index")
+                val tabRelativeLink = if (index == 0)
+                    relativePath.toRelativeLink()
+                else
+                    relativePath
+                        .copyPath(file, "_link$index")
+                        .toRelativeLink()
 
-                file to TabNode(name, relativeLink, false)
+                file to TabNode(name, tabRelativeLink, false)
             }
 
         return fileToTabNodes.map { (file, currentTab) ->
@@ -38,7 +47,7 @@ class TabsProcessor(
             findTitle(localServiceNodes)?.let { result += "title" to SimpleNode(it.title) }
 
             ProcessResult(
-                relativeLink = if (currentTab.link == SELF_LINK) "" else currentTab.link,
+                relativeLink = currentTab.link,
                 result = result,
                 replaceNodes = emptyMap(),
                 serviceNodes = localServiceNodes

@@ -49,7 +49,7 @@ class FileRenderTest {
         val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
-        val results: List<ProcessResult> = headerProcessor.process(node, serviceNodes)
+        val results: List<ProcessResult> = headerProcessor.process(node, serviceNodes, relativeLink)
 
         assertTrue(results.size == 1)
 
