@@ -32,10 +32,10 @@ class TabsProcessor(
             val (data, localServiceNodes, _) = processResults.first()
 
             val result = mutableMapOf(
-                "data" to HTMLNode(data),
+                "data" to SimpleNode(data),
                 "tabs" to prepareTabs(currentTab, fileToTabNodes)
             )
-            findTitle(localServiceNodes)?.let { result += "title" to it }
+            findTitle(localServiceNodes)?.let { result += "title" to SimpleNode(it.title) }
 
             ProcessResult(
                 relativeLink = if (currentTab.link == SELF_LINK) "" else currentTab.link,
@@ -56,7 +56,7 @@ class TabsProcessor(
     }
 
     companion object {
-        private const val SELF_LINK = "/"
+        private const val SELF_LINK = "."
     }
 
 }

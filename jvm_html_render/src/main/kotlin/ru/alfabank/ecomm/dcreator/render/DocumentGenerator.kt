@@ -35,7 +35,10 @@ class DocumentGenerator(
             .let { if (it.isEmpty()) "" else "$it/" }
 
         nodesData.forEach { (data, _, prefix) ->
-            val relativeFileName = if (prefix.isEmpty()) relativePath else prefix
+            val relativeFileName = if (prefix.isEmpty())
+                toRelativeFileName(relativePath, generateFile)
+            else
+                prefix
 
             val outputFile = File(outputDirectory, relativeFileName)
 
@@ -71,7 +74,7 @@ class DocumentGenerator(
         val nodeProcessor = layoutNode?.let { nodeProcessors[it.layout] }
             ?: nodeProcessors[DEFAULT_LAYOUT]!!
         val freemarkerRender = layoutNode?.let { freemarkerRenders[it.layout] }
-            ?: freemarkerRenders.values.first()
+            ?: freemarkerRenders[DEFAULT_LAYOUT]!!
 
         return nodeProcessor.process(node, serviceNodes)
             .map { (relativeLink, result, replaceNodes, localServiceNodes) ->

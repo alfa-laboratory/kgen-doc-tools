@@ -1,18 +1,12 @@
 <#include "header.ftlh">
 <div class="container">
-    <div class="header-column">
-        <div class="header-block">
-            <h3>Table of content</h3>
-            <nav data-gumshoe-header>
-                <ul data-gumshoe>
-                ${headers?no_esc}
-                </ul>
-            </nav>
+
+    <div>
+        <div>
+            ${tabs?no_esc}
         </div>
-    </div>
-    <div class="data-column" id="data-column">
-        <div class="content">
-        ${data?no_esc}
+        <div>
+            ${data?no_esc}
         </div>
     </div>
 </div>
