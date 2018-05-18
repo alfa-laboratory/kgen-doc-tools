@@ -4,10 +4,10 @@ import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
 
 fun main(args: Array<String>) = runBlocking {
-    val inputDirectory = File("filesExample/input")
-    val outputDirectory = File("filesExample/output/pages")
+    val inputDirectory = File("files/input")
+    val outputDirectory = File("files/output/pages")
 
-    val layoutPath = File("filesExample/layout")
+    val layoutPath = File("files/layout")
 
     val documentGenerator = DocumentGenerator(
         inputDirectory,
