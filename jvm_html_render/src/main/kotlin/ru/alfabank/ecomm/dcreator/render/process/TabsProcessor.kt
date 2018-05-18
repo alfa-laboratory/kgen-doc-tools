@@ -27,7 +27,7 @@ class TabsProcessor(
                     relativePath.toRelativeLink()
                 else
                     relativePath
-                        .copyPath(file, "_link$index")
+                        .copyPath(name.toPreparedName(), index.toString())
                         .toRelativeLink()
 
                 file to TabNode(name, tabRelativeLink, false)
@@ -55,6 +55,10 @@ class TabsProcessor(
         }
     }
 
+    private fun String.toPreparedName(): String =
+        this.replace(Regex("[^a-zA-Zа-яА-Я]+", kotlin.text.RegexOption.IGNORE_CASE), "_")
+            .toLowerCase()
+
     private fun prepareTabs(currentTab: TabNode, fileToTabNodes: List<Pair<String, TabNode>>): Node {
         return fileToTabNodes.map { (_, tab) ->
             if (currentTab.nodeId == tab.nodeId)
@@ -69,3 +73,5 @@ class TabsProcessor(
     }
 
 }
+
+
