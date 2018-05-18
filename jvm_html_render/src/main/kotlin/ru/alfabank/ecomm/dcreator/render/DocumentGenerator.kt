@@ -29,17 +29,13 @@ class DocumentGenerator(
         private val srcFile: File
     ) {
         fun toRelative(): String {
-            val relativePath = srcFile.parentFile
-                .toRelativeString(inputDirectory)
-                .let { if (it.isEmpty()) "" else "$it/" }
+            val relativePath = srcFile.toRelative()
 
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
         fun toLink(): String {
-            val relativePath = srcFile.parentFile
-                .toRelativeString(inputDirectory)
-                .let { if (it.isEmpty()) "" else "$it/" }
+            val relativePath = srcFile.toRelative()
 
             return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
@@ -51,6 +47,10 @@ class DocumentGenerator(
 
             return RelativePath(newFile)
         }
+
+        fun File.toRelative(): String = this.parentFile
+            .toRelativeString(inputDirectory)
+            .let { if (it.isEmpty()) "" else "$it/" }
     }
 
     suspend fun generateHtmlFromMd(generateFile: File) {

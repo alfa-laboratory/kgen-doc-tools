@@ -56,7 +56,7 @@ class TabsProcessor(
     }
 
     private fun String.toPreparedName(): String =
-        this.replace(Regex("[^a-zA-Zа-яА-Я]+", kotlin.text.RegexOption.IGNORE_CASE), "_")
+        this.replace(Regex("[^a-zA-Zа-яА-Я0-9]+", kotlin.text.RegexOption.IGNORE_CASE), "_")
             .toLowerCase()
 
     private fun prepareTabs(
