@@ -31,8 +31,10 @@ class FileRenderTest {
     @Test
     fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
+        val outputDirectory = File(tempDirectory, "output").apply { mkdirs() }
 
-        val freemarkerRender = FreemarkerRender("../files/layout/default")
+        val layoutRootDir = File("../files/layout")
+        val freemarkerRender = FreemarkerRender(File(layoutRootDir, "default"))
 
         val generateFile = File(inputDirectory, "testFile.md").apply {
             writeText(
@@ -48,14 +50,17 @@ class FileRenderTest {
 
         val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
+        val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutRootDir)
+
         val headerProcessor = HeaderProcessor()
-        val results: List<ProcessResult> = headerProcessor.process(node, serviceNodes, relativeLink)
+        val results: List<ProcessResult> =
+            headerProcessor.process(node, serviceNodes, documentGenerator.RelativePath(File(inputDirectory, "123.md")))
 
         assertTrue(results.size == 1)
 
         val (relativeLink, result, replaceNodes, resultServiceNodes) = results.first()
 
-        assertEquals("", relativeLink)
+        assertEquals("123.html", relativeLink)
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 
