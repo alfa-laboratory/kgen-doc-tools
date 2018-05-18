@@ -18,7 +18,7 @@ class TableBlockParserTest {
             "| Dropbox2 | text for dropbox2 | end column12 | end column22 |"
         )
 
-        val actual = parser.parse(lines)
+        val (actual, _) = parser.parse(lines)
 
         val expect = TableBlockNode(
             header = listOf(
@@ -60,7 +60,7 @@ class TableBlockParserTest {
             " Dropbox | text for dropbox "
         )
 
-        val actual = parser.parse(lines)
+        val (actual, _) = parser.parse(lines)
 
         val expect = TableBlockNode(
             header = listOf(
@@ -92,7 +92,7 @@ class TableBlockParserTest {
             " footer text 1 | footer text 2 "
         )
 
-        val actual = parser.parse(lines)
+        val (actual, _) = parser.parse(lines)
 
         val expect = TableBlockNode(
             header = listOf(

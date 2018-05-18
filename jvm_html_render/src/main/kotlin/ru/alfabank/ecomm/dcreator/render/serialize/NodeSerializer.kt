@@ -10,6 +10,8 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.process.HeaderAnchor
 import ru.alfabank.ecomm.dcreator.render.process.HeaderLink
+import ru.alfabank.ecomm.dcreator.render.process.TabNode
+import ru.alfabank.ecomm.dcreator.render.process.TabNodes
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaGetter
@@ -39,10 +41,15 @@ class NodeSerializer(
         BlockquotesBlockNode::class to "nodes/blockquotesblock.ftlh",
         TableBlockNode::class to "nodes/table.ftlh",
         HeaderLink::class to "special/header_link.ftlh",
-        HeaderAnchor::class to "special/header_anchor.ftlh"
+        HeaderAnchor::class to "special/header_anchor.ftlh",
+        TabNodes::class to "special/tab_nodes.ftlh",
+        TabNode::class to "special/tab_node.ftlh"
     )
 
     fun writeNodeToString(node: Node): String {
+        if (node is SimpleNode)
+            return node.text
+
         val templatePath = templates[node::class]
             ?: throw RuntimeException("not found template for: ${node::class}")
 
@@ -52,17 +59,17 @@ class NodeSerializer(
 
         val properties = node::class.declaredMemberProperties
 
-        val parameters = properties.map { property ->
-            val fieldName = property.name
-            val fieldValue = property.javaGetter!!.invoke(node)
+        val parameters = properties
+            .map { property ->
+                val fieldName = property.name
+                val fieldValue = property.javaGetter!!.invoke(node)
 
-            fieldName to processValue(fieldValue)
-        }
+                fieldName to processValue(fieldValue)
+            }
             .filter { it.second != null }
             .toMap(mutableMapOf())
 
-        val result = render.render(templatePath, parameters)
-
+        val result: String = render.render(templatePath, parameters)
         return result
     }
 

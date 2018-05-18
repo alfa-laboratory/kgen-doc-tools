@@ -5,6 +5,8 @@ import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
@@ -33,7 +35,8 @@ class DistributeLinkParser(override val parseInstance: MarkdownParser) : BlockPa
         }
     }
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> = emptyList()
+    override suspend fun parseLines(lines: List<String>): PartialParseResult =
+        emptyList<BlockNode>().toParseResult()
 
     override val parserId: String = "DistributeLinkParser"
 

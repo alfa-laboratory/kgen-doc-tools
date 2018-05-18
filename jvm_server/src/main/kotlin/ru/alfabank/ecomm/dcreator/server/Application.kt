@@ -7,6 +7,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
@@ -66,7 +67,7 @@ class Application(
     workDir: File,
     inputDirectory: File = File(workDir, "input"),
     outputDirectory: File = File(workDir, "output/pages"),
-    layoutDirectory: File = File(workDir, "layout/freemarker"),
+    layoutDirectory: File = File(workDir, "layout"),
     mode: ApplicationMode = ApplicationMode.PROD,
     private val port: Int = 8080
 ) {

@@ -16,23 +16,23 @@ class HeaderBlockTest {
     @Test
     fun test_single_line_header_block() = runTest {
         val singleLineHeader = sequenceOf("# some text")
-        val singleLineResult = parser.parse(singleLineHeader)
+        val (singleLineResult, _) = parser.parse(singleLineHeader)
         assertEquals(HeaderBlockNode(level = Level.ONE, node = TextNode(text = " some text")), singleLineResult)
 
         val singleLineHeader2 = sequenceOf("## some text")
-        val singleLineResult2 = parser.parse(singleLineHeader2)
+        val (singleLineResult2, _) = parser.parse(singleLineHeader2)
         assertEquals(HeaderBlockNode(level = Level.TWO, node = TextNode(text = " some text")), singleLineResult2)
 
         val singleLineHeader3 = sequenceOf("### some text")
-        val singleLineResult3 = parser.parse(singleLineHeader3)
+        val (singleLineResult3, _) = parser.parse(singleLineHeader3)
         assertEquals(HeaderBlockNode(level = Level.THREE, node = TextNode(text = " some text")), singleLineResult3)
 
         val singleLineHeader4 = sequenceOf("#### some text")
-        val singleLineResult4 = parser.parse(singleLineHeader4)
+        val (singleLineResult4, _) = parser.parse(singleLineHeader4)
         assertEquals(HeaderBlockNode(level = Level.FOUR, node = TextNode(text = " some text")), singleLineResult4)
 
         val singleLineHeader5 = sequenceOf("##### some text")
-        val singleLineResult5 = parser.parse(singleLineHeader5)
+        val (singleLineResult5, _) = parser.parse(singleLineHeader5)
         assertEquals(HeaderBlockNode(level = Level.FIVE, node = TextNode(text = " some text")), singleLineResult5)
     }
 
@@ -42,7 +42,7 @@ class HeaderBlockTest {
             " some text",
             "----------"
         )
-        val twoLineHeaderResult = parser.parse(twoLineHeader)
+        val (twoLineHeaderResult, _) = parser.parse(twoLineHeader)
         assertEquals(HeaderBlockNode(level = Level.ONE, node = TextNode(text = " some text")), twoLineHeaderResult)
 
 
@@ -50,7 +50,7 @@ class HeaderBlockTest {
             " some text",
             "============"
         )
-        val twoLineHeaderResult2 = parser.parse(twoLineHeader2)
+        val (twoLineHeaderResult2, _) = parser.parse(twoLineHeader2)
         assertEquals(HeaderBlockNode(level = Level.TWO, node = TextNode(text = " some text")), twoLineHeaderResult2)
     }
 
@@ -62,7 +62,7 @@ class HeaderBlockTest {
             "# some header",
             "another text"
         )
-        val actualResult = parser.parse(testLines)
+        val (actualResult, _) = parser.parse(testLines)
         val expectedResult = BlockLayout(
             listOf(
                 listOf(
@@ -86,7 +86,7 @@ class HeaderBlockTest {
             " ===============",
             "another text"
         )
-        val actualResult = parser.parse(testLines)
+        val (actualResult, _) = parser.parse(testLines)
         val expectedResult = BlockLayout(
             listOf(
                 listOf(

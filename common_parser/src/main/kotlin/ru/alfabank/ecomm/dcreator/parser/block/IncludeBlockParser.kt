@@ -5,6 +5,8 @@ import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
 import ru.alfabank.ecomm.dcreator.nodes.BlockNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockParser {
     override fun isLinesSuitable(lines: List<String>): BlockSuiteResult {
@@ -19,12 +21,12 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
         return BlockSuiteResult(false)
     }
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult {
         if (lines.size != 1)
             throw RuntimeException("unexpected behaviour")
 
         if (parseInstance.fileBaseDirectory == null)
-            return emptyList()
+            return emptyList<BlockNode>().toParseResult()
 
         val fileNameMatcher = INCLUDE_PATTERN.matcher(lines.first())
         if (fileNameMatcher.find()) {
@@ -33,16 +35,18 @@ class IncludeBlockParser(override val parseInstance: MarkdownParser) : BlockPars
             val includeFile = File(parseInstance.fileBaseDirectory, fileName)
 
             if (includeFile.exists()) {
-                val parseResult = parseInstance.parse(includeFile)
+                val (parseResult, serviceNodes) = parseInstance.parse(includeFile)
 
-                return when (parseResult) {
+                val result: List<BlockNode> = when (parseResult) {
                     is BlockLayout -> parseResult.nodes
                     else -> listOf(parseResult)
                 }
+
+                return PartialParseResult(result, serviceNodes)
             }
         }
 
-        return emptyList()
+        return emptyList<BlockNode>().toParseResult()
     }
 
     override val parserId: String = "IncludeBlockParser"

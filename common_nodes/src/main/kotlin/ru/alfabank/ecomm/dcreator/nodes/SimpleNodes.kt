@@ -19,6 +19,8 @@ object EmptyNode : Node by NodeIdGen() {
     override fun toString(): String = "EmptyNode"
 }
 
+data class SimpleNode(val text: String) : Node by NodeIdGen()
+
 data class TextNode(val text: String) : Node by NodeIdGen() {
     companion object {
         fun from(text: String): Node = if (text.isEmpty())

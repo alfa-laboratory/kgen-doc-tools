@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.render.process.HeaderProcessor
+import ru.alfabank.ecomm.dcreator.render.process.ProcessResult
 import ru.alfabank.ecomm.dcreator.render.serialize.FreemarkerRender
 import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class FileRenderTest {
 
@@ -29,8 +31,10 @@ class FileRenderTest {
     @Test
     fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
+        val outputDirectory = File(tempDirectory, "output").apply { mkdirs() }
 
-        val freemarkerRender = FreemarkerRender("../files/layout/freemarker")
+        val layoutRootDir = File("../files/layout")
+        val freemarkerRender = FreemarkerRender(File(layoutRootDir, "default"))
 
         val generateFile = File(inputDirectory, "testFile.md").apply {
             writeText(
@@ -44,10 +48,19 @@ class FileRenderTest {
             )
         }
 
-        val node = MarkdownParser(inputDirectory).parse(generateFile)
+        val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
+
+        val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutRootDir)
 
         val headerProcessor = HeaderProcessor()
-        val (result, replaceNodes) = headerProcessor.process(node)
+        val results: List<ProcessResult> =
+            headerProcessor.process(node, serviceNodes, documentGenerator.RelativePath(File(inputDirectory, "123.md")))
+
+        assertTrue(results.size == 1)
+
+        val (relativeLink, result, replaceNodes, resultServiceNodes) = results.first()
+
+        assertEquals("123.html", relativeLink)
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 

@@ -1,7 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.41'
-        kotlinDevVersion = '1.2.60-dev-36'
+        kotlinVersion = '1.2.50-eap-17'
         junitVersion = '5.2.0'
     }
     repositories {
@@ -79,7 +78,7 @@ configure(projectsWithFlags('kotlin_jvm')) {
         compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5")
 
         testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-        testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinDevVersion")
+        testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
         testCompile("com.nhaarman:mockito-kotlin-kt1.1:1.5.0")
         testCompile("org.junit.jupiter:junit-jupiter-api:$junitVersion")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")

@@ -21,7 +21,7 @@ class DistributeLinkParserTest {
             |       [link id1]: <http://someurl.com>
         """.trimMargin()
 
-        val actualResult = parser.parse(src.split("\n").asSequence())
+        val (actualResult, _) = parser.parse(src.split("\n").asSequence())
 
         val expectedResult = TextBlockNode(
             listOf(

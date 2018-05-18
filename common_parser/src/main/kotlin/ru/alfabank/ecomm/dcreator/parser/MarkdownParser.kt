@@ -2,18 +2,28 @@ package ru.alfabank.ecomm.dcreator.parser
 
 import ru.alfabank.ecomm.dcreator.common.File
 import ru.alfabank.ecomm.dcreator.common.withLines
-import ru.alfabank.ecomm.dcreator.nodes.BlockLayout
-import ru.alfabank.ecomm.dcreator.nodes.BlockNode
-import ru.alfabank.ecomm.dcreator.nodes.DistributeNode
-import ru.alfabank.ecomm.dcreator.nodes.EmptyBlockNode
+import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.block.*
 import ru.alfabank.ecomm.dcreator.parser.line.*
+
+data class ParseResult(
+    val result: BlockNode,
+    val serviceNodes: List<ServiceNode>
+)
+
+data class PartialParseResult(
+    val result: List<BlockNode>,
+    val serviceNodes: List<ServiceNode> = emptyList()
+)
+
+fun List<BlockNode>.toParseResult(): PartialParseResult = PartialParseResult(this)
 
 @Suppress("MemberVisibilityCanBePrivate")
 class MarkdownParser(val fileBaseDirectory: File? = null) {
     private val defaultBlockParser = DefaultBlockParser(this)
 
     val blockParsers = mutableListOf(
+        SpecialNodeBlockParser(this),
         HeaderBlockParser(this),
         CodeBlockParser(this),
         ListBlockParser(this),
@@ -41,23 +51,28 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
 
     val distributeNodes: MutableMap<String, List<DistributeNode>> = mutableMapOf()
 
-    suspend fun parse(source: File): BlockNode = source.withLines { lines ->
+    suspend fun parse(source: File): ParseResult = source.withLines { lines ->
         parse(lines)
     }
 
     //TODO add more block parsers (html block elements)
     //TODO(mega) add nested table
-    suspend fun parse(lines: Sequence<String>): BlockNode {
+    suspend fun parse(lines: Sequence<String>): ParseResult {
         val linesBuffer = mutableListOf<String>()
         var currentBlockParser: BlockParser? = null
         val parsedNodes = mutableListOf<BlockNode>()
+        val serviceNodes = mutableListOf<ServiceNode>()
 
         for (line in lines.iterator()) {
             if (currentBlockParser != null) {
                 val (isSuitable, result) = currentBlockParser.isLinesSuitable(linesBuffer + line)
 
                 if (!isSuitable && result == null) {
-                    parseNodes(currentBlockParser, linesBuffer).let { parsedNodes += it }
+                    currentBlockParser.parseLinesAndClearBuffer(linesBuffer)
+                        .let {
+                            parsedNodes += it.result
+                            serviceNodes += it.serviceNodes
+                        }
                     currentBlockParser = null
                 } else {
                     if (result != null) {
@@ -70,10 +85,18 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
             if (currentBlockParser == null) {
                 if (linesBuffer.isNotEmpty()) {
                     if (line.isBlank()) {
-                        parseNodes(currentBlockParser, linesBuffer).let { parsedNodes += it }
+                        defaultBlockParser.parseLinesAndClearBuffer(linesBuffer)
+                            .let {
+                                parsedNodes += it.result
+                                serviceNodes += it.serviceNodes
+                            }
                     } else {
                         findBlockParser(listOf(line), parsedNodes)?.also { findParser ->
-                            parseNodes(currentBlockParser, linesBuffer).let { parsedNodes += it }
+                            (currentBlockParser ?: defaultBlockParser).parseLinesAndClearBuffer(linesBuffer)
+                                .let {
+                                    parsedNodes += it.result
+                                    serviceNodes += it.serviceNodes
+                                }
                             currentBlockParser = findParser
                         }
                     }
@@ -86,7 +109,11 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
                         if (linesBuffer.isNotEmpty())
                             linesBuffer.removeAt(linesBuffer.lastIndex)
 
-                        parseNodes(currentBlockParser, linesBuffer).let { parsedNodes += it }
+                        (currentBlockParser ?: defaultBlockParser).parseLinesAndClearBuffer(linesBuffer)
+                            .let {
+                                parsedNodes += it.result
+                                serviceNodes += it.serviceNodes
+                            }
                         linesBuffer.addAll(lastLine)
                         currentBlockParser = findParser
                     }
@@ -98,15 +125,21 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
 
         if (linesBuffer.isNotEmpty()) {
             currentBlockParser = currentBlockParser ?: findBlockParser(linesBuffer, parsedNodes)
-            parseNodes(currentBlockParser, linesBuffer).let { parsedNodes += it }
+            (currentBlockParser ?: defaultBlockParser).parseLinesAndClearBuffer(linesBuffer)
+                .let {
+                    parsedNodes += it.result
+                    serviceNodes += it.serviceNodes
+                }
         }
 
-        parsedNodes.merge().let { result ->
-            return when {
+        val resultNode = parsedNodes.merge().let { result ->
+            when {
                 result.size == 1 -> result.first()
                 else -> BlockLayout(result)
             }
         }
+
+        return ParseResult(resultNode, serviceNodes)
     }
 
     private fun findBlockParser(linesBuffer: List<String>, parsedNodes: MutableList<BlockNode>): BlockParser? {
@@ -130,13 +163,10 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
         return null
     }
 
-    private suspend fun parseNodes(currentParser: BlockParser?, linesBuffer: MutableList<String>): List<BlockNode> {
-        val blockParser = currentParser ?: defaultBlockParser
-
-        return blockParser.parseLines(linesBuffer).also {
+    private suspend fun BlockParser.parseLinesAndClearBuffer(linesBuffer: MutableList<String>): PartialParseResult =
+        this.parseLines(linesBuffer).also {
             linesBuffer.clear()
         }
-    }
 
     private fun List<BlockNode>.merge(): List<BlockNode> = this.filter { it != EmptyBlockNode }
 }

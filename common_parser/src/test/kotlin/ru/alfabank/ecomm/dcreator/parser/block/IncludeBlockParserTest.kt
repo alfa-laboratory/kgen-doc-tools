@@ -15,7 +15,7 @@ class IncludeBlockParserTest {
     fun test_multiple_files_include() = runTest {
         val parser = MarkdownParser(File("../common_parser/src/test/resources/multifiles"))
 
-        val actual = parser.parse(File("../common_parser/src/test/resources/multifiles/file1.md"))
+        val (actual, _) = parser.parse(File("../common_parser/src/test/resources/multifiles/file1.md"))
 
         val expected = BlockLayout(
             listOf(

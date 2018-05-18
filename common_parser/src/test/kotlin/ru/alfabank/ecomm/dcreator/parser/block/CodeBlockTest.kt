@@ -21,7 +21,7 @@ class CodeBlockTest {
             "some code line 3",
             "```"
         )
-        val actualResult = parser.parse(code)
+        val (actualResult, _) = parser.parse(code)
 
         val expectedCodeLines = listOf(
             "some code line 1",
@@ -40,7 +40,7 @@ class CodeBlockTest {
             "some code line 1",
             "```"
         )
-        val actualResult = parser.parse(code)
+        val (actualResult, _) = parser.parse(code)
 
         val expectedCodeLines = listOf(
             "some code line 1"
@@ -61,7 +61,7 @@ class CodeBlockTest {
             "```",
             "some another text"
         )
-        val actualResult = parser.parse(code)
+        val (actualResult, _) = parser.parse(code)
 
         val expectedCodeLines = listOf(
             "some code line 1",

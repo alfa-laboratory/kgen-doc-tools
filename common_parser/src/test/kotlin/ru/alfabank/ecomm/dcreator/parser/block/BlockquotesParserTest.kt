@@ -21,7 +21,7 @@ class BlockquotesParserTest {
             "> line3"
         )
 
-        val actual = parser.parse(src)
+        val (actual, _) = parser.parse(src)
 
         val expected = BlockquotesBlockNode(
             TextBlockNode(
@@ -46,7 +46,7 @@ class BlockquotesParserTest {
             "end line"
         )
 
-        val actual = parser.parse(src)
+        val (actual, _) = parser.parse(src)
 
         val expected = BlockLayout(
             listOf(

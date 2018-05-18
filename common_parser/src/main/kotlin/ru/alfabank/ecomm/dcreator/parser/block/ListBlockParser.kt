@@ -4,6 +4,8 @@ import ru.alfabank.ecomm.dcreator.common.Matcher
 import ru.alfabank.ecomm.dcreator.common.toPattern
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.parser.PartialParseResult
+import ru.alfabank.ecomm.dcreator.parser.toParseResult
 
 private sealed class Level(
     open val spaces: Int
@@ -40,16 +42,16 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
 
     data class LineParseResult(val spaces: Int, val number: Int?, val symbol: Boolean, val text: String)
 
-    override suspend fun parseLines(lines: List<String>): List<BlockNode> {
+    override suspend fun parseLines(lines: List<String>): PartialParseResult {
         val lineMatch = START_LEVEL_PATTERN.matcher(lines.first())
         if (lineMatch.find()) {
             val (sumSpaces, number, symbolExists, text) = parseMatch(lineMatch)
 
             when {
                 number != null && !symbolExists ->
-                    return parseOtherLines(NumberedLevel(number, text, sumSpaces), lines.drop(1))
+                    return parseOtherLines(NumberedLevel(number, text, sumSpaces), lines.drop(1)).toParseResult()
                 number == null && symbolExists ->
-                    return parseOtherLines(SymbolLevel(text, sumSpaces), lines.drop(1))
+                    return parseOtherLines(SymbolLevel(text, sumSpaces), lines.drop(1)).toParseResult()
             }
         }
 
@@ -143,7 +145,7 @@ class ListBlockParser(override val parseInstance: MarkdownParser) : BlockParser 
     }
 
     private suspend fun List<String>.parse(): Node {
-        val result = parseInstance.parse(this.asSequence())
+        val (result, _) = parseInstance.parse(this.asSequence())
 
         return when {
             result is TextBlockNode && result.nodes.size == 1 -> result.nodes.first()
