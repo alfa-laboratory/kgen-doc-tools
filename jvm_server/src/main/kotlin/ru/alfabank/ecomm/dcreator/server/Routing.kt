@@ -103,20 +103,20 @@ class RenderRouterConfiguration(
         }
 
         post("file") {
-            val updateFile = doAndDisplayDiff("file write") {
+            val updateFile = doAndDisplayDiff("file ${call.parameters["path"]} write") {
                 val fileName = call.parameters["path"]!!
-                val _updateFile = File(inputDirectory, fileName)
+                val localUpdateFile = File(inputDirectory, fileName)
 
-                if (!_updateFile.exists())
+                if (!localUpdateFile.exists())
                     throw FileNotFoundException(fileName)
 
                 val data = call.receiveText()
 
-                _updateFile.writeText(data)
-                return@doAndDisplayDiff _updateFile
+                localUpdateFile.writeText(data)
+                return@doAndDisplayDiff localUpdateFile
             }
 
-            doAndDisplayDiff("run md reload") {
+            doAndDisplayDiff("run md reload for file $updateFile") {
                 documentGenerator.generateHtmlFromMd(updateFile)
             }
 

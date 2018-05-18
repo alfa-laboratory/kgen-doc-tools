@@ -28,20 +28,29 @@ class DocumentGenerator(
     inner class RelativePath(
         private val srcFile: File
     ) {
-        fun toRelativeLink(): String {
-            val relativePath = srcFile.parentFile
-                .toRelativeString(inputDirectory)
-                .let { if (it.isEmpty()) "" else "$it/" }
+        fun toRelative(): String {
+            val relativePath = srcFile.toRelative()
 
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
-        fun copyPath(newName: String, postFix: String): RelativePath {
+        fun toLink(): String {
+            val relativePath = srcFile.toRelative()
+
+            return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
+        }
+
+        fun subPath(newName: String, postFix: String = ""): RelativePath {
+            val dir = File(srcFile.parent, srcFile.nameWithoutExtension)
             val newFileName = File(newName).nameWithoutExtension
-            val newFile = File(srcFile.parent, "$newFileName$postFix")
+            val newFile = File(dir, "$newFileName$postFix")
 
             return RelativePath(newFile)
         }
+
+        fun File.toRelative(): String = this.parentFile
+            .toRelativeString(inputDirectory)
+            .let { if (it.isEmpty()) "" else "$it/" }
     }
 
     suspend fun generateHtmlFromMd(generateFile: File) {
