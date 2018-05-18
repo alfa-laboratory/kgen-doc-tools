@@ -21,19 +21,19 @@ class TabsProcessor(
         serviceNodes: List<ServiceNode>,
         relativePath: DocumentGenerator.RelativePath
     ): List<ProcessResult> {
-        val fileToTabNodes: List<Pair<String, TabNode>> = serviceNodes.filterIsInstance<IncludeServiceNode>()
-            .mapIndexed { index, (name, file) ->
-                val tabRelativeLink = if (index == 0)
-                    relativePath.toRelativeLink()
-                else
-                    relativePath
-                        .copyPath(name.toPreparedName(), index.toString())
-                        .toRelativeLink()
+        val fileToTabNodes: List<Triple<String, DocumentGenerator.RelativePath, TabNode>> =
+            serviceNodes.filterIsInstance<IncludeServiceNode>()
+                .mapIndexed { index, (name, file) ->
+                    val tabRelativeLink = if (index == 0)
+                        relativePath
+                    else
+                        relativePath
+                            .subPath(name.toPreparedName())
 
-                file to TabNode(name, tabRelativeLink, false)
-            }
+                    Triple(file, tabRelativeLink, TabNode(name, tabRelativeLink.toLink(), false))
+                }
 
-        return fileToTabNodes.map { (file, currentTab) ->
+        return fileToTabNodes.map { (file, relativePath, currentTab) ->
             val processResults = generateData(file)
             if (processResults.size != 1)
                 throw RuntimeException("multiple nested files not supported for this layout")
@@ -47,7 +47,7 @@ class TabsProcessor(
             findTitle(localServiceNodes)?.let { result += "title" to SimpleNode(it.title) }
 
             ProcessResult(
-                relativeLink = currentTab.link,
+                relativePath = relativePath.toRelative(),
                 result = result,
                 replaceNodes = emptyMap(),
                 serviceNodes = localServiceNodes
@@ -59,19 +59,17 @@ class TabsProcessor(
         this.replace(Regex("[^a-zA-Zа-яА-Я]+", kotlin.text.RegexOption.IGNORE_CASE), "_")
             .toLowerCase()
 
-    private fun prepareTabs(currentTab: TabNode, fileToTabNodes: List<Pair<String, TabNode>>): Node {
-        return fileToTabNodes.map { (_, tab) ->
+    private fun prepareTabs(
+        currentTab: TabNode,
+        fileToTabNodes: List<Triple<String, DocumentGenerator.RelativePath, TabNode>>
+    ): Node {
+        return fileToTabNodes.map { (_, _, tab) ->
             if (currentTab.nodeId == tab.nodeId)
                 tab.copy(selected = true)
             else
                 tab
         }.let { TabNodes(it) }
     }
-
-    companion object {
-        private const val SELF_LINK = "."
-    }
-
 }
 
 

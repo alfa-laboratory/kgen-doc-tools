@@ -38,7 +38,7 @@ class HeaderProcessor : NodeProcessor {
         )
         findTitle(serviceNodes)?.let { result += "title" to SimpleNode(it.title) }
 
-        return listOf(ProcessResult(relativePath.toRelativeLink(), result, anchors, serviceNodes))
+        return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))
     }
 
     private fun processHeaders(headerNodes: List<HeaderBlockNode>): Pair<List<BlockNode>, Map<String, Node>> {

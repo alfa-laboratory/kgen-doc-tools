@@ -6,7 +6,7 @@ import ru.alfabank.ecomm.dcreator.nodes.TitleServiceNode
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
 data class ProcessResult(
-    val relativeLink: String,
+    val relativePath: String,
     val result: Map<String, Node>,
     val replaceNodes: Map<String, Node>,
     val serviceNodes: List<ServiceNode>
