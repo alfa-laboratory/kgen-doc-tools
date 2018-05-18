@@ -47,6 +47,7 @@ yarn-error.log
 *.sln
 
 files/output/pages/
+filesExample/output/pages/
 
 **/public_react/coverage/
 **/public_react/public/

@@ -9,6 +9,6 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
     <link rel="stylesheet" type="text/css" href="/static/css/asciidoctor.css">
-    <link rel="stylesheet" type="text/css" href="/node_modules/highlight/styles/github.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/github.css">
 </head>
 <body>
