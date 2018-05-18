@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.render.process.HeaderProcessor
+import ru.alfabank.ecomm.dcreator.render.process.ProcessResult
 import ru.alfabank.ecomm.dcreator.render.serialize.FreemarkerRender
 import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class FileRenderTest {
 
@@ -47,7 +49,13 @@ class FileRenderTest {
         val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
         val headerProcessor = HeaderProcessor()
-        val (result, replaceNodes) = headerProcessor.process(node)
+        val results: List<ProcessResult> = headerProcessor.process(node, serviceNodes)
+
+        assertTrue(results.size == 1)
+
+        val (relativeLink, result, replaceNodes, resultServiceNodes) = results.first()
+
+        assertEquals("", relativeLink)
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 

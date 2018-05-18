@@ -16,7 +16,7 @@ data class HeaderAnchor(
 ) : Node by NodeIdGen(), NestedNode, BlockNode
 
 class HeaderProcessor : NodeProcessor {
-    override fun process(node: Node): ProcessResult {
+    override fun process(node: Node, serviceNodes: List<ServiceNode>): List<ProcessResult> {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
             is NestedNode -> listOf(node.node)
@@ -27,12 +27,13 @@ class HeaderProcessor : NodeProcessor {
 
         val (headerLinks, anchors) = processHeaders(headerNodes)
 
-        val result = mapOf(
+        val result = mutableMapOf(
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
+        findTitle(serviceNodes)?.let { result += "title" to it }
 
-        return ProcessResult(result, anchors)
+        return listOf(ProcessResult("",result, anchors, serviceNodes))
     }
 
     private fun processHeaders(headerNodes: List<HeaderBlockNode>): Pair<List<BlockNode>, Map<String, Node>> {
@@ -80,6 +81,6 @@ class HeaderProcessor : NodeProcessor {
     private fun HeaderBlockNode.toHeaderLink() =
         HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
 
-    //make it valid quertySelector (first digit symbol is not allowed)
+    //convert it to valid quertySelector (first digit symbol is not allowed)
     private fun String.toSelector(): String = "q$this"
 }

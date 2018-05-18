@@ -67,7 +67,7 @@ class Application(
     workDir: File,
     inputDirectory: File = File(workDir, "input"),
     outputDirectory: File = File(workDir, "output/pages"),
-    layoutDirectory: File = File(workDir, "layout/freemarker"),
+    layoutDirectory: File = File(workDir, "layout"),
     mode: ApplicationMode = ApplicationMode.PROD,
     private val port: Int = 8080
 ) {
