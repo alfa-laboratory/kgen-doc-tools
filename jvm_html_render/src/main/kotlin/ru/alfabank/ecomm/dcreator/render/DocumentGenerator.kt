@@ -30,13 +30,11 @@ class DocumentGenerator(
     ) {
         fun toRelative(): String {
             val relativePath = srcFile.toRelative()
-
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
         fun toLink(): String {
             val relativePath = srcFile.toRelative()
-
             return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
@@ -48,7 +46,7 @@ class DocumentGenerator(
             return RelativePath(newFile)
         }
 
-        fun File.toRelative(): String = this.parentFile
+        private fun File.toRelative(): String = this.parentFile
             .toRelativeString(inputDirectory)
             .let { if (it.isEmpty()) "" else "$it/" }
     }
@@ -73,7 +71,7 @@ class DocumentGenerator(
         }
     }
 
-    private suspend fun renderFile(generateFile: File): List<ProcessingData> {
+    private suspend fun renderFile(generateFile: File, embedded: Boolean = false): List<ProcessingData> {
         if (!init) {
             initRenders()
         }
@@ -97,12 +95,10 @@ class DocumentGenerator(
         val freemarkerRender = layoutNode?.let { freemarkerRenders[it.layout] }
             ?: freemarkerRenders[DEFAULT_LAYOUT]!!
 
-        return nodeProcessor.process(node, serviceNodes, relativePath)
+        return nodeProcessor.process(node, serviceNodes, relativePath, embedded)
             .map { (localRelativePath, result, replaceNodes, localServiceNodes) ->
                 val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
-                val preparedResult = result.mapValues { value ->
-                    nodeSerializer.writeNodeToString(value.value)
-                }
+                val preparedResult = nodeSerializer.prepareParams(result)
 
                 ProcessingData(
                     data = freemarkerRender.render(INDEX_FILE_NAME, preparedResult),
@@ -112,8 +108,8 @@ class DocumentGenerator(
             }
     }
 
-    private fun generateHtmlFromMd(generateFile: String): List<ProcessingData> = runBlocking {
-        renderFile(File(inputDirectory, generateFile))
+    private fun generateEmbeddedHtmlFromMd(generateFile: String): List<ProcessingData> = runBlocking {
+        renderFile(File(inputDirectory, generateFile), embedded = true)
     }
 
     private fun findLayoutNode(serviceNodes: List<ServiceNode>): LayoutServiceNode? = serviceNodes
@@ -136,7 +132,7 @@ class DocumentGenerator(
         }
 
         nodeProcessors += DEFAULT_LAYOUT to HeaderProcessor()
-        nodeProcessors += TABS_LAYOUT to TabsProcessor(this::generateHtmlFromMd)
+        nodeProcessors += TABS_LAYOUT to TabsProcessor(this::generateEmbeddedHtmlFromMd)
     }
 
     companion object {

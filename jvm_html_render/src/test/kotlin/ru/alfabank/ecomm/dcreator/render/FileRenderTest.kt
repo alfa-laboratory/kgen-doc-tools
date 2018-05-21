@@ -54,7 +54,7 @@ class FileRenderTest {
 
         val headerProcessor = HeaderProcessor()
         val results: List<ProcessResult> =
-            headerProcessor.process(node, serviceNodes, documentGenerator.RelativePath(File(inputDirectory, "123.md")))
+            headerProcessor.process(node, serviceNodes, documentGenerator.RelativePath(File(inputDirectory, "123.md")), false)
 
         assertTrue(results.size == 1)
 
@@ -64,9 +64,7 @@ class FileRenderTest {
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 
-        val preparedResult = result.mapValues { value ->
-            nodeSerializer.writeNodeToString(value.value)
-        }
+        val preparedResult = nodeSerializer.prepareParams(result)
 
         val nodesData = freemarkerRender.render("index.ftlh", preparedResult)
 

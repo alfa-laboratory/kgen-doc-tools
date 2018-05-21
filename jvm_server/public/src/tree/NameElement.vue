@@ -44,7 +44,7 @@
   }
 </script>
 
-<style>
+<style lang="scss">
   .file-element {
     position: relative;
     vertical-align: middle;
@@ -54,10 +54,24 @@
     padding: 12px;
     display: inline-block;
     width: 85%;
-  }
+    white-space: nowrap;
+    overflow: hidden;
 
-  .file-element-text-block.hide {
-    visibility: hidden;
+    &:after {
+      content: '';
+      display: block;
+      width: 10px;
+      background: linear-gradient(to right, rgba(255,255,255,0), #e6e6e6);
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 9999;
+      height: 100%;
+    }
+
+    &.hide {
+      visibility: hidden;
+    }
   }
 
   .type-element-icon_child {

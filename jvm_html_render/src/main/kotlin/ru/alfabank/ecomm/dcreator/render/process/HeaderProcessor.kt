@@ -20,7 +20,8 @@ class HeaderProcessor : NodeProcessor {
     override fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePath,
+        embedded: Boolean
     ): List<ProcessResult> {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
@@ -36,7 +37,8 @@ class HeaderProcessor : NodeProcessor {
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
-        findTitle(serviceNodes)?.let { result += "title" to SimpleNode(it.title) }
+        findTitle(serviceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
+        result += "embedded" to EmbeddedServiceNode(embedded)
 
         return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))
     }

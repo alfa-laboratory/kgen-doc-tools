@@ -1,1 +1,0 @@
-<li>${node?no_esc}</li>

@@ -27,6 +27,7 @@ interface NodeProcessor {
     fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePath,
+        embedded: Boolean
     ): List<ProcessResult>
 }
