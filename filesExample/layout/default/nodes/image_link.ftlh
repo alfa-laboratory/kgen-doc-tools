@@ -1,1 +1,0 @@
-<img src="${url!""}" title="${title!""}"/>

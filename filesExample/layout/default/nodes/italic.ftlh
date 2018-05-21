@@ -1,1 +1,0 @@
-<i>${node?no_esc}</i>
