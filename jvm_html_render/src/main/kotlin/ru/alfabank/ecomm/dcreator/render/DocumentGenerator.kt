@@ -30,13 +30,11 @@ class DocumentGenerator(
     ) {
         fun toRelative(): String {
             val relativePath = srcFile.toRelative()
-
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
         fun toLink(): String {
             val relativePath = srcFile.toRelative()
-
             return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
@@ -48,7 +46,7 @@ class DocumentGenerator(
             return RelativePath(newFile)
         }
 
-        fun File.toRelative(): String = this.parentFile
+        private fun File.toRelative(): String = this.parentFile
             .toRelativeString(inputDirectory)
             .let { if (it.isEmpty()) "" else "$it/" }
     }

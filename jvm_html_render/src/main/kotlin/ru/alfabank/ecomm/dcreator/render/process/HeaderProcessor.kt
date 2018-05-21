@@ -36,7 +36,7 @@ class HeaderProcessor : NodeProcessor {
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
-        findTitle(serviceNodes)?.let { result += "title" to SimpleNode(it.title) }
+        findTitle(serviceNodes)?.let { result += "title" to HTMLNode(it.title) }
 
         return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))
     }

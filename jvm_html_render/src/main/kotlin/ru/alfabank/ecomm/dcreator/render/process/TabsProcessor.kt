@@ -2,6 +2,7 @@ package ru.alfabank.ecomm.dcreator.render.process
 
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import kotlin.text.RegexOption.IGNORE_CASE
 
 data class TabNodes(
     val tabs: List<TabNode>
@@ -27,24 +28,23 @@ class TabsProcessor(
                     val tabRelativeLink = if (index == 0)
                         relativePath
                     else
-                        relativePath
-                            .subPath(name.toPreparedName())
+                        relativePath.subPath(name.toPreparedName())
 
                     Triple(file, tabRelativeLink, TabNode(name, tabRelativeLink.toLink(), false))
                 }
 
         return fileToTabNodes.map { (file, relativePath, currentTab) ->
-            val processResults = generateData(file)
+            val processResults: List<ProcessingData> = generateData(file)
             if (processResults.size != 1)
                 throw RuntimeException("multiple nested files not supported for this layout")
 
             val (data, localServiceNodes, _) = processResults.first()
 
             val result = mutableMapOf(
-                "data" to SimpleNode(data),
+                "data" to HTMLNode(data),
                 "tabs" to prepareTabs(currentTab, fileToTabNodes)
             )
-            findTitle(localServiceNodes)?.let { result += "title" to SimpleNode(it.title) }
+            findTitle(localServiceNodes)?.let { result += "title" to HTMLNode(it.title) }
 
             ProcessResult(
                 relativePath = relativePath.toRelative(),
@@ -56,20 +56,18 @@ class TabsProcessor(
     }
 
     private fun String.toPreparedName(): String =
-        this.replace(Regex("[^a-zA-Zа-яА-Я0-9]+", kotlin.text.RegexOption.IGNORE_CASE), "_")
+        this.replace(Regex("[^a-zA-Zа-яА-Я0-9]+", IGNORE_CASE), "_")
             .toLowerCase()
 
     private fun prepareTabs(
         currentTab: TabNode,
         fileToTabNodes: List<Triple<String, DocumentGenerator.RelativePath, TabNode>>
-    ): Node {
-        return fileToTabNodes.map { (_, _, tab) ->
-            if (currentTab.nodeId == tab.nodeId)
-                tab.copy(selected = true)
-            else
-                tab
-        }.let { TabNodes(it) }
-    }
+    ): TabNodes = fileToTabNodes.map { (_, _, tab) ->
+        if (currentTab.nodeId == tab.nodeId)
+            tab.copy(selected = true)
+        else
+            tab
+    }.let { TabNodes(it) }
 }
 
 

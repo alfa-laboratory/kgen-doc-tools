@@ -47,9 +47,6 @@ class NodeSerializer(
     )
 
     fun writeNodeToString(node: Node): String {
-        if (node is SimpleNode)
-            return node.text
-
         val templatePath = templates[node::class]
             ?: throw RuntimeException("not found template for: ${node::class}")
 

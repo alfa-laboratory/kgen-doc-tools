@@ -2,12 +2,15 @@ package ru.alfabank.ecomm.dcreator.render
 
 import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
+import java.lang.Exception
 
 fun main(args: Array<String>) = runBlocking {
-    val inputDirectory = File("files/input")
-    val outputDirectory = File("files/output/pages")
+    val fileDirectory = "filesExample"
 
-    val layoutPath = File("files/layout")
+    val inputDirectory = File("$fileDirectory/input")
+    val outputDirectory = File("$fileDirectory/output/pages")
+
+    val layoutPath = File("$fileDirectory/layout")
 
     val documentGenerator = DocumentGenerator(
         inputDirectory,
@@ -15,6 +18,12 @@ fun main(args: Array<String>) = runBlocking {
         layoutPath
     )
 
-    for (file in inputDirectory.walk())
-        documentGenerator.generateHtmlFromMd(file)
+    for (file in inputDirectory.walk()) {
+        try {
+            documentGenerator.generateHtmlFromMd(file)
+        } catch (e: Exception) {
+            println("ERROR: while try to parse file $file")
+            e.printStackTrace()
+        }
+    }
 }
