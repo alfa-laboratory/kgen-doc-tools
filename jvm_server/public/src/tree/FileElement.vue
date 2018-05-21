@@ -2,28 +2,30 @@
   <div v-click-outside="onOutside">
     <div class="select" v-if="selected !== undefined">
       <div class="select-styled" :class="{ active: isActive }">
-        <div @click="onClick">
+        <div @click="onClick" class="file-element_text_block">
           <img class="type-element-icon" v-if="selected.type == 'file'" src="/images/file.svg"/>
           <img class="type-element-icon" v-if="selected.type == 'folder'" src="/images/folder.svg"/>
           <span class="file-element_text">{{selected.text}}</span>
         </div>
         <span></span>
-        <ul class="select-options" :class="{ active: isActive }">
-          <name-element
-            v-for="(option, index) in optionsLocal"
-            v-if="!option.empty"
-            @clickElement="onElementClick(index)"
-            @edit="onEditElement(index)"
-            @enter="onNewElementText"
-            @delete="onDeleteElement(index)"
-            :class="{active: option.active}"
-            :edit="option.edit"
-            :text="option.text"
-            :type="option.type"
-            :index="index"
-          >
-          </name-element>
-        </ul>
+        <div class="select-options-block" :class="{ active: isActive }">
+          <ul class="select-options" :class="{ active: isActive }">
+            <name-element
+              v-for="(option, index) in optionsLocal"
+              v-if="!option.empty"
+              @clickElement="onElementClick(index)"
+              @edit="onEditElement(index)"
+              @enter="onNewElementText"
+              @delete="onDeleteElement(index)"
+              :class="{active: option.active}"
+              :edit="option.edit"
+              :text="option.text"
+              :type="option.type"
+              :index="index"
+            >
+            </name-element>
+          </ul>
+        </div>
       </div>
       <div class="element-blocks" v-if="isActive">
         <div class="element-blocks_file" @click="onNewFile">
@@ -266,6 +268,16 @@
   $select-width: 220px;
   $select-height: 30px;
 
+  .file-element_text_block {
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 30px;
+    top: 6px;
+    bottom: 0;
+  }
+
   .type-element-icon {
     width: 1em;
     display: inline-block;
@@ -318,12 +330,13 @@
   }
 
   .select-styled {
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     background-color: $select-background;
-    padding: 8px 15px;
+    padding: 8px 0;
     &:after {
       content: "";
       width: 0;
@@ -345,12 +358,24 @@
     }
   }
 
+  .select-options-block {
+    display: none;
+    width: 200px;
+    left: -25px;
+    position: relative;
+    height: 90vh;
+    overflow-y: scroll;
+    &.active {
+      display: block;
+    }
+  }
+
   .select-options {
     display: none;
     position: absolute;
-    top: 100%;
-    right: 0;
-    left: 0;
+    top: 0;
+    width: 150px;
+    left: 25px;
     z-index: 998;
     margin: 0;
     padding: 0;
