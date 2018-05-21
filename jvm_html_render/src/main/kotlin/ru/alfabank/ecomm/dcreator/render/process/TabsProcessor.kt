@@ -20,7 +20,8 @@ class TabsProcessor(
     override fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePath,
+        embedded: Boolean
     ): List<ProcessResult> {
         val fileToTabNodes: List<Triple<String, DocumentGenerator.RelativePath, TabNode>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
@@ -44,7 +45,7 @@ class TabsProcessor(
                 "data" to HTMLNode(data),
                 "tabs" to prepareTabs(currentTab, fileToTabNodes)
             )
-            findTitle(localServiceNodes)?.let { result += "title" to HTMLNode(it.title) }
+            findTitle(localServiceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
 
             ProcessResult(
                 relativePath = relativePath.toRelative(),

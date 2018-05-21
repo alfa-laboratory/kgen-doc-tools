@@ -46,7 +46,16 @@ class NodeSerializer(
         TabNode::class to "special/tab_node.ftlh"
     )
 
-    fun writeNodeToString(node: Node): String {
+    fun prepareParams(result: Map<String, Node>): Map<String, Any> {
+        return result.mapValues { value ->
+            if (value.value is ServiceNode)
+                (value.value as ServiceNode).toParams()
+            else
+                writeNodeToString(value.value)
+        }
+    }
+
+    private fun writeNodeToString(node: Node): String {
         val templatePath = templates[node::class]
             ?: throw RuntimeException("not found template for: ${node::class}")
 
