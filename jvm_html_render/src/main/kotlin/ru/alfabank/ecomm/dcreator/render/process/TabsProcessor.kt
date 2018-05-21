@@ -41,9 +41,14 @@ class TabsProcessor(
 
             val (data, localServiceNodes, _) = processResults.first()
 
+            val preparedTabs: List<TabNode> = prepareTabs(currentTab, fileToTabNodes)
+            val (selected, otherTabs) = preparedTabs.partition { it.selected }
+
             val result = mutableMapOf(
                 "data" to HTMLNode(data),
-                "tabs" to prepareTabs(currentTab, fileToTabNodes)
+                "selectedTab" to selected.first(),
+                "otherTabs" to TabNodes(otherTabs),
+                "tabs" to TabNodes(preparedTabs)
             )
             findTitle(localServiceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
 
@@ -63,12 +68,12 @@ class TabsProcessor(
     private fun prepareTabs(
         currentTab: TabNode,
         fileToTabNodes: List<Triple<String, DocumentGenerator.RelativePath, TabNode>>
-    ): TabNodes = fileToTabNodes.map { (_, _, tab) ->
+    ): List<TabNode> = fileToTabNodes.map { (_, _, tab) ->
         if (currentTab.nodeId == tab.nodeId)
             tab.copy(selected = true)
         else
             tab
-    }.let { TabNodes(it) }
+    }
 }
 
 
