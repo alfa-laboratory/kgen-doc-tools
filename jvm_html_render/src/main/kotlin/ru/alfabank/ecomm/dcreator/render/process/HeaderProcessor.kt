@@ -37,7 +37,9 @@ class HeaderProcessor : NodeProcessor {
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
-        findTitle(serviceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
+        findTitle(serviceNodes)
+            .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
+
         result += "embedded" to EmbeddedServiceNode(embedded)
 
         return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))

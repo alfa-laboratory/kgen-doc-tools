@@ -50,7 +50,8 @@ class TabsProcessor(
                 "otherTabs" to TabNodes(otherTabs),
                 "tabs" to TabNodes(preparedTabs)
             )
-            findTitle(localServiceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
+            findTitle(localServiceNodes)
+                .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
 
             ProcessResult(
                 relativePath = relativePath.toRelative(),
