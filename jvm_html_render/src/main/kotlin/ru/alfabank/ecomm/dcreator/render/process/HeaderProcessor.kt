@@ -90,6 +90,8 @@ class HeaderProcessor : NodeProcessor {
     private fun HeaderBlockNode.toHeaderLink() =
         HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
 
-    //convert it to valid quertySelector (first digit symbol is not allowed)
+    /**
+     * convert it to valid quertySelector (first digit symbol is not allowed)
+     */
     private fun String.toSelector(): String = "q$this"
 }

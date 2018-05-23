@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import ru.alfabank.ecomm.dcreator.nodes.*
-import ru.alfabank.ecomm.dcreator.render.process.HeaderAnchor
-import ru.alfabank.ecomm.dcreator.render.process.HeaderLink
-import ru.alfabank.ecomm.dcreator.render.process.TabNode
-import ru.alfabank.ecomm.dcreator.render.process.TabNodes
+import ru.alfabank.ecomm.dcreator.render.process.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaGetter
@@ -43,7 +40,8 @@ class NodeSerializer(
         HeaderLink::class to "special/header_link.ftlh",
         HeaderAnchor::class to "special/header_anchor.ftlh",
         TabNodes::class to "special/tab_nodes.ftlh",
-        TabNode::class to "special/tab_node.ftlh"
+        TabNode::class to "special/tab_node.ftlh",
+        PageHeader::class to "special/page_header.ftlh"
     )
 
     fun prepareParams(result: Map<String, Node>): Map<String, Any> {
