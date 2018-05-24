@@ -82,7 +82,7 @@ class RenderRouterConfiguration(
             val path = call.parameters["path"] ?: ""
 
             val folder = File(inputDirectory, path)
-            if (folder.exists() && folder.isDirectory) {
+            if (folder.exists() && folder.isDirectory && folder.relativeToOrNull(inputDirectory) != null) {
                 val files = folder.listFiles()?.map {
                     when {
                         it.isFile -> FileInfo(it.name, FileType.File)
@@ -99,13 +99,21 @@ class RenderRouterConfiguration(
 
         get("file") {
             val fileName = call.parameters["path"]!!
-            call.respond(File(inputDirectory, fileName).readText())
+            val file = File(inputDirectory, fileName)
+
+            if (file.relativeToOrNull(inputDirectory) == null)
+                throw RuntimeException("invalid path")
+
+            call.respond(file.readText())
         }
 
         post("file") {
             val updateFile = doAndDisplayDiff("file ${call.parameters["path"]} write") {
                 val fileName = call.parameters["path"]!!
                 val localUpdateFile = File(inputDirectory, fileName)
+
+                if (localUpdateFile.relativeToOrNull(inputDirectory) == null)
+                    throw RuntimeException("invalid path")
 
                 if (!localUpdateFile.exists())
                     throw FileNotFoundException(fileName)
@@ -129,6 +137,9 @@ class RenderRouterConfiguration(
 
             val deleteFile = File(inputDirectory, fileName)
 
+            if (deleteFile.relativeToOrNull(inputDirectory) == null)
+                throw RuntimeException("invalid path")
+
             if (!deleteFile.exists())
                 throw FileNotFoundException(fileName)
 
@@ -141,6 +152,10 @@ class RenderRouterConfiguration(
             val (fileName, type) = call.receiveRequest<NewFileRequest>()
 
             val newFile = File(inputDirectory, fileName)
+
+            if (newFile.relativeToOrNull(inputDirectory) == null)
+                throw RuntimeException("invalid path")
+
             if (newFile.exists())
                 throw FileNotFoundException(fileName)
 
@@ -157,6 +172,10 @@ class RenderRouterConfiguration(
             val (path, newName) = call.receiveRequest<RenameRequest>()
 
             val file = File(inputDirectory, path)
+
+            if (file.relativeToOrNull(inputDirectory) == null)
+                throw RuntimeException("invalid path")
+
             if (!file.exists())
                 throw FileNotFoundException(file.absolutePath)
 
