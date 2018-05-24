@@ -4,14 +4,45 @@
 [![codecov](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools)
 [![MIT Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/alfa-laboratory/kgen-doc-tools/blob/master/LICENSE)
 
-Project contains utils to generate `html` documentation from `markdown` text with custom extensions (like include, title etc.)
+## Project contains utils to generate `html` documentation from `markdown` text with custom extensions (like include, title etc.)
 
-* __common__ - contains parser nodes and layout
+### Structure:
+
+* __common_nodes__ - contains parser nodes 
+* __common_parser__ - contains common markdown parser implementation with custom extensions like include, title etc
 * __files__ - contains input files, example layout and output directory contains `css` and `js` static files
 * __jvm_html_render__ - header preprocessor which collect header nodes from parser and render it to `html` text by passing layout
 * __jvm_server__ - simple server to demonstrate possibilities with live parser reloading and editing text in `web`
-* __parser__ - custom markdown parser with extensions like include, title etc.
+* __jvm_parser__ - JVM realization or __common_parser__
+* __js_parser__ - JS realization or __common_parser__ (with translated TypeScript declaration of NodeJs to Kotlin)
 
-For demonstration run `main` method from `jvm_server/ru.alfabank.ecomm.dcreator.server.Application.kt` and open `http://localhost:8080/index.html`
+### Build requirenments:
+- installed `java 8`
+- installed `node 10`
 
- 
+### Build:
+
+Build project:
+```sh
+gradle buildWithResources
+```
+And run after with next command:
+```sh
+java -jar jvm_server/build/libs/jvm_server-all.jar <path_to_files>
+```
+Where `<path_to_files>` is path to files directory with layout. If directory is empty, then it will be created with needed structure.
+
+### Development run:
+- run client side with `webpack` in dev mode: 
+```sh
+cd jvm_server/public 
+npm i 
+npm run devNoServer
+```
+- run jvm_server in test mode:
+```
+gradle buildWithResources
+cd jvm_server
+java -jar build/libs/jvm_server-all.jar <path_to_files> test
+```
+- open page `http://localhost:8080`
