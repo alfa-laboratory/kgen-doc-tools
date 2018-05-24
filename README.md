@@ -11,7 +11,7 @@
 * __common_nodes__ - contains parser nodes 
 * __common_parser__ - contains common markdown parser implementation with custom extensions like include, title etc
 * __files__ - contains input files, example layout and output directory contains `css` and `js` static files
-* __jvm_html_render__ - header preprocessor which collect header nodes from parser and render it to `html` text by passing layout
+* __jvm_html_render__ - collect post processors and render implementation to render parsed nodes to `html` using layout from input folder
 * __jvm_server__ - simple server to demonstrate possibilities with live parser reloading and editing text in `web`
 * __jvm_parser__ - JVM realization of __common_parser__
 * __js_parser__ - JS realization of __common_parser__ (with translated TypeScript declaration of NodeJs to Kotlin)
@@ -24,7 +24,7 @@
 
 Build project:
 ```sh
-gradle buildWithResources
+./gradlew buildWithResources
 ```
 And run after with next command:
 ```sh
@@ -41,7 +41,7 @@ npm run devNoServer
 ```
 - run jvm_server in test mode:
 ```
-gradle buildWithResources
+./gradlew buildWithResources
 cd jvm_server
 java -jar build/libs/jvm_server-all.jar <path_to_files> test
 ```
