@@ -13,8 +13,8 @@
 * __files__ - contains input files, example layout and output directory contains `css` and `js` static files
 * __jvm_html_render__ - header preprocessor which collect header nodes from parser and render it to `html` text by passing layout
 * __jvm_server__ - simple server to demonstrate possibilities with live parser reloading and editing text in `web`
-* __jvm_parser__ - JVM realization or __common_parser__
-* __js_parser__ - JS realization or __common_parser__ (with translated TypeScript declaration of NodeJs to Kotlin)
+* __jvm_parser__ - JVM realization of __common_parser__
+* __js_parser__ - JS realization of __common_parser__ (with translated TypeScript declaration of NodeJs to Kotlin)
 
 ### Build requirenments:
 - installed `java 8`
