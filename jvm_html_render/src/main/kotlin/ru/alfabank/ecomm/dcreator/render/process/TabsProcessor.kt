@@ -14,6 +14,11 @@ data class TabNode(
     val selected: Boolean
 ) : Node by NodeIdGen()
 
+data class PageHeader(
+    val name: String,
+    val link: String
+) : Node by NodeIdGen()
+
 class TabsProcessor(
     private val generateData: (String) -> List<ProcessingData>
 ) : NodeProcessor {
@@ -46,11 +51,12 @@ class TabsProcessor(
 
             val result = mutableMapOf(
                 "data" to HTMLNode(data),
-                "selectedTab" to selected.first(),
+                "selected" to selected.first().toHeader(),
                 "otherTabs" to TabNodes(otherTabs),
                 "tabs" to TabNodes(preparedTabs)
             )
-            findTitle(localServiceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
+            findTitle(localServiceNodes)
+                .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
 
             ProcessResult(
                 relativePath = relativePath.toRelative(),
@@ -60,6 +66,11 @@ class TabsProcessor(
             )
         }
     }
+
+    private fun TabNode.toHeader(): PageHeader = PageHeader(
+        name = this.name,
+        link = this.link
+    )
 
     private fun String.toPreparedName(): String =
         this.replace(Regex("[^a-zA-Zа-яА-Я0-9]+", IGNORE_CASE), "_")
@@ -75,5 +86,7 @@ class TabsProcessor(
             tab
     }
 }
+
+
 
 

@@ -91,9 +91,11 @@ class DocumentGenerator(
         val layoutNode: LayoutServiceNode? = findLayoutNode(serviceNodes)
 
         val nodeProcessor = layoutNode?.let { nodeProcessors[it.layout] }
-            ?: nodeProcessors[DEFAULT_LAYOUT]!!
+            ?: nodeProcessors[DEFAULT_LAYOUT]
+            ?: throw RuntimeException("default node processor not found")
         val freemarkerRender = layoutNode?.let { freemarkerRenders[it.layout] }
-            ?: freemarkerRenders[DEFAULT_LAYOUT]!!
+            ?: freemarkerRenders[DEFAULT_LAYOUT]
+            ?: throw RuntimeException("default layout not found in directory: $rootLayoutDir")
 
         return nodeProcessor.process(node, serviceNodes, relativePath, embedded)
             .map { (localRelativePath, result, replaceNodes, localServiceNodes) ->

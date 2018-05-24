@@ -5,6 +5,8 @@ import ru.alfabank.ecomm.dcreator.nodes.ServiceNode
 import ru.alfabank.ecomm.dcreator.nodes.TitleServiceNode
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
+const val DEFAULT_TITLE = "default title"
+
 data class ProcessResult(
     val relativePath: String,
     val result: Map<String, Node>,

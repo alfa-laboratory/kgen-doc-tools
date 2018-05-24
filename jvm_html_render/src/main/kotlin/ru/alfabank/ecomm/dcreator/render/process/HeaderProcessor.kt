@@ -37,7 +37,9 @@ class HeaderProcessor : NodeProcessor {
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
-        findTitle(serviceNodes)?.let { result += "title" to TitleServiceNode(it.title) }
+        findTitle(serviceNodes)
+            .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
+
         result += "embedded" to EmbeddedServiceNode(embedded)
 
         return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))
@@ -88,6 +90,8 @@ class HeaderProcessor : NodeProcessor {
     private fun HeaderBlockNode.toHeaderLink() =
         HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
 
-    //convert it to valid quertySelector (first digit symbol is not allowed)
+    /**
+     * convert it to valid quertySelector (first digit symbol is not allowed)
+     */
     private fun String.toSelector(): String = "q$this"
 }
