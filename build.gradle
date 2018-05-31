@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.50-eap-17'
+        kotlinVersion = '1.2.50-eap-62'
         junitVersion = '5.2.0'
     }
     repositories {
@@ -54,6 +54,7 @@ configure(projectsWithFlags('kotlin_js')) {
     compileKotlin2Js.kotlinOptions {
         moduleKind = "commonjs"
         sourceMap = true
+        moduleKind = "commonjs"
 //        outputFile = "node/index.js"
     }
 

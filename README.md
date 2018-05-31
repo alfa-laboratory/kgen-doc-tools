@@ -16,7 +16,7 @@
 * __jvm_parser__ - JVM realization of __common_parser__
 * __js_parser__ - JS realization of __common_parser__ (with translated TypeScript declaration of NodeJs to Kotlin)
 
-### Build requirenments:
+### Build requirements:
 - installed `java 8`
 - installed `node 10`
 
