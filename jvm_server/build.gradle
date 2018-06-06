@@ -82,5 +82,6 @@ task buildWithResources {
     dependsOn zipFilesDir
     tasks.findByName('copyResources').mustRunAfter buildPublic
     tasks.findByName('zipFilesDir').mustRunAfter copyResources
+    tasks.findByName('shadowJar').mustRunAfter zipFilesDir
     tasks.findByName('shadowJar').mustRunAfter copyResources
 }
