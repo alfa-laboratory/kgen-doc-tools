@@ -22,6 +22,7 @@ subprojects {
         mavenLocal()
         jcenter()
         maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 
@@ -98,6 +99,10 @@ configure(projectsWithFlags('kotlin_jvm')) {
 
 configure(projectsWithFlags('jococo_test')) {
     apply plugin: 'jacoco'
+
+    jacoco {
+        toolVersion = "0.8.2-SNAPSHOT"
+    }
 
     task jacocoJupTestReport(type: JacocoReport) {
         executionData(test)

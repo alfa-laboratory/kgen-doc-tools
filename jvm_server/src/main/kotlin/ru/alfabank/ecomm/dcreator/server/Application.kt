@@ -100,9 +100,12 @@ class Application(
                 routing(renderRouterConfiguration.config())
             }
 
+            val port = config.property(KTOR_PORT_PROPERTY).getString().toInt()
+            log.info("Running application at $port.. Open http://$HOST:$port")
+
             connector {
-                port = config.property("ktor.deployment.port").getString().toInt()
-                host = "127.0.0.1"
+                this.port = port
+                this.host = HOST
             }
         })
 
@@ -111,5 +114,10 @@ class Application(
 
     fun stop(gracePeriod: Long = 0, timeout: Long = 3, timeUnit: TimeUnit = TimeUnit.SECONDS) {
         engine?.stop(gracePeriod, timeout, timeUnit)
+    }
+
+    companion object {
+        internal const val HOST = "localhost"
+        private const val KTOR_PORT_PROPERTY = "ktor.deployment.port"
     }
 }
