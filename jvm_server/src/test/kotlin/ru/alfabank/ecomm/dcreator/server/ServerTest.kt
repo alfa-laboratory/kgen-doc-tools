@@ -1,19 +1,23 @@
 package ru.alfabank.ecomm.dcreator.server
 
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.io.File
+import java.net.InetAddress
 import java.net.ServerSocket
-import kotlin.test.assertTrue
+import java.time.Duration
+import java.time.ZonedDateTime
+import java.util.concurrent.TimeoutException
 
 class ServerTest {
     private val application = Application(
-            File("../"),
-            File("../files/input"),
-            File("../files/output/pages"),
-            File("../files/layout/freemarker"),
-            ApplicationMode.PROD,
-            SERVER_PORT
+        File("../"),
+        File("../files/input"),
+        File("../files/output/pages"),
+        File("../files/layout/freemarker"),
+        ApplicationMode.PROD
     )
 
     @AfterEach
@@ -27,18 +31,42 @@ class ServerTest {
     @BeforeEach
     fun `application test`() {
         application.start(false)
-
-        val isConnected = try {
-            ServerSocket(SERVER_PORT)
-            false
-        } catch (e: Exception) {
-            true
-        }
-
-        assertTrue(isConnected)
     }
 
-    companion object {
-        private const val SERVER_PORT = 8081
+    @Test
+    fun test() {
+        waitOfCondition(condition = this::isServerConnect)
+        Assertions.assertTrue(isServerConnect())
+
+        println("all good")
+    }
+
+    private fun isServerConnect() = try {
+        ServerSocket(8088, 0, InetAddress.getByName("127.0.0.1")).run {
+            println("not connect")
+            close()
+            false
+        }
+    } catch (e: Exception) {
+        println("connect")
+        true
+    }
+
+    private fun waitOfCondition(waitTimeout: Long = 1000, sleepTime: Long = 100, condition: () -> Boolean) {
+        if (waitTimeout < sleepTime)
+            throw RuntimeException("invalid config")
+
+        val startTime = ZonedDateTime.now()
+        while (!Thread.interrupted()) {
+            val currentTime = ZonedDateTime.now()
+
+            if (Duration.between(startTime, currentTime).toMillis() > waitTimeout)
+                throw TimeoutException("timeout")
+
+            if (condition())
+                break
+
+            Thread.sleep(sleepTime)
+        }
     }
 }

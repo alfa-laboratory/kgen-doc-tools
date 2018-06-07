@@ -1,12 +1,17 @@
 package ru.alfabank.ecomm.dcreator.server
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.application.install
+import io.ktor.config.HoconApplicationConfig
 import io.ktor.features.ContentNegotiation
 import io.ktor.jackson.jackson
 import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
+import io.ktor.server.engine.applicationEngineEnvironment
+import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import org.slf4j.LoggerFactory
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -68,8 +73,7 @@ class Application(
     inputDirectory: File = File(workDir, "input"),
     outputDirectory: File = File(workDir, "output/pages"),
     layoutDirectory: File = File(workDir, "layout"),
-    mode: ApplicationMode = ApplicationMode.PROD,
-    private val port: Int = 8080
+    mode: ApplicationMode = ApplicationMode.PROD
 ) {
     private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
     private val renderRouterConfiguration = RenderRouterConfiguration(
@@ -82,15 +86,25 @@ class Application(
     private var engine: ApplicationEngine? = null
 
     fun start(wait: Boolean = true) {
-        engine = embeddedServer(Netty, port) {
-            install(ContentNegotiation) {
-                jackson {
-                    writerWithDefaultPrettyPrinter()
+        engine = embeddedServer(Netty, applicationEngineEnvironment {
+            log = LoggerFactory.getLogger("ktor.application")
+            config = HoconApplicationConfig(ConfigFactory.load())
+
+            module {
+                install(ContentNegotiation) {
+                    jackson {
+                        writerWithDefaultPrettyPrinter()
+                    }
                 }
+
+                routing(renderRouterConfiguration.config())
             }
 
-            routing(renderRouterConfiguration.config())
-        }
+            connector {
+                port = config.property("ktor.deployment.port").getString().toInt()
+                host = "127.0.0.1"
+            }
+        })
 
         engine!!.start(wait)
     }
