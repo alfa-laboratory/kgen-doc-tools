@@ -31,7 +31,7 @@ configure(projectsWithFlags('kotlin_common')) {
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion")
-        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.22.5")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.23.1")
 
         testCompile("org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion")
         testCompile("org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion")
@@ -46,7 +46,7 @@ configure(projectsWithFlags('kotlin_js')) {
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-js:$kotlinVersion")
-        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:0.22.5")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:0.23.1")
 
         testCompile("org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion")
 //        compile("org.jetbrains.kotlinx:kotlinx-html-js:0.6.6")
@@ -77,7 +77,7 @@ configure(projectsWithFlags('kotlin_jvm')) {
 
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5")
+        compile("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.1")
 
         testCompile("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
         testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
