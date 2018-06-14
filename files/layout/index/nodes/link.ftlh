@@ -1,0 +1,1 @@
+<a href="${url!""}" title="${title!""}">${node?no_esc}</a>

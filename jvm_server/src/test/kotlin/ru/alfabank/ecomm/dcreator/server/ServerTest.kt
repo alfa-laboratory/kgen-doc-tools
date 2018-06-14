@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import ru.alfabank.ecomm.dcreator.server.Application.Companion.HOST
+import ru.alfabank.ecomm.dcreator.server.Application.Companion.DEFAULT_HOST
 import java.io.File
 import java.net.InetAddress
 import java.net.ServerSocket
@@ -43,7 +43,7 @@ class ServerTest {
     }
 
     private fun isServerConnect() = try {
-        ServerSocket(8088, 0, InetAddress.getByName(HOST)).run {
+        ServerSocket(8088, 0, InetAddress.getByName(DEFAULT_HOST)).run {
             println("not connect")
             close()
             false

@@ -11,9 +11,14 @@ import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import kotlinx.coroutines.experimental.runBlocking
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -70,9 +75,9 @@ enum class ApplicationMode(val publicFolder: File = File("")) {
 
 class Application(
     workDir: File,
-    inputDirectory: File = File(workDir, "input"),
+    private val inputDirectory: File = File(workDir, "input"),
     outputDirectory: File = File(workDir, "output/pages"),
-    layoutDirectory: File = File(workDir, "layout"),
+    private val layoutDirectory: File = File(workDir, "layout"),
     mode: ApplicationMode = ApplicationMode.PROD
 ) {
     private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
@@ -82,6 +87,15 @@ class Application(
         documentGenerator,
         mode
     )
+
+    private val filesRenderContext by lazy {
+        newFixedThreadPoolContext(
+            Runtime.getRuntime().availableProcessors(),
+            "FileRenderPoll"
+        )
+    }
+    private val templateFilesUpdateTime = HashMap<String, Long>()
+    private val layoutScheduler = Executors.newScheduledThreadPool(1);
 
     private var engine: ApplicationEngine? = null
 
@@ -101,15 +115,67 @@ class Application(
             }
 
             val port = config.property(KTOR_PORT_PROPERTY).getString().toInt()
-            log.info("Running application at $port.. Open http://$HOST:$port")
+            val host = config.propertyOrNull(KTOR_HOST_PROPERTY)?.getString() ?: DEFAULT_HOST
+
+            val hotReload = config.propertyOrNull(KTOR_TEMPLATE_HOT_RELOAD)?.getString()?.toBoolean() ?: false
+            if (hotReload) initHotReload(log)
+
+            log.info("Running application at $port.. Open http://$host:$port")
 
             connector {
                 this.port = port
-                this.host = HOST
+                this.host = host
             }
         })
 
         engine!!.start(wait)
+    }
+
+    private fun initHotReload(log: Logger) {
+        log.info("hot reload is enabled")
+
+        layoutDirectory.walkTopDown().forEach {
+            if (it.isFile) {
+                templateFilesUpdateTime += it.absolutePath to it.lastModified()
+            }
+        }
+
+        layoutScheduler.scheduleWithFixedDelay({
+            if (checkLayoutIsModified(log)) {
+                renderAllFiles(log)
+                log.info("done")
+            }
+        }, 0, LAYOUT_CHECK_DELAY, TimeUnit.MILLISECONDS)
+    }
+
+    private fun checkLayoutIsModified(log: Logger): Boolean {
+        layoutDirectory.walkTopDown().forEach {
+            if (it.isFile) {
+                val newModified = it.lastModified()
+                val oldModified = templateFilesUpdateTime[it.absolutePath]
+
+                if (oldModified != newModified) {
+                    log.info("file ${it.absolutePath} has been modified. Reload all input files..")
+
+                    templateFilesUpdateTime += it.absolutePath to newModified
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun renderAllFiles(log: Logger) = runBlocking {
+        inputDirectory.walkTopDown().mapNotNull {
+            if (it.isFile) {
+                launch(filesRenderContext) {
+                    log.info("reload file ${it.absolutePath}")
+                    documentGenerator.generateHtmlFromMd(it)
+                }
+            } else
+                null
+        }.forEach { it.join() }
     }
 
     fun stop(gracePeriod: Long = 0, timeout: Long = 3, timeUnit: TimeUnit = TimeUnit.SECONDS) {
@@ -117,7 +183,13 @@ class Application(
     }
 
     companion object {
-        internal const val HOST = "localhost"
+        internal const val DEFAULT_HOST = "localhost"
+
+        private const val LAYOUT_CHECK_DELAY = 500L
+
         private const val KTOR_PORT_PROPERTY = "ktor.deployment.port"
+        private const val KTOR_HOST_PROPERTY = "ktor.deployment.host"
+
+        private const val KTOR_TEMPLATE_HOT_RELOAD = "ktor.template.reload"
     }
 }

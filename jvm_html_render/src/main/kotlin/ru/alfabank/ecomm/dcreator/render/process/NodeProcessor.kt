@@ -2,34 +2,34 @@ package ru.alfabank.ecomm.dcreator.render.process
 
 import ru.alfabank.ecomm.dcreator.nodes.Node
 import ru.alfabank.ecomm.dcreator.nodes.ServiceNode
-import ru.alfabank.ecomm.dcreator.nodes.TitleServiceNode
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import ru.alfabank.ecomm.dcreator.render.DocumentGenerator.RelativePath
 
 const val DEFAULT_TITLE = "default title"
 
 data class ProcessResult(
-    val relativePath: String,
+    val relativePath: RelativePath,
     val result: Map<String, Node>,
     val replaceNodes: Map<String, Node>,
-    val serviceNodes: List<ServiceNode>
+    val serviceNodes: List<ServiceNode>,
+    val childs: List<FileProcessData> = emptyList()
 )
 
-data class ProcessingData(
+data class FileProcessData(
     val data: String,
     val serviceNodes: List<ServiceNode>,
-    val relativePath: String
+    val relativePath: RelativePath
 )
 
-fun findTitle(serviceNodes: List<ServiceNode>): TitleServiceNode? = serviceNodes
+inline fun <reified T : ServiceNode> List<ServiceNode>.findServiceNode(): T? = this
     .asSequence()
-    .filterIsInstance<TitleServiceNode>()
+    .filterIsInstance<T>()
     .firstOrNull()
 
 interface NodeProcessor {
-    fun process(
+    suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath,
-        embedded: Boolean
-    ): List<ProcessResult>
+        relativePath: DocumentGenerator.RelativePath
+    ): ProcessResult
 }

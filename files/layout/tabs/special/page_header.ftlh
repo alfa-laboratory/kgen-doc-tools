@@ -1,3 +1,0 @@
-<div>
-    <a href="${link}">${name}</a>
-</div>

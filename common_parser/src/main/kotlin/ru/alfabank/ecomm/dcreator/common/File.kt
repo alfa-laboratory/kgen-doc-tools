@@ -6,6 +6,10 @@ expect class File {
     constructor(path: String)
 
     fun exists(): Boolean
+
+    fun getParentFile(): File
+
+    fun getAbsolutePath(): String
 }
 
 expect suspend fun <R> File.withLines(action: suspend (Sequence<String>) -> R): R

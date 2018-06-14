@@ -17,12 +17,11 @@ data class HeaderAnchor(
 ) : Node by NodeIdGen(), NestedNode, BlockNode
 
 class HeaderProcessor : NodeProcessor {
-    override fun process(
+    override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath,
-        embedded: Boolean
-    ): List<ProcessResult> {
+        relativePath: DocumentGenerator.RelativePath
+    ): ProcessResult {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
             is NestedNode -> listOf(node.node)
@@ -30,19 +29,22 @@ class HeaderProcessor : NodeProcessor {
         }
 
         val headerNodes = childNodes.filterIsInstance(HeaderBlockNode::class.java)
-
         val (headerLinks, anchors) = processHeaders(headerNodes)
 
         val result = mutableMapOf(
             "data" to node,
             "headers" to BlockLayout(headerLinks)
         )
-        findTitle(serviceNodes)
+        serviceNodes.findServiceNode<TitleServiceNode>()
             .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
+        serviceNodes.findServiceNode<VersionServiceNode>()
+            ?.let { result += "version" to it }
+        serviceNodes.findServiceNode<BackUrlServiceNode>()
+            ?.let { result += "backUrl" to it }
+        serviceNodes.findServiceNode<LastUpdateServiceNode>()
+            ?.let { result += "lastUpdate" to it }
 
-        result += "embedded" to EmbeddedServiceNode(embedded)
-
-        return listOf(ProcessResult(relativePath.toRelative(), result, anchors, serviceNodes))
+        return ProcessResult(relativePath, result, anchors, serviceNodes)
     }
 
     private fun processHeaders(headerNodes: List<HeaderBlockNode>): Pair<List<BlockNode>, Map<String, Node>> {
@@ -91,7 +93,7 @@ class HeaderProcessor : NodeProcessor {
         HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
 
     /**
-     * convert it to valid quertySelector (first digit symbol is not allowed)
+     * convert it to valid querySelector (first digit symbol is not allowed)
      */
     private fun String.toSelector(): String = "q$this"
 }
