@@ -28,6 +28,9 @@ class SpecialNodeBlockParserTest {
                 :::version [1.0.32]
             """.trimIndent(),
             """
+                :::update [2018-06-14 16:13:00]
+            """.trimIndent(),
+            """
                 :::otherTag [some otherTag] (some otherTag value)
             """.trimIndent()
         )
@@ -42,6 +45,7 @@ class SpecialNodeBlockParserTest {
             IncludeServiceNode("some filename1.md", "some \"text1\"", "some text2"),
             IncludeServiceNode("some filename2.md", "some text2", null),
             VersionServiceNode("1.0.32"),
+            LastUpdateServiceNode("2018-06-14 16:13:00"),
             SimpleServiceNode("some otherTag", "some otherTag value", null)
         )
 
