@@ -5,16 +5,11 @@ interface ServiceNode : Node {
 }
 
 data class SimpleServiceNode(
-    val name: String,
-    val value: String?
+    val value: String,
+    val param1: String?,
+    val param2: String?
 ) : ServiceNode, Node by NodeIdGen() {
     override fun toParams(): Any = TODO()
-}
-
-data class EmbeddedServiceNode(
-    val embedded: Boolean
-): ServiceNode, Node by NodeIdGen() {
-    override fun toParams(): Any = embedded
 }
 
 data class LayoutServiceNode(
@@ -29,9 +24,28 @@ data class TitleServiceNode(
     override fun toParams(): Any = title
 }
 
+data class BackUrlServiceNode(
+    val url: String
+) : ServiceNode, Node by NodeIdGen() {
+    override fun toParams(): Any = url
+}
+
+data class VersionServiceNode(
+    val version: String
+) : ServiceNode, Node by NodeIdGen() {
+    override fun toParams(): Any = version
+}
+
+data class LastUpdateServiceNode(
+    val date: String
+) : ServiceNode, Node by NodeIdGen() {
+    override fun toParams(): Any = date
+}
+
 data class IncludeServiceNode(
+    val file: String,
     val name: String,
-    val file: String
+    val title: String?
 ) : ServiceNode, Node by NodeIdGen() {
     override fun toParams(): Any = TODO()
 }

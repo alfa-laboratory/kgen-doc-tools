@@ -3,6 +3,9 @@
     <div class="header-column">
         <div class="header-block">
             <h3>Table of content</h3>
+            <#if backUrl??>
+                <h3><a href="${backUrl}">&larr; back</a></h3>
+            </#if>
             <nav data-gumshoe-header>
                 <ul data-gumshoe>
                 ${headers?no_esc}

@@ -1,15 +1,11 @@
 package ru.alfabank.ecomm.dcreator.render
 
-import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.sync.Mutex
 import kotlinx.coroutines.experimental.sync.withLock
 import ru.alfabank.ecomm.dcreator.nodes.LayoutServiceNode
 import ru.alfabank.ecomm.dcreator.nodes.ServiceNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
-import ru.alfabank.ecomm.dcreator.render.process.HeaderProcessor
-import ru.alfabank.ecomm.dcreator.render.process.NodeProcessor
-import ru.alfabank.ecomm.dcreator.render.process.ProcessingData
-import ru.alfabank.ecomm.dcreator.render.process.TabsProcessor
+import ru.alfabank.ecomm.dcreator.render.process.*
 import ru.alfabank.ecomm.dcreator.render.serialize.FreemarkerRender
 import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
@@ -28,7 +24,7 @@ class DocumentGenerator(
     inner class RelativePath(
         private val srcFile: File
     ) {
-        fun toRelative(): String {
+        fun toRelativePath(): String {
             val relativePath = srcFile.toRelative()
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
@@ -52,12 +48,12 @@ class DocumentGenerator(
     }
 
     suspend fun generateHtmlFromMd(generateFile: File) {
-        val nodesData: List<ProcessingData> = renderFile(generateFile)
+        val nodesData: List<FileProcessData> = renderFile(generateFile)
         if (nodesData.isEmpty())
             return
 
         nodesData.forEach { (data, _, relativePath) ->
-            val outputFile = File(outputDirectory, relativePath)
+            val outputFile = File(outputDirectory, relativePath.toRelativePath())
 
             outputFile.parentFile.apply {
                 if (!exists()) mkdirs()
@@ -71,7 +67,10 @@ class DocumentGenerator(
         }
     }
 
-    private suspend fun renderFile(generateFile: File, embedded: Boolean = false): List<ProcessingData> {
+    private suspend fun renderFile(
+        generateFile: File,
+        serviceNodes: List<ServiceNode> = emptyList()
+    ): List<FileProcessData> {
         if (!init) {
             initRenders()
         }
@@ -86,9 +85,9 @@ class DocumentGenerator(
             return emptyList()
         }
 
-        val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
+        val (node, localServiceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
-        val layoutNode: LayoutServiceNode? = findLayoutNode(serviceNodes)
+        val layoutNode: LayoutServiceNode? = findLayoutNode(localServiceNodes)
 
         val nodeProcessor = layoutNode?.let { nodeProcessors[it.layout] }
             ?: nodeProcessors[DEFAULT_LAYOUT]
@@ -97,21 +96,26 @@ class DocumentGenerator(
             ?: freemarkerRenders[DEFAULT_LAYOUT]
             ?: throw RuntimeException("default layout not found in directory: $rootLayoutDir")
 
-        return nodeProcessor.process(node, serviceNodes, relativePath, embedded)
-            .map { (localRelativePath, result, replaceNodes, localServiceNodes) ->
+        return nodeProcessor.process(node, localServiceNodes + serviceNodes, relativePath)
+            .let { (localRelativePath, result, replaceNodes, localServiceNodes, childs): ProcessResult ->
                 val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
                 val preparedResult = nodeSerializer.prepareParams(result)
 
-                ProcessingData(
-                    data = freemarkerRender.render(INDEX_FILE_NAME, preparedResult),
-                    serviceNodes = localServiceNodes,
-                    relativePath = localRelativePath
-                )
+                listOf(
+                    FileProcessData(
+                        data = freemarkerRender.render(INDEX_FILE_NAME, preparedResult),
+                        serviceNodes = localServiceNodes,
+                        relativePath = localRelativePath
+                    )
+                ) + childs
             }
     }
 
-    private fun generateEmbeddedHtmlFromMd(generateFile: String): List<ProcessingData> = runBlocking {
-        renderFile(File(inputDirectory, generateFile), embedded = true)
+    private suspend fun generateEmbeddedHtmlFromMd(
+        generateFile: String,
+        serviceNodes: List<ServiceNode>
+    ): List<FileProcessData> {
+        return renderFile(File(inputDirectory, generateFile), serviceNodes)
     }
 
     private fun findLayoutNode(serviceNodes: List<ServiceNode>): LayoutServiceNode? = serviceNodes
@@ -134,12 +138,17 @@ class DocumentGenerator(
         }
 
         nodeProcessors += DEFAULT_LAYOUT to HeaderProcessor()
-        nodeProcessors += TABS_LAYOUT to TabsProcessor(this::generateEmbeddedHtmlFromMd)
+        nodeProcessors += TABS_LAYOUT to IndexProcessor({ file, serviceNodes ->
+            generateEmbeddedHtmlFromMd(
+                file,
+                serviceNodes
+            )
+        })
     }
 
     companion object {
         private const val DEFAULT_LAYOUT = "default"
-        private const val TABS_LAYOUT = "tabs"
+        private const val TABS_LAYOUT = "index"
 
         private const val INDEX_FILE_NAME = "index.ftlh"
         private const val MD_EXTENSION = "md"

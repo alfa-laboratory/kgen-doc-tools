@@ -12,7 +12,6 @@ import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class FileRenderTest {
 
@@ -53,14 +52,16 @@ class FileRenderTest {
         val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutRootDir)
 
         val headerProcessor = HeaderProcessor()
-        val results: List<ProcessResult> =
-            headerProcessor.process(node, serviceNodes, documentGenerator.RelativePath(File(inputDirectory, "123.md")), false)
 
-        assertTrue(results.size == 1)
+        val processResult: ProcessResult = headerProcessor.process(
+            node,
+            serviceNodes,
+            documentGenerator.RelativePath(File(inputDirectory, "123.md"))
+        )
 
-        val (relativeLink, result, replaceNodes, resultServiceNodes) = results.first()
+        val (relativeLink, result, replaceNodes, resultServiceNodes, childs) = processResult
 
-        assertEquals("123.html", relativeLink)
+        assertEquals("/output/123.html", relativeLink.toLink())
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 

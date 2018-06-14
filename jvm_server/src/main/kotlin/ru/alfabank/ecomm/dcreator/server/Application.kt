@@ -101,11 +101,13 @@ class Application(
             }
 
             val port = config.property(KTOR_PORT_PROPERTY).getString().toInt()
-            log.info("Running application at $port.. Open http://$HOST:$port")
+            val host = config.propertyOrNull(KTOR_HOST_PROPERTY)?.getString() ?: DEFAULT_HOST
+
+            log.info("Running application at $port.. Open http://$host:$port")
 
             connector {
                 this.port = port
-                this.host = HOST
+                this.host = host
             }
         })
 
@@ -117,7 +119,9 @@ class Application(
     }
 
     companion object {
-        internal const val HOST = "localhost"
+        internal const val DEFAULT_HOST = "localhost"
+
         private const val KTOR_PORT_PROPERTY = "ktor.deployment.port"
+        private const val KTOR_HOST_PROPERTY = "ktor.deployment.host"
     }
 }
