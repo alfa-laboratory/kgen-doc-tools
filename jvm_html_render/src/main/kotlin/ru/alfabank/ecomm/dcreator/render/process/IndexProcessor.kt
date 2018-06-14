@@ -1,5 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render.process
 
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import kotlin.text.RegexOption.IGNORE_CASE
@@ -17,6 +19,11 @@ data class IncludeFileInfo(
 class IndexProcessor(
     private val generateData: suspend (String, List<ServiceNode>) -> List<FileProcessData>
 ) : NodeProcessor {
+    private val filesProcessingContext = newFixedThreadPoolContext(
+        Runtime.getRuntime().availableProcessors(),
+        "FileProcessPoll"
+    )
+
     override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
@@ -42,15 +49,17 @@ class IndexProcessor(
             lastUpdate
         )
 
-        val subFilesResults = includeFiles.map { (serviceNode, subFileRelative) ->
-            val processResults: List<FileProcessData> = generateData(serviceNode.file, params)
+        val subFilesResults = includeFiles.map { value ->
+            value to async(filesProcessingContext) { generateData(value.first.file, params) }
+        }.map { (value, future) ->
+            val processResults: List<FileProcessData> = future.await()
 
             if (processResults.size > 1)
                 throw RuntimeException("multiple nested files not supported for this layout")
             else if (processResults.isEmpty())
-                throw RuntimeException("processing result is empty for file '${serviceNode.file}'")
+                throw RuntimeException("processing result is empty for file '${value.first.file}'")
 
-            serviceNode to processResults.first().copy(relativePath = subFileRelative)
+            value.first to processResults.first().copy(relativePath = value.second)
         }.toMap()
 
         val result = mutableMapOf(
@@ -62,7 +71,7 @@ class IndexProcessor(
         result += "files" to IncludeFilesInfo(subFilesResults.map { (serviceNode, result) ->
             IncludeFileInfo(
                 link = result.relativePath.toLink(),
-                name =  serviceNode.name,
+                name = serviceNode.name,
                 title = serviceNode.title
             )
         })
