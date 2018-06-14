@@ -1,0 +1,24 @@
+ParseResult(result=BlockLayout(nodes=[HeaderBlockNode(level=ONE, node=TextNode(text= header 1123  )), TextBlockNode(nodes=[TextNode(text=file 1 some text line 1), TextNode(text=file 1 some text line 2)]), HeaderBlockNode(level=TWO, node=TextNode(text= sub header 1)), HeaderBlockNode(level=ONE, node=TextNode(text= file 2)), TextBlockNode(nodes=[TextNode(text=file 2 some text line 1), TextNode(text=file 2 some text line 2 )]), HeaderBlockNode(level=ONE, node=TextNode(text= file 3)), TextBlockNode(nodes=[TextNode(text=file 3 some text line 1), TextNode(text=file 3 some text line 2)]), BlockquotesBlockNode(node=TextBlockNode(nodes=[TextNode(text= asdf), TextNode(text= asdf)])), TableBlockNode(content=[[TextNode(text=data11 ), TextNode(text=data12  )], [TextNode(text=data21 ), TextNode(text=data22  )]], header=[TextNode(text=column1), TextNode(text=column2 )], footer=[TextNode(text=column1), TextNode(text=column2   )], modifier=[ColumnAlignModifier(direction=Left), ColumnAlignModifier(direction=Right)], nodes=[TextNode(text=data11 ), TextNode(text=data12  ), TextNode(text=data21 ), TextNode(text=data22  ), TextNode(text=column1), TextNode(text=column2 ), TextNode(text=column1), TextNode(text=column2   )]), TextBlockNode(nodes=[TextNode(text=file 3 some text line 3), TextNode(text=file 3 some text line 4)]), TextBlockNode(nodes=[TextNode(text=file 2 some text line 3), TextNode(text=file 2 some text line 4)]), HeaderBlockNode(level=TWO, node=TextNode(text= sub header 2)), TextBlockNode(nodes=[TextNode(text=file 1 some text line 3), TextNode(text=file 1 some text line 4)]), HeaderBlockNode(level=TWO, node=TextNode(text= sub header 3)), CodeBlockNode(language=sh, text=$ node app), CodeBlockNode(language=java, text=public class Main {
+	public static void main() {
+    }
+}), CodeBlockNode(language=kotlin, text=fun main(args: Array<String>) {
+    val workDir = if (args.isEmpty())
+        File("files/")
+    else
+        File(args[0])
+
+    if (!workDir.exists())
+        workDir.mkdirs()
+
+    if (workDir.list().isEmpty())
+        unpackFiles(workDir)
+
+    val mode = if (args.size >= 2 && args[1] == "test")
+        ApplicationMode.TEST
+    else
+        ApplicationMode.PROD
+
+    Application(workDir, mode = mode).apply {
+        start(true)
+    }
+})]), serviceNodes=[TitleServiceNode(title=file1)])
