@@ -11,7 +11,7 @@ import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import kotlinx.coroutines.experimental.runBlocking
 import org.slf4j.Logger
@@ -141,11 +141,14 @@ class Application(
         }
 
         layoutScheduler.scheduleWithFixedDelay({
-            checkLayoutModified(log)
+            if (checkLayoutIsModified(log)) {
+                renderAllFiles(log)
+                log.info("done")
+            }
         }, 0, LAYOUT_CHECK_DELAY, TimeUnit.MILLISECONDS)
     }
 
-    private fun checkLayoutModified(log: Logger) {
+    private fun checkLayoutIsModified(log: Logger): Boolean {
         layoutDirectory.walkTopDown().forEach {
             if (it.isFile) {
                 val newModified = it.lastModified()
@@ -155,25 +158,24 @@ class Application(
                     log.info("file ${it.absolutePath} has been modified. Reload all input files..")
 
                     templateFilesUpdateTime += it.absolutePath to newModified
-                    renderAllFiles(log)
-
-                    log.info("done")
-                    return@forEach
+                    return true
                 }
             }
         }
+
+        return false
     }
 
     private fun renderAllFiles(log: Logger) = runBlocking {
         inputDirectory.walkTopDown().mapNotNull {
             if (it.isFile) {
-                async(filesRenderContext) {
+                launch(filesRenderContext) {
                     log.info("reload file ${it.absolutePath}")
                     documentGenerator.generateHtmlFromMd(it)
                 }
             } else
                 null
-        }.forEach { it.await() }
+        }.forEach { it.join() }
     }
 
     fun stop(gracePeriod: Long = 0, timeout: Long = 3, timeUnit: TimeUnit = TimeUnit.SECONDS) {
