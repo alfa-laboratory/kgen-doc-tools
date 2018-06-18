@@ -35,7 +35,7 @@ interface NodeProcessor {
 
 private fun String?.isUrlRelative(): Boolean = this != null && this.indexOf("/") != 0
 
-fun List<Node>.fixRelativeLinkPaths(relativePath: RelativePagePath): MutableMap<String, Node> =
+tailrec fun List<Node>.fixRelativeLinkPaths(relativePath: RelativePagePath): MutableMap<String, Node> =
     if (this.isNotEmpty()) {
         val first = this.first()
         val last = this.drop(1)
