@@ -4,6 +4,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import java.io.File
 import kotlin.text.RegexOption.IGNORE_CASE
 
 data class IncludeFilesInfo(
@@ -32,13 +33,13 @@ class IndexProcessor(
         val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
-                    val subFileRelative = relativePath.subPath(serviceNode.name.toPreparedName())
+                    val subFileRelative = relativePath.subPath(File(serviceNode.name.toPreparedName()))
 
                     Pair(serviceNode, subFileRelative)
                 }
 
         val version = serviceNodes.findServiceNode<VersionServiceNode>()
-        val backUrl = BackUrlServiceNode(relativePath.toLink())
+        val backUrl = BackUrlServiceNode("../" + relativePath.toLink(relativePath))
         val title = serviceNodes.findServiceNode<TitleServiceNode>()
         val lastUpdate = serviceNodes.findServiceNode<LastUpdateServiceNode>()
 
@@ -70,7 +71,7 @@ class IndexProcessor(
         lastUpdate?.let { result += "lastUpdate" to it }
         result += "files" to IncludeFilesInfo(subFilesResults.map { (serviceNode, result) ->
             IncludeFileInfo(
-                link = result.relativePath.toLink(),
+                link = result.relativePath.toLink(relativePath),
                 name = serviceNode.name,
                 title = serviceNode.title
             )
@@ -79,7 +80,7 @@ class IndexProcessor(
         return ProcessResult(
             relativePath = relativePath,
             result = result,
-            replaceNodes = emptyMap(),
+            replaceNodes = node.toRelativePath(relativePath, emptyMap()),
             serviceNodes = serviceNodes,
             childs = subFilesResults.values.toList()
         )
@@ -87,7 +88,7 @@ class IndexProcessor(
 
     private fun String.toPreparedName(): String = this
         .replace("[^a-zA-Zа-яА-Я0-9]+".toRegex(IGNORE_CASE), "_")
-        .toLowerCase()
+        .toLowerCase() + ".${DocumentGenerator.MD_EXTENSION}"
 }
 
 

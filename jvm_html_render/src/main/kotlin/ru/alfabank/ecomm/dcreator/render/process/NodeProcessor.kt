@@ -33,3 +33,15 @@ interface NodeProcessor {
         relativePath: DocumentGenerator.RelativePath
     ): ProcessResult
 }
+
+fun Node.toRelativePath(relativePath: RelativePath, replaceNodes: Map<String, Node>): MutableMap<String, Node> {
+//    return when (this) {
+//        is NestedNodeList<*> -> {
+//        }
+//        is NestedNode -> {
+//        }
+//        else -> mutableMapOf()
+//    }
+
+    return mutableMapOf()
+}

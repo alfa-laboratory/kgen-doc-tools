@@ -24,27 +24,45 @@ class DocumentGenerator(
     inner class RelativePath(
         private val srcFile: File
     ) {
-        fun toRelativePath(): String {
+        fun toRelativeFilePath(): String {
             val relativePath = srcFile.toRelative()
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
-        fun toLink(): String {
-            val relativePath = srcFile.toRelative()
-            return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
+        fun toLink(relativeTo: RelativePath? = null): String {
+            val relativePath = srcFile
+                .relativeTo(toFolderPath((relativeTo ?: RelativePath(inputDirectory)).srcFile.parentFile))
+
+            return if (relativePath.extension == MD_EXTENSION) {
+                "${relativePath.parentFile?.let { "$it/" } ?: ""}${relativePath.nameWithoutExtension}.$HTML_EXTENSION"
+            } else {
+                relativePath.toString()
+            }
         }
 
-        fun subPath(newName: String, postFix: String = ""): RelativePath {
+        fun subPath(subFile: File, postFix: String = subFile.extension): RelativePath {
             val dir = File(srcFile.parent, srcFile.nameWithoutExtension)
-            val newFileName = File(newName).nameWithoutExtension
-            val newFile = File(dir, "$newFileName$postFix")
+            val newFileName = subFile.nameWithoutExtension
+            val newFile = File(dir, "$newFileName.$postFix")
 
             return RelativePath(newFile)
         }
 
-        private fun File.toRelative(): String = this.parentFile
-            .toRelativeString(inputDirectory)
-            .let { if (it.isEmpty()) "" else "$it/" }
+        private fun File?.toRelative(): String {
+            if (this == null || this.parentFile == null)
+                return ""
+
+            return this.parentFile
+                .toRelativeString(inputDirectory)
+                .let { if (it.isEmpty()) "" else "$it/" }
+        }
+
+        private fun toFolderPath(file: File?): File {
+            return if (file == null)
+                File(inputDirectory, "")
+            else
+                File(file.parent, file.nameWithoutExtension)
+        }
     }
 
     suspend fun generateHtmlFromMd(generateFile: File) {
@@ -53,7 +71,7 @@ class DocumentGenerator(
             return
 
         nodesData.forEach { (data, _, relativePath) ->
-            val outputFile = File(outputDirectory, relativePath.toRelativePath())
+            val outputFile = File(outputDirectory, relativePath.toRelativeFilePath())
 
             outputFile.parentFile.apply {
                 if (!exists()) mkdirs()
@@ -151,7 +169,8 @@ class DocumentGenerator(
         private const val TABS_LAYOUT = "index"
 
         private const val INDEX_FILE_NAME = "index.ftlh"
-        private const val MD_EXTENSION = "md"
-        private const val HTML_EXTENSION = "html"
+
+        const val MD_EXTENSION = "md"
+        const val HTML_EXTENSION = "html"
     }
 }

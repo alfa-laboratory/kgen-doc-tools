@@ -61,7 +61,7 @@ class FileRenderTest {
 
         val (relativeLink, result, replaceNodes, resultServiceNodes, childs) = processResult
 
-        assertEquals("/output/123.html", relativeLink.toLink())
+        assertEquals("/output/123.html", relativeLink.toLink(relativeLink))
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 
