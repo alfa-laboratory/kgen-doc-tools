@@ -24,7 +24,7 @@ class HeaderProcessor : NodeProcessor {
     override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePagePath
     ): ProcessResult {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
@@ -34,6 +34,8 @@ class HeaderProcessor : NodeProcessor {
 
         val headerNodes = childNodes.filterIsInstance(HeaderBlockNode::class.java)
         val (headerLinks, anchors) = processHeaders(headerNodes)
+
+        listOf(node).fixRelativeLinkPaths(relativePath)
 
         val result = mutableMapOf(
             "data" to node,

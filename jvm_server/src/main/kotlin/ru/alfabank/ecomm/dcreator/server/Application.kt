@@ -78,10 +78,16 @@ class Application(
     workDir: File,
     private val inputDirectory: File = File(workDir, "input"),
     outputDirectory: File = File(workDir, "output/pages"),
+    staticDirectory: File = File(workDir, "output/static"),
     private val layoutDirectory: File = File(workDir, "layout"),
     mode: ApplicationMode = ApplicationMode.PROD
 ) {
-    private val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutDirectory)
+    private val documentGenerator = DocumentGenerator(
+        inputDirectory,
+        outputDirectory,
+        staticDirectory,
+        layoutDirectory
+    )
     private val renderRouterConfiguration = RenderRouterConfiguration(
         workDir,
         inputDirectory,

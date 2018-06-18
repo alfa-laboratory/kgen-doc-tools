@@ -17,6 +17,7 @@ class ServerTest {
         File("../"),
         File("../files/input"),
         File("../files/output/pages"),
+        File("../files/output/static"),
         File("../files/layout/freemarker"),
         ApplicationMode.PROD
     )

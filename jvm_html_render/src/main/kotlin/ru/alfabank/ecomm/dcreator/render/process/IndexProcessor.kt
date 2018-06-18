@@ -18,7 +18,7 @@ data class IncludeFileInfo(
 ) : Node by NodeIdGen(), BlockNode
 
 class IndexProcessor(
-    private val generateData: suspend (String, List<ServiceNode>) -> List<FileProcessData>
+    private val generateData: suspend (String, List<ServiceNode>, DocumentGenerator.RelativePagePath) -> List<FileProcessData>
 ) : NodeProcessor {
     private val filesProcessingContext = newFixedThreadPoolContext(
         Runtime.getRuntime().availableProcessors(),
@@ -28,9 +28,9 @@ class IndexProcessor(
     override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePagePath
     ): ProcessResult {
-        val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePath>> =
+        val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePagePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
                     val subFileRelative = relativePath.subPath(File(serviceNode.name.toPreparedName()))
@@ -51,7 +51,7 @@ class IndexProcessor(
         )
 
         val subFilesResults = includeFiles.map { value ->
-            value to async(filesProcessingContext) { generateData(value.first.file, nodes) }
+            value to async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()
 
@@ -77,10 +77,12 @@ class IndexProcessor(
             )
         })
 
+        listOf(node).fixRelativeLinkPaths(relativePath)
+
         return ProcessResult(
             relativePath = relativePath,
             result = result,
-            replaceNodes = node.toRelativePath(relativePath, emptyMap()),
+            replaceNodes = emptyMap(),
             serviceNodes = serviceNodes,
             childs = subFilesResults.values.toList()
         )
