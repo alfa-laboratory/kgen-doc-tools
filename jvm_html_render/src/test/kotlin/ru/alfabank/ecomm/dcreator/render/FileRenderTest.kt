@@ -31,7 +31,6 @@ class FileRenderTest {
     fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
         val outputDirectory = File(tempDirectory, "output").apply { mkdirs() }
-
         val layoutRootDir = File("../files/layout")
         val freemarkerRender = FreemarkerRender(File(layoutRootDir, "default"))
 
@@ -56,12 +55,12 @@ class FileRenderTest {
         val processResult: ProcessResult = headerProcessor.process(
             node,
             serviceNodes,
-            documentGenerator.RelativePath(File(inputDirectory, "123.md"))
+            documentGenerator.RelativePagePath(File(inputDirectory, "123.md"))
         )
 
         val (relativeLink, result, replaceNodes, resultServiceNodes, childs) = processResult
 
-        assertEquals("/output/123.html", relativeLink.toLink())
+        assertEquals("123.html", relativeLink.toRelativeFilePath())
 
         val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
 

@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import ru.alfabank.ecomm.dcreator.nodes.*
-import ru.alfabank.ecomm.dcreator.render.process.HeaderAnchor
-import ru.alfabank.ecomm.dcreator.render.process.HeaderLink
-import ru.alfabank.ecomm.dcreator.render.process.IncludeFileInfo
-import ru.alfabank.ecomm.dcreator.render.process.IncludeFilesInfo
+import ru.alfabank.ecomm.dcreator.render.process.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaGetter
@@ -41,6 +38,7 @@ class NodeSerializer(
         BlockquotesBlockNode::class to "nodes/blockquotesblock.ftlh",
         TableBlockNode::class to "nodes/table.ftlh",
         HeaderLink::class to "special/header_link.ftlh",
+        HeaderLinks::class to "special/header_links.ftlh",
         HeaderAnchor::class to "special/header_anchor.ftlh",
         IncludeFilesInfo::class to "special/include_files.ftlh",
         IncludeFileInfo::class to "special/include_file.ftlh"

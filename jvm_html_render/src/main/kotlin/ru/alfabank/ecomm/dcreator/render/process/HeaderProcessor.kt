@@ -3,6 +3,10 @@ package ru.alfabank.ecomm.dcreator.render.process
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
+data class HeaderLinks(
+    override val nodes: List<BlockNode>
+) : Node by NodeIdGen(), NestedNodeList<BlockNode>, BlockNode
+
 data class HeaderLink(
     override val node: Node,
     val level: Level,
@@ -20,7 +24,7 @@ class HeaderProcessor : NodeProcessor {
     override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePagePath
     ): ProcessResult {
         val childNodes = when (node) {
             is NestedNodeList<*> -> node.nodes
@@ -31,9 +35,11 @@ class HeaderProcessor : NodeProcessor {
         val headerNodes = childNodes.filterIsInstance(HeaderBlockNode::class.java)
         val (headerLinks, anchors) = processHeaders(headerNodes)
 
+        listOf(node).fixRelativeLinkPaths(relativePath)
+
         val result = mutableMapOf(
             "data" to node,
-            "headers" to BlockLayout(headerLinks)
+            "headers" to HeaderLinks(headerLinks)
         )
         serviceNodes.findServiceNode<TitleServiceNode>()
             .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }

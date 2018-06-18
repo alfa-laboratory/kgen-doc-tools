@@ -21,30 +21,60 @@ class DocumentGenerator(
     private val freemarkerRenders: MutableMap<String, FreemarkerRender> = mutableMapOf()
     private val nodeProcessors: MutableMap<String, NodeProcessor> = mutableMapOf()
 
-    inner class RelativePath(
-        private val srcFile: File
+    inner class RelativeStaticPath(
+        val path: String
     ) {
-        fun toRelativePath(): String {
+        fun toLink(relativePagePath: RelativePagePath): String {
+             return "${inputDirectory.toRelativeString(relativePagePath.srcFile)}/$path"
+        }
+    }
+
+    inner class RelativePagePath(
+        val srcFile: File
+    ) {
+        fun fromStatic(path: String): RelativeStaticPath {
+            return RelativeStaticPath(path)
+        }
+
+        fun toRelativeFilePath(): String {
             val relativePath = srcFile.toRelative()
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
-        fun toLink(): String {
-            val relativePath = srcFile.toRelative()
-            return "/${outputDirectory.name}/$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
+        fun toLink(relativePagePath: RelativePagePath? = null): String {
+            val relativePath = srcFile
+                .relativeTo(toFolderPath((relativePagePath ?: RelativePagePath(inputDirectory)).srcFile.parentFile))
+
+            return if (relativePath.extension == MD_EXTENSION) {
+                "${relativePath.parentFile?.let { "$it/" } ?: ""}${relativePath.nameWithoutExtension}.$HTML_EXTENSION"
+            } else {
+                relativePath.toString()
+            }
         }
 
-        fun subPath(newName: String, postFix: String = ""): RelativePath {
+        fun subPath(subFile: File, postFix: String = subFile.extension): RelativePagePath {
             val dir = File(srcFile.parent, srcFile.nameWithoutExtension)
-            val newFileName = File(newName).nameWithoutExtension
-            val newFile = File(dir, "$newFileName$postFix")
+            val newFileName = subFile.nameWithoutExtension
+            val newFile = File(dir, "$newFileName.$postFix")
 
-            return RelativePath(newFile)
+            return RelativePagePath(newFile)
         }
 
-        private fun File.toRelative(): String = this.parentFile
-            .toRelativeString(inputDirectory)
-            .let { if (it.isEmpty()) "" else "$it/" }
+        private fun File?.toRelative(): String {
+            if (this == null || this.parentFile == null)
+                return ""
+
+            return this.parentFile
+                .toRelativeString(inputDirectory)
+                .let { if (it.isEmpty()) "" else "$it/" }
+        }
+
+        private fun toFolderPath(file: File?): File {
+            return if (file == null)
+                File(inputDirectory, "")
+            else
+                File(file.parent, file.nameWithoutExtension)
+        }
     }
 
     suspend fun generateHtmlFromMd(generateFile: File) {
@@ -53,7 +83,7 @@ class DocumentGenerator(
             return
 
         nodesData.forEach { (data, _, relativePath) ->
-            val outputFile = File(outputDirectory, relativePath.toRelativePath())
+            val outputFile = File(outputDirectory, relativePath.toRelativeFilePath())
 
             outputFile.parentFile.apply {
                 if (!exists()) mkdirs()
@@ -69,13 +99,12 @@ class DocumentGenerator(
 
     private suspend fun renderFile(
         generateFile: File,
-        serviceNodes: List<ServiceNode> = emptyList()
+        serviceNodes: List<ServiceNode> = emptyList(),
+        relativePagePath: RelativePagePath = RelativePagePath(generateFile)
     ): List<FileProcessData> {
         if (!init) {
             initRenders()
         }
-
-        val relativePath = RelativePath(generateFile)
 
         if (!generateFile.isFile)
             return emptyList()
@@ -96,7 +125,7 @@ class DocumentGenerator(
             ?: freemarkerRenders[DEFAULT_LAYOUT]
             ?: throw RuntimeException("default layout not found in directory: $rootLayoutDir")
 
-        return nodeProcessor.process(node, localServiceNodes + serviceNodes, relativePath)
+        return nodeProcessor.process(node, localServiceNodes + serviceNodes, relativePagePath)
             .let { (localRelativePath, result, replaceNodes, localServiceNodes, childs): ProcessResult ->
                 val nodeSerializer = NodeSerializer(freemarkerRender, replaceNodes)
                 val preparedResult = nodeSerializer.prepareParams(result)
@@ -113,9 +142,10 @@ class DocumentGenerator(
 
     private suspend fun generateEmbeddedHtmlFromMd(
         generateFile: String,
-        serviceNodes: List<ServiceNode>
+        serviceNodes: List<ServiceNode>,
+        relativePagePath: RelativePagePath
     ): List<FileProcessData> {
-        return renderFile(File(inputDirectory, generateFile), serviceNodes)
+        return renderFile(File(inputDirectory, generateFile), serviceNodes, relativePagePath)
     }
 
     private fun findLayoutNode(serviceNodes: List<ServiceNode>): LayoutServiceNode? = serviceNodes
@@ -138,10 +168,11 @@ class DocumentGenerator(
         }
 
         nodeProcessors += DEFAULT_LAYOUT to HeaderProcessor()
-        nodeProcessors += TABS_LAYOUT to IndexProcessor({ file, serviceNodes ->
+        nodeProcessors += TABS_LAYOUT to IndexProcessor({ file, serviceNodes, relativePagePath ->
             generateEmbeddedHtmlFromMd(
                 file,
-                serviceNodes
+                serviceNodes,
+                relativePagePath
             )
         })
     }
@@ -151,7 +182,8 @@ class DocumentGenerator(
         private const val TABS_LAYOUT = "index"
 
         private const val INDEX_FILE_NAME = "index.ftlh"
-        private const val MD_EXTENSION = "md"
-        private const val HTML_EXTENSION = "html"
+
+        const val MD_EXTENSION = "md"
+        const val HTML_EXTENSION = "html"
     }
 }

@@ -4,6 +4,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import java.io.File
 import kotlin.text.RegexOption.IGNORE_CASE
 
 data class IncludeFilesInfo(
@@ -17,7 +18,7 @@ data class IncludeFileInfo(
 ) : Node by NodeIdGen(), BlockNode
 
 class IndexProcessor(
-    private val generateData: suspend (String, List<ServiceNode>) -> List<FileProcessData>
+    private val generateData: suspend (String, List<ServiceNode>, DocumentGenerator.RelativePagePath) -> List<FileProcessData>
 ) : NodeProcessor {
     private val filesProcessingContext = newFixedThreadPoolContext(
         Runtime.getRuntime().availableProcessors(),
@@ -27,22 +28,22 @@ class IndexProcessor(
     override suspend fun process(
         node: Node,
         serviceNodes: List<ServiceNode>,
-        relativePath: DocumentGenerator.RelativePath
+        relativePath: DocumentGenerator.RelativePagePath
     ): ProcessResult {
-        val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePath>> =
+        val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePagePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
-                    val subFileRelative = relativePath.subPath(serviceNode.name.toPreparedName())
+                    val subFileRelative = relativePath.subPath(File(serviceNode.name.toPreparedName()))
 
                     Pair(serviceNode, subFileRelative)
                 }
 
         val version = serviceNodes.findServiceNode<VersionServiceNode>()
-        val backUrl = BackUrlServiceNode(relativePath.toLink())
+        val backUrl = BackUrlServiceNode("../" + relativePath.toLink(relativePath))
         val title = serviceNodes.findServiceNode<TitleServiceNode>()
         val lastUpdate = serviceNodes.findServiceNode<LastUpdateServiceNode>()
 
-        val params = listOfNotNull(
+        val nodes = listOfNotNull(
             version,
             backUrl,
             title,
@@ -50,7 +51,7 @@ class IndexProcessor(
         )
 
         val subFilesResults = includeFiles.map { value ->
-            value to async(filesProcessingContext) { generateData(value.first.file, params) }
+            value to async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()
 
@@ -70,11 +71,13 @@ class IndexProcessor(
         lastUpdate?.let { result += "lastUpdate" to it }
         result += "files" to IncludeFilesInfo(subFilesResults.map { (serviceNode, result) ->
             IncludeFileInfo(
-                link = result.relativePath.toLink(),
+                link = result.relativePath.toLink(relativePath),
                 name = serviceNode.name,
                 title = serviceNode.title
             )
         })
+
+        listOf(node).fixRelativeLinkPaths(relativePath)
 
         return ProcessResult(
             relativePath = relativePath,
@@ -86,8 +89,8 @@ class IndexProcessor(
     }
 
     private fun String.toPreparedName(): String = this
-        .replace(Regex("[^a-zA-Zа-яА-Я0-9]+", IGNORE_CASE), "_")
-        .toLowerCase()
+        .replace("[^a-zA-Zа-яА-Я0-9]+".toRegex(IGNORE_CASE), "_")
+        .toLowerCase() + ".${DocumentGenerator.MD_EXTENSION}"
 }
 
 
