@@ -14,7 +14,6 @@ import io.ktor.server.netty.Netty
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import kotlinx.coroutines.experimental.runBlocking
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
@@ -23,7 +22,9 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
-private val zipFiles = ClassLoader::class.java.getResourceAsStream("/files.zip")
+private val zipFiles by lazy {
+    ClassLoader::class.java.getResourceAsStream("/files.zip")
+}
 
 fun main(args: Array<String>) {
     val workDir = if (args.isEmpty())
@@ -117,8 +118,8 @@ class Application(
             val port = config.property(KTOR_PORT_PROPERTY).getString().toInt()
             val host = config.propertyOrNull(KTOR_HOST_PROPERTY)?.getString() ?: DEFAULT_HOST
 
-            val hotReload = config.propertyOrNull(KTOR_TEMPLATE_HOT_RELOAD)?.getString()?.toBoolean() ?: false
-            if (hotReload) initHotReload(log)
+            val enableHotReload = config.propertyOrNull(KTOR_TEMPLATE_HOT_RELOAD)?.getString()?.toBoolean() ?: false
+            if (enableHotReload) initHotReload()
 
             log.info("Running application at $port.. Open http://$host:$port")
 
@@ -131,7 +132,7 @@ class Application(
         engine!!.start(wait)
     }
 
-    private fun initHotReload(log: Logger) {
+    private fun initHotReload() {
         log.info("hot reload is enabled")
 
         layoutDirectory.walkTopDown().forEach {
@@ -141,14 +142,14 @@ class Application(
         }
 
         layoutScheduler.scheduleWithFixedDelay({
-            if (checkLayoutIsModified(log)) {
-                renderAllFiles(log)
+            if (checkLayoutIsModified()) {
+                renderAllFiles()
                 log.info("done")
             }
         }, 0, LAYOUT_CHECK_DELAY, TimeUnit.MILLISECONDS)
     }
 
-    private fun checkLayoutIsModified(log: Logger): Boolean {
+    private fun checkLayoutIsModified(): Boolean {
         layoutDirectory.walkTopDown().forEach {
             if (it.isFile) {
                 val newModified = it.lastModified()
@@ -166,7 +167,7 @@ class Application(
         return false
     }
 
-    private fun renderAllFiles(log: Logger) = runBlocking {
+    private fun renderAllFiles() = runBlocking {
         inputDirectory.walkTopDown().mapNotNull {
             if (it.isFile) {
                 launch(filesRenderContext) {
@@ -185,11 +186,12 @@ class Application(
     companion object {
         internal const val DEFAULT_HOST = "localhost"
 
+        private val log = LoggerFactory.getLogger(Application::class.java)
+
         private const val LAYOUT_CHECK_DELAY = 500L
 
         private const val KTOR_PORT_PROPERTY = "ktor.deployment.port"
         private const val KTOR_HOST_PROPERTY = "ktor.deployment.host"
-
         private const val KTOR_TEMPLATE_HOT_RELOAD = "ktor.template.reload"
     }
 }

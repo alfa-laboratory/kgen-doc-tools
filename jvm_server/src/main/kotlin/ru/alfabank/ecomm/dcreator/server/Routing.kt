@@ -43,10 +43,10 @@ class RenderRouterConfiguration(
 
         when (mode) {
             ApplicationMode.TEST -> {
-                val indexFile = File(mode.publicFolder, "index.html")
+                val indexFile = File(ApplicationMode.TEST.publicFolder, "index.html")
 
                 static("") {
-                    files(mode.publicFolder)
+                    files(ApplicationMode.TEST.publicFolder)
                     get {
                         call.respondFile(indexFile)
                     }

@@ -42,7 +42,7 @@ class IndexProcessor(
         val title = serviceNodes.findServiceNode<TitleServiceNode>()
         val lastUpdate = serviceNodes.findServiceNode<LastUpdateServiceNode>()
 
-        val params = listOfNotNull(
+        val nodes = listOfNotNull(
             version,
             backUrl,
             title,
@@ -50,7 +50,7 @@ class IndexProcessor(
         )
 
         val subFilesResults = includeFiles.map { value ->
-            value to async(filesProcessingContext) { generateData(value.first.file, params) }
+            value to async(filesProcessingContext) { generateData(value.first.file, nodes) }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()
 
@@ -86,7 +86,7 @@ class IndexProcessor(
     }
 
     private fun String.toPreparedName(): String = this
-        .replace(Regex("[^a-zA-Zа-яА-Я0-9]+", IGNORE_CASE), "_")
+        .replace("[^a-zA-Zа-яА-Я0-9]+".toRegex(IGNORE_CASE), "_")
         .toLowerCase()
 }
 

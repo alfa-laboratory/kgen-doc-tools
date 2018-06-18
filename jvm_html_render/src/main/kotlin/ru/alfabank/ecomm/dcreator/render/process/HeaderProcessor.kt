@@ -3,6 +3,10 @@ package ru.alfabank.ecomm.dcreator.render.process
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 
+data class HeaderLinks(
+    override val nodes: List<BlockNode>
+) : Node by NodeIdGen(), NestedNodeList<BlockNode>, BlockNode
+
 data class HeaderLink(
     override val node: Node,
     val level: Level,
@@ -33,7 +37,7 @@ class HeaderProcessor : NodeProcessor {
 
         val result = mutableMapOf(
             "data" to node,
-            "headers" to BlockLayout(headerLinks)
+            "headers" to HeaderLinks(headerLinks)
         )
         serviceNodes.findServiceNode<TitleServiceNode>()
             .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }
