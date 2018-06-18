@@ -13,7 +13,6 @@ import java.io.File
 class DocumentGenerator(
     private val inputDirectory: File,
     private val outputDirectory: File,
-    private val staticDirectory: File,
     private val rootLayoutDir: File
 ) {
     private var init = false
@@ -26,7 +25,7 @@ class DocumentGenerator(
         val path: String
     ) {
         fun toLink(relativePagePath: RelativePagePath): String {
-             return "${inputDirectory.toRelativeString(relativePagePath.srcFile)}/static/$path"
+             return "${inputDirectory.toRelativeString(relativePagePath.srcFile)}/$path"
         }
     }
 

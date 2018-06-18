@@ -31,7 +31,6 @@ class FileRenderTest {
     fun `test file render`() = runBlocking {
         val inputDirectory = File(tempDirectory, "input").apply { mkdirs() }
         val outputDirectory = File(tempDirectory, "output").apply { mkdirs() }
-        val staticDirectory = File(tempDirectory, "output/static").apply { mkdirs() }
         val layoutRootDir = File("../files/layout")
         val freemarkerRender = FreemarkerRender(File(layoutRootDir, "default"))
 
@@ -49,7 +48,7 @@ class FileRenderTest {
 
         val (node, serviceNodes) = MarkdownParser(inputDirectory).parse(generateFile)
 
-        val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, staticDirectory, layoutRootDir)
+        val documentGenerator = DocumentGenerator(inputDirectory, outputDirectory, layoutRootDir)
 
         val headerProcessor = HeaderProcessor()
 

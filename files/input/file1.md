@@ -2,7 +2,7 @@
 
 # header 1123  
 
-[some image](js/gumshoe.js)
+[some image](static/js/gumshoe.js)
 [some image2](/static/js/gumshoe.js)
 
 file 1 some text line 1

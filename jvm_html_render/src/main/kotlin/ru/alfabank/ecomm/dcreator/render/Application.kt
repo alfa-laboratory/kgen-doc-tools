@@ -9,13 +9,11 @@ fun main(args: Array<String>) = runBlocking {
 
     val inputDirectory = File("$fileDirectory/input")
     val outputDirectory = File("$fileDirectory/output/pages")
-    val staticDirectory = File("$fileDirectory/static")
     val layoutPath = File("$fileDirectory/layout")
 
     val documentGenerator = DocumentGenerator(
         inputDirectory,
         outputDirectory,
-        staticDirectory,
         layoutPath
     )
 

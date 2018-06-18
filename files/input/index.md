@@ -16,7 +16,7 @@
 3. dfsdfsdf
   1. ssadasdasd
 
-[some image](js/gumshoe.js)
+[some image](static/js/gumshoe.js)
 [some image2](/static/js/gumshoe.js)
  
 text
