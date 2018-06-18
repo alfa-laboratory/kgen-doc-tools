@@ -139,18 +139,23 @@ class Application(
     private fun initHotReload() {
         log.info("hot reload is enabled")
 
-        layoutDirectory.walkTopDown().forEach {
-            if (it.isFile) {
-                templateFilesUpdateTime += it.absolutePath to it.lastModified()
-            }
-        }
+        initChangeTimes()
 
         layoutScheduler.scheduleWithFixedDelay({
             if (checkLayoutIsModified()) {
                 renderAllFiles()
                 log.info("done")
             }
+            initChangeTimes()
         }, 0, LAYOUT_CHECK_DELAY, TimeUnit.MILLISECONDS)
+    }
+
+    private fun initChangeTimes() {
+        layoutDirectory.walkTopDown().forEach {
+            if (it.isFile) {
+                templateFilesUpdateTime += it.absolutePath to it.lastModified()
+            }
+        }
     }
 
     private fun checkLayoutIsModified(): Boolean {
