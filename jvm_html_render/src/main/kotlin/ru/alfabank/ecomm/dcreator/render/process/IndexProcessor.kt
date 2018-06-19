@@ -94,7 +94,7 @@ class IndexProcessor(
             if (position >= 0) {
                 abcLat[position]
             } else {
-                   c.toString()
+                c.toString()
             }
         }
         .joinToString("")
