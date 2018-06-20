@@ -7,6 +7,8 @@
 
 [external1](https://github.com/evgzakharov/md_parser)
 
+[relativeToFile](file2.html#file_2)
+
 file 1 some text line 1
 file 1 some text line 2
 
