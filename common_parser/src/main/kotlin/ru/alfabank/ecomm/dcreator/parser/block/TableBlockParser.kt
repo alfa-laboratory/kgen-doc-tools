@@ -84,6 +84,12 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         val modifiersParsed = modifiers
             ?.let { parseTableRow(it) }
             ?.mapNotNull { it.parseModifier() }
+            ?.toMutableList() ?: mutableListOf()
+
+        val maxRows = contentColumns.map { it.size }.max()
+        if (maxRows != null && modifiersParsed.size <= maxRows) {
+            (0..(maxRows - modifiersParsed.size)).map { modifiersParsed.add(ColumnAlignModifier(Direction.Left)) }
+        }
 
         return TableBlockNode(
             content = contentColumns,

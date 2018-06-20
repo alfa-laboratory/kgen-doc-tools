@@ -1,6 +1,6 @@
 :::layout [index]
 :::title [some title]
-:::version [1234]
+:::version [123]
 
 :::include [file1.md] (заголовок файла 1 "описание файла один")
 :::include [file2.md] (заголовок файла 2 "описание файла один")
@@ -18,6 +18,8 @@
 
 [some image](static/js/gumshoe.js)
 [some image2](/static/js/gumshoe.js)
+
+[external1](https://github.com/evgzakharov/md_parser)
  
 text
 more text

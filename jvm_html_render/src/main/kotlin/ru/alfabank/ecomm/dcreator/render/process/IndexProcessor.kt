@@ -5,7 +5,6 @@ import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
-import kotlin.text.RegexOption.IGNORE_CASE
 
 data class IncludeFilesInfo(
     val files: List<IncludeFileInfo>
@@ -33,7 +32,8 @@ class IndexProcessor(
         val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePagePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
-                    val subFileRelative = relativePath.subPath(File(serviceNode.name.toPreparedName()))
+                    val subFileRelative =
+                        relativePath.subPath(File(serviceNode.name.toPreparedName() + ".${DocumentGenerator.MD_EXTENSION}"))
 
                     Pair(serviceNode, subFileRelative)
                 }
@@ -87,158 +87,6 @@ class IndexProcessor(
             childs = subFilesResults.values.toList()
         )
     }
-
-    private fun String.toPreparedName(): String = this
-        .map { c ->
-            val position = abcCyr[c.toString()] ?: -1
-            if (position >= 0) {
-                abcLat[position]
-            } else {
-                c.toString()
-            }
-        }
-        .joinToString("")
-        .replace("[^a-zA-Zа-яА-Я0-9]+".toRegex(IGNORE_CASE), "_")
-        .toLowerCase() + ".${DocumentGenerator.MD_EXTENSION}"
-
-    private val abcCyr = arrayOf(
-        "а",
-        "б",
-        "в",
-        "г",
-        "д",
-        "е",
-        "ё",
-        "ж",
-        "з",
-        "и",
-        "й",
-        "к",
-        "л",
-        "м",
-        "н",
-        "о",
-        "п",
-        "р",
-        "с",
-        "т",
-        "у",
-        "ф",
-        "х",
-        "ц",
-        "ч",
-        "ш",
-        "щ",
-        "ъ",
-        "ы",
-        "ь",
-        "э",
-        "ю",
-        "я",
-        "А",
-        "Б",
-        "В",
-        "Г",
-        "Д",
-        "Е",
-        "Ё",
-        "Ж",
-        "З",
-        "И",
-        "Й",
-        "К",
-        "Л",
-        "М",
-        "Н",
-        "О",
-        "П",
-        "Р",
-        "С",
-        "Т",
-        "У",
-        "Ф",
-        "Х",
-        "Ц",
-        "Ч",
-        "Ш",
-        "Щ",
-        "Ъ",
-        "Ы",
-        "Ь",
-        "Э",
-        "Ю",
-        "Я"
-    ).mapIndexed { index, symbol -> symbol to index }
-        .toMap()
-
-    private val abcLat = arrayOf(
-        "a",
-        "b",
-        "v",
-        "g",
-        "d",
-        "e",
-        "e",
-        "zh",
-        "z",
-        "i",
-        "y",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "r",
-        "s",
-        "t",
-        "u",
-        "f",
-        "h",
-        "ts",
-        "ch",
-        "sh",
-        "sch",
-        "",
-        "i",
-        "",
-        "e",
-        "ju",
-        "ja",
-        "A",
-        "B",
-        "V",
-        "G",
-        "D",
-        "E",
-        "E",
-        "Zh",
-        "Z",
-        "I",
-        "Y",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "R",
-        "S",
-        "T",
-        "U",
-        "F",
-        "H",
-        "Ts",
-        "Ch",
-        "Sh",
-        "Sch",
-        "",
-        "I",
-        "",
-        "E",
-        "Ju",
-        "Ja"
-    )
 }
 
 

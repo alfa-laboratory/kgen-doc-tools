@@ -91,7 +91,7 @@ class RenderRouterConfiguration(
                     }
                 } ?: emptyList()
 
-                call.respond(FilesResponse(true, files))
+                call.respond(FilesResponse(true, files.sortedBy { it.name }))
             } else {
                 call.respond(StatusResponse(false))
             }

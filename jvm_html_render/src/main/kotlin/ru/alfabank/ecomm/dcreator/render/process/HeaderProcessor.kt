@@ -57,15 +57,17 @@ class HeaderProcessor : NodeProcessor {
         return headerNodes.fold(mutableListOf<HeaderLink>() to mutableMapOf<String, Node>()) { (acc, replaceNodes), node ->
             val lastHeaderLink = acc.lastOrNull()
 
-            val newReplaceNode = node.nodeId to HeaderAnchor(node.node, node.level, node.nodeId.toSelector())
+            val headerLink = node.toHeaderLink()
+
+            val newReplaceNode = node.nodeId to HeaderAnchor(node.node, node.level, headerLink.linkId)
             replaceNodes += newReplaceNode
 
             if (lastHeaderLink == null) {
-                acc += node.toHeaderLink()
+                acc += headerLink
             } else {
                 when {
                     node.level <= lastHeaderLink.level -> {
-                        acc += node.toHeaderLink()
+                        acc += headerLink
                     }
                     else -> {
                         addHeaderLinkToChild(lastHeaderLink, node)
@@ -95,11 +97,23 @@ class HeaderProcessor : NodeProcessor {
         }
     }
 
-    private fun HeaderBlockNode.toHeaderLink() =
-        HeaderLink(this.node, this.level, this.nodeId.toSelector(), mutableListOf())
+    private fun HeaderBlockNode.toHeaderLink(): HeaderLink {
+        var selector: String = when (node) {
+            is TextNode -> (node as TextNode).text.trim().toPreparedName()
+            else -> node.toString().toPreparedName()
+        }
 
-    /**
-     * convert it to valid querySelector (first digit symbol is not allowed)
-     */
-    private fun String.toSelector(): String = "q$this"
+        if (selector.isEmpty()) {
+            selector = nodeId
+        }
+
+        /**
+         * convert it to valid querySelector (first digit symbol is not allowed)
+         */
+        if (selector.first().isDigit()) {
+            selector = "q$selector"
+        }
+
+        return HeaderLink(this.node, this.level, selector, mutableListOf())
+    }
 }
