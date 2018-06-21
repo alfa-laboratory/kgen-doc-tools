@@ -3,6 +3,7 @@ package ru.alfabank.ecomm.dcreator.parser.line
 import ru.alfabank.ecomm.dcreator.nodes.LinkNode
 import ru.alfabank.ecomm.dcreator.nodes.TextNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
+import ru.alfabank.ecomm.dcreator.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,7 +12,7 @@ class LinkLineParserTest {
     private val lineParser = parser.lineParser
 
     @Test
-    fun simple_links_test() {
+    fun simple_links_test() = runTest {
         val linkResult = lineParser.parse("[some id фывафы] (http://someuri.com  \"title\")")
         assertEquals(LinkNode(TextNode("some id фывафы"), "http://someuri.com", "title"), linkResult)
 

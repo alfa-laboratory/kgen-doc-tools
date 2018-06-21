@@ -46,7 +46,7 @@ tailrec fun List<Node>.fixRelativeLinkPaths(relativePath: RelativePagePath): Mut
         when (first) {
             is ImageLinkNode -> {
                 if (first.url.isUrlRelative()) {
-                    val fixedLink = relativePath.fromStatic(first.url!!)
+                    val fixedLink = relativePath.fromPath(first.url!!)
                         .toLink(relativePath)
                     first.url = fixedLink
 
@@ -57,7 +57,7 @@ tailrec fun List<Node>.fixRelativeLinkPaths(relativePath: RelativePagePath): Mut
             }
             is LinkNode -> {
                 if (first.url.isUrlRelative()) {
-                    val fixedLink = relativePath.fromStatic(first.url!!)
+                    val fixedLink = relativePath.fromPath(first.url!!)
                         .toLink(relativePath)
                     first.url = fixedLink
 

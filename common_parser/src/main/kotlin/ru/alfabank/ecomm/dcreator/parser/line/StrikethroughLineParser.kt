@@ -9,7 +9,7 @@ import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 class StrikethroughLineParser(override val parseInstance: MarkdownParser) : BoundsLineParser("~~") {
     override val parserId: String = "StrikethroughLineParser"
 
-    override fun parse(line: String): ParseLineResult? {
+    override suspend fun parse(line: String): ParseLineResult? {
         val (node, findUnboundResult) = parseInstance.lineParser.parseForLineResult(line)
 
         return if (node == EmptyNode)

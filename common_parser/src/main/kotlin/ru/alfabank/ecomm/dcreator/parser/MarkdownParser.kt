@@ -44,7 +44,8 @@ class MarkdownParser(val fileBaseDirectory: File? = null) {
         CodeLineDoubleQuoteParser(this),
         HTMLNodeLineParser(this),
         LinkLineParser(this),
-        ImageLinkLineParser(this)
+        ImageLinkLineParser(this),
+        IncludeLineParser(this)
     )
 
     val lineParser = LineParserImpl(lineParsers)

@@ -65,7 +65,7 @@ class LinkLineParser(
         return endSymbols.length
     }
 
-    override fun parse(line: String): ParseLineResult? {
+    override suspend fun parse(line: String): ParseLineResult? {
         val result = parseInstance.lineParser.parseForLineResult(line)
 
         return tryCreateLink(result, line)

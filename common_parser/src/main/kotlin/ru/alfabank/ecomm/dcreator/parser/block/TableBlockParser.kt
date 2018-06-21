@@ -73,7 +73,7 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         return false
     }
 
-    private fun parseTableLines(rows: Rows): TableBlockNode {
+    private suspend fun parseTableLines(rows: Rows): TableBlockNode {
         val (content, header, footer, modifiers) = rows
 
         val (headerColumns, footerColumns) = listOf(header, footer)
@@ -117,7 +117,7 @@ class TableBlockParser(override val parseInstance: MarkdownParser) : BlockParser
         }
     }
 
-    private fun String.parserRow(): List<Node> = this
+    private suspend fun String.parserRow(): List<Node> = this
         .let { parseTableRow(it) }
         .map { parseInstance.lineParser.parse(it) }
 

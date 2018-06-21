@@ -52,7 +52,7 @@ class HTMLNodeLineParser(
 
     override val parserId: String = "HTMLNodeLineParser"
 
-    override fun parse(line: String): ParseLineResult? {
+    override suspend fun parse(line: String): ParseLineResult? {
         val tag = usedTag ?: throw RuntimeException("unexpected behaviour")
 
         return ParseLineResult(HTMLNode("${tag.fullOpenTag}$line</${tag.tagName}>"))

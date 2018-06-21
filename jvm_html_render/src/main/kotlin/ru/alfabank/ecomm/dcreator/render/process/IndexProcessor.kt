@@ -32,8 +32,10 @@ class IndexProcessor(
         val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePagePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
+                    val fileName = File(serviceNode.file).nameWithoutExtension
+
                     val subFileRelative =
-                        relativePath.subPath(File(serviceNode.name.toPreparedName() + ".${DocumentGenerator.MD_EXTENSION}"))
+                        relativePath.subPath(File(fileName.toPreparedName() + ".${DocumentGenerator.HTML_EXTENSION}"))
 
                     Pair(serviceNode, subFileRelative)
                 }
@@ -50,7 +52,7 @@ class IndexProcessor(
             lastUpdate
         )
 
-        val subFilesResults = includeFiles.map { value ->
+        val subFilesResults: Map<IncludeServiceNode, FileProcessData> = includeFiles.map { value ->
             value to async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()

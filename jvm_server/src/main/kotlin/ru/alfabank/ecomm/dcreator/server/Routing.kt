@@ -161,7 +161,7 @@ class RenderRouterConfiguration(
 
             val result = when (type) {
                 "file" -> newFile.createNewFile()
-                "staticFolder" -> newFile.mkdir()
+                "folder" -> newFile.mkdir()
                 else -> false
             }
 
