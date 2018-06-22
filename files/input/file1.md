@@ -13,7 +13,6 @@ file 1 some text line 1
 file 1 some text line 2
 
 some text VALUE_WITH_UNDERSCORE
-some text VALUE\_WITH\_UNDERSCORE\_ESCAPED
 some text VALUE<span>_</span>WITH<span>_</span>UNDERSCORE<span>_</span>ESCAPED
 
 ## sub header 1

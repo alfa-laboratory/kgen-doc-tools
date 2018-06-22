@@ -26,12 +26,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
     suspend fun parse(line: String): Node = parseForLineResult(line).node
 
     suspend fun parseForLineResult(line: String): ParseLineResult {
-        var preparedLine = line
-        escapedSymbols.forEach { (key, value) ->
-            preparedLine = preparedLine.replace(key, value)
-        }
-
-        val result = parseLine(preparedLine)
+        val result = parseLine(line)
 
         return ParseLineResult(result.nodes.merge(), result.findUnboundParser)
     }
@@ -201,8 +196,6 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
             }
         }
 
-
-
         return null
     }
 
@@ -245,11 +238,5 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
         }
 
         return FindSuitedResult(false, emptyList())
-    }
-
-    companion object {
-        private val escapedSymbols = mapOf(
-            "\\_" to "&lowbar;"
-        )
     }
 }
