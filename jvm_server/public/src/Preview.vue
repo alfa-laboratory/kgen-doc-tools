@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="preview-box">
     <template v-if="path !== undefined">
       <h2><a :href="requestPath" target="_blank">Preview</a></h2>
     </template>
     <template v-if="path === undefined">
       <h2>Preview</h2>
     </template>
-    <div id="frame-parent" class="preview-box" v-if="path !== undefined">
+    <div id="frame-parent" class="preview-frame" v-if="path !== undefined">
       <iframe id="frame-element" class="frame-view" :src="requestPath" @load="onLoad">
       </iframe>
     </div>
@@ -56,10 +56,14 @@
 
 <style>
   .preview-box {
+    width: 100%;
+    height: 100%;
+  }
+
+  .preview-frame {
     border: 1px black solid;
-    position: fixed;
-    height: 88%;
-    width: 50%;
+    width: 100%;
+    height: 91%;
     overflow: scroll;
   }
 
