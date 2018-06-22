@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h2>Preview</h2>
+    <template v-if="path !== undefined">
+      <h2><a :href="requestPath" target="_blank">Preview</a></h2>
+    </template>
+    <template v-if="path === undefined">
+      <h2>Preview</h2>
+    </template>
     <div id="frame-parent" class="preview-box" v-if="path !== undefined">
       <iframe id="frame-element" class="frame-view" :src="requestPath" @load="onLoad">
       </iframe>
