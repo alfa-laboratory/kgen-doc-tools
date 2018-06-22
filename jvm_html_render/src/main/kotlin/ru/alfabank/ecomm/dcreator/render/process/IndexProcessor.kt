@@ -5,7 +5,6 @@ import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
-import kotlin.text.RegexOption.IGNORE_CASE
 
 data class IncludeFilesInfo(
     val files: List<IncludeFileInfo>
@@ -33,7 +32,10 @@ class IndexProcessor(
         val includeFiles: List<Pair<IncludeServiceNode, DocumentGenerator.RelativePagePath>> =
             serviceNodes.filterIsInstance<IncludeServiceNode>()
                 .map { serviceNode ->
-                    val subFileRelative = relativePath.subPath(File(serviceNode.name.toPreparedName()))
+                    val fileName = File(serviceNode.file).nameWithoutExtension
+
+                    val subFileRelative =
+                        relativePath.subPath(File(fileName.toPreparedName() + ".${DocumentGenerator.HTML_EXTENSION}"))
 
                     Pair(serviceNode, subFileRelative)
                 }
@@ -50,7 +52,7 @@ class IndexProcessor(
             lastUpdate
         )
 
-        val subFilesResults = includeFiles.map { value ->
+        val subFilesResults: Map<IncludeServiceNode, FileProcessData> = includeFiles.map { value ->
             value to async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()
@@ -64,7 +66,8 @@ class IndexProcessor(
         }.toMap()
 
         val result = mutableMapOf(
-            "data" to node
+            "data" to node,
+            "relativePath" to SimpleServiceNode(relativePath.toRelativePath())
         )
         version?.let { result += "version" to it }
         title?.let { result += "title" to it }
@@ -87,10 +90,6 @@ class IndexProcessor(
             childs = subFilesResults.values.toList()
         )
     }
-
-    private fun String.toPreparedName(): String = this
-        .replace("[^a-zA-Zа-яА-Я0-9]+".toRegex(IGNORE_CASE), "_")
-        .toLowerCase() + ".${DocumentGenerator.MD_EXTENSION}"
 }
 
 

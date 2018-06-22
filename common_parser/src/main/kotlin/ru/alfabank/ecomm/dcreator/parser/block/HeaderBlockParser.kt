@@ -31,7 +31,7 @@ open class HeaderBlockParser(override val parseInstance: MarkdownParser) : Block
         else -> emptyList()
     }.toParseResult()
 
-    private fun parseMultiLineHeader(firstLine: String, secondLine: String): List<BlockNode> {
+    private suspend fun parseMultiLineHeader(firstLine: String, secondLine: String): List<BlockNode> {
         val headerNode = when (secondLine.trimStart().first()) {
             HEADER_H1_SYMBOL -> HeaderBlockNode(Level.ONE, parseInstance.lineParser.parseForLineResult(firstLine).node)
             else -> HeaderBlockNode(Level.TWO, parseInstance.lineParser.parseForLineResult(firstLine).node)
@@ -40,7 +40,7 @@ open class HeaderBlockParser(override val parseInstance: MarkdownParser) : Block
         return listOf(headerNode)
     }
 
-    private fun parseSingleHeaderLine(line: String): List<BlockNode> {
+    private suspend fun parseSingleHeaderLine(line: String): List<BlockNode> {
         val headerLine = line.trimStart()
 
         val headerText = headerLine.trimStart(HEADER_SYMBOL)

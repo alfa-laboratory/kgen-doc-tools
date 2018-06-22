@@ -20,10 +20,10 @@
     </div>
 </div>
 
-<script src="/static/js/gumshoe.js"></script>
-<script src="/static/js/index.js"></script>
+<script src="${relativePath.value}/static/js/gumshoe.js"></script>
+<script src="${relativePath.value}/static/js/index.js"></script>
 
-<script src="/static/js/highlight.pack.js"></script>
+<script src="${relativePath.value}/static/js/highlight.pack.js"></script>
 <script type="text/javascript">
     hljs.initHighlightingOnLoad();
 </script>

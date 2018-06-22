@@ -5,8 +5,15 @@
 [some image](static/js/gumshoe.js)
 [some image2](/static/js/gumshoe.js)
 
+[external1](https://github.com/evgzakharov/md_parser)
+
+[relativeToFile](./file2.html#file_2)
+
 file 1 some text line 1
 file 1 some text line 2
+
+some text VALUE_WITH_UNDERSCORE
+some text VALUE<span>_</span>WITH<span>_</span>UNDERSCORE<span>_</span>ESCAPED
 
 ## sub header 1
 

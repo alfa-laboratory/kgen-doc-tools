@@ -68,7 +68,9 @@ class FileRenderTest {
 
         val nodesData = freemarkerRender.render("index.ftlh", preparedResult)
 
-        val preparedActualText = nodesData.replace(UUID_REGEX, "00000")
+        val actualText = nodesData.replace(UUID_REGEX, "00000")
+
+        val preparedActualText = actualText
             .split("\n")
             .map { it.trim() }
 

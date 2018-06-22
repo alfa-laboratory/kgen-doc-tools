@@ -7,7 +7,7 @@ import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 import ru.alfabank.ecomm.dcreator.parser.ParseLineResult
 
 abstract class ItalicLineParser(symbols: String) : BoundsLineParser(symbols) {
-    override fun parse(line: String): ParseLineResult? {
+    override suspend fun parse(line: String): ParseLineResult? {
         val (node, findUnboundResult) = parseInstance.lineParser.parseForLineResult(line)
 
         return if (node == EmptyNode)

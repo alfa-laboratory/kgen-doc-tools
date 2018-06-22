@@ -65,7 +65,7 @@ class ImageLinkLineParser(
         return endSymbols.length
     }
 
-    override fun parse(line: String): ParseLineResult? {
+    override suspend fun parse(line: String): ParseLineResult? {
         if (linkData == null)
             return null
 

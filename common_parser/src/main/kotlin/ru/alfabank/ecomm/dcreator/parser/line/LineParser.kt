@@ -22,7 +22,7 @@ interface LineParser : Parser {
 
     fun endSymbolsLength(): Int
 
-    fun parse(line: String): ParseLineResult?
+    suspend fun parse(line: String): ParseLineResult?
 
     fun combine(node: Node): Node?
 }

@@ -6,9 +6,9 @@
     <#else>
         <title>documentation example</title>
     </#if>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/asciidoctor.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/github.css">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="${relativePath.value}/static/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="${relativePath.value}/static/css/asciidoctor.css">
+    <link rel="stylesheet" type="text/css" href="${relativePath.value}/static/css/github.css">
 </head>
 <body>

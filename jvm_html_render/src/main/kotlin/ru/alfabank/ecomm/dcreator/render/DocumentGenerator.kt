@@ -21,24 +21,44 @@ class DocumentGenerator(
     private val freemarkerRenders: MutableMap<String, FreemarkerRender> = mutableMapOf()
     private val nodeProcessors: MutableMap<String, NodeProcessor> = mutableMapOf()
 
+    interface RelativePath {
+        fun toLink(relativePagePath: RelativePagePath): String
+    }
+
     inner class RelativeStaticPath(
         val path: String
-    ) {
-        fun toLink(relativePagePath: RelativePagePath): String {
-             return "${inputDirectory.toRelativeString(relativePagePath.srcFile)}/$path"
+    ) : RelativePath {
+        override fun toLink(relativePagePath: RelativePagePath): String {
+            return "${inputDirectory.toRelativeString(relativePagePath.srcFile)}/$path"
+        }
+    }
+
+    inner class RelativeFilesPath(
+        val path: String
+    ) : RelativePath {
+        override fun toLink(relativePagePath: RelativePagePath): String {
+            return path
         }
     }
 
     inner class RelativePagePath(
         val srcFile: File
     ) {
-        fun fromStatic(path: String): RelativeStaticPath {
-            return RelativeStaticPath(path)
+        fun fromPath(path: String): RelativePath {
+            return if (path.startsWith(RELATIVE_PREFIX)) {
+                RelativeFilesPath(path.drop(RELATIVE_PREFIX.length))
+            } else {
+                RelativeStaticPath(path)
+            }
         }
 
         fun toRelativeFilePath(): String {
             val relativePath = srcFile.toRelative()
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
+        }
+
+        fun toRelativePath(): String {
+            return inputDirectory.toRelativeString(srcFile)
         }
 
         fun toLink(relativePagePath: RelativePagePath? = null): String {
@@ -182,6 +202,8 @@ class DocumentGenerator(
         private const val TABS_LAYOUT = "index"
 
         private const val INDEX_FILE_NAME = "index.ftlh"
+
+        private const val RELATIVE_PREFIX = "./"
 
         const val MD_EXTENSION = "md"
         const val HTML_EXTENSION = "html"

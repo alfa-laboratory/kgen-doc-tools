@@ -23,9 +23,9 @@ inline fun <T> CharSequence.findSuitedResult(lambda: (Char, Int) -> Pair<Boolean
 data class ParseLineResult(val node: Node, val findUnboundParser: Boolean = false)
 
 class LineParserImpl(private val lineParsers: List<LineParser>) {
-    fun parse(line: String): Node = parseForLineResult(line).node
+    suspend fun parse(line: String): Node = parseForLineResult(line).node
 
-    fun parseForLineResult(line: String): ParseLineResult {
+    suspend fun parseForLineResult(line: String): ParseLineResult {
         val result = parseLine(line)
 
         return ParseLineResult(result.nodes.merge(), result.findUnboundParser)
@@ -51,7 +51,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
     data class ParseLineNodesResult(val nodes: List<Node>, val findUnboundParser: Boolean)
 
-    private tailrec fun parseLine(
+    private tailrec suspend fun parseLine(
         line: String,
         prevNodes: List<Node> = emptyList(),
         findUnboundParser: Boolean = false
@@ -72,7 +72,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
             //process with all first special symbols
             val (notParsedLine: String, node: Node?, _, localFindUnboundParser) =
-                    parseLineByParsers(lineToProcess, suitedParsers, startCheckIndex = 2)
+                parseLineByParsers(lineToProcess, suitedParsers, startCheckIndex = 2)
 
             if (node != null) {
                 parseLine(
@@ -98,7 +98,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
         val findUnboundParser: Boolean = false
     )
 
-    private fun parseLineByParsers(
+    private suspend fun parseLineByParsers(
         lineToProcess: String,
         suitedParsers: List<LineParser> = emptyList(),
         startCheckIndex: Int = 1,
@@ -165,7 +165,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
         } ?: ParseResult(lineToProcess, null)
     }
 
-    private fun tryParseByParentParser(lineToProcess: String, parentParser: LineParser): ParseResult? {
+    private suspend fun tryParseByParentParser(lineToProcess: String, parentParser: LineParser): ParseResult? {
         outerLoop@ for (startIndex in 0..(lineToProcess.lastIndex)) {
             val findSuitedSymbols = mutableListOf<Triple<Int, Int, LineParser?>>()
             innerLoop@ for (endIndex in (startIndex + 1)..(lineToProcess.length)) {
@@ -196,12 +196,13 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
             }
         }
 
-
-
         return null
     }
 
-    private fun tryParse(allParsers: MutableList<Pair<Int, List<LineParser>>>, lineToProcess: String): ParseResult? {
+    private suspend fun tryParse(
+        allParsers: MutableList<Pair<Int, List<LineParser>>>,
+        lineToProcess: String
+    ): ParseResult? {
         allParsers.reversed()
             .forEach { (index, parsers) ->
 
