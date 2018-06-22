@@ -57,6 +57,10 @@ class DocumentGenerator(
             return "$relativePath${srcFile.nameWithoutExtension}.$HTML_EXTENSION"
         }
 
+        fun toRelativePath(): String {
+            return inputDirectory.toRelativeString(srcFile)
+        }
+
         fun toLink(relativePagePath: RelativePagePath? = null): String {
             val relativePath = srcFile
                 .relativeTo(toFolderPath((relativePagePath ?: RelativePagePath(inputDirectory)).srcFile.parentFile))

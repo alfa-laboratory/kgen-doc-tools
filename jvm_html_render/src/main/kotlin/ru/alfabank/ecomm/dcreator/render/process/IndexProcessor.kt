@@ -66,7 +66,8 @@ class IndexProcessor(
         }.toMap()
 
         val result = mutableMapOf(
-            "data" to node
+            "data" to node,
+            "relativePath" to SimpleServiceNode(relativePath.toRelativePath())
         )
         version?.let { result += "version" to it }
         title?.let { result += "title" to it }

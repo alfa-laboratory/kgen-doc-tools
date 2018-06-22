@@ -39,7 +39,8 @@ class HeaderProcessor : NodeProcessor {
 
         val result = mutableMapOf(
             "data" to node,
-            "headers" to HeaderLinks(headerLinks)
+            "headers" to HeaderLinks(headerLinks),
+            "relativePath" to SimpleServiceNode(relativePath.toRelativePath())
         )
         serviceNodes.findServiceNode<TitleServiceNode>()
             .let { result += "title" to TitleServiceNode(it?.title ?: DEFAULT_TITLE) }

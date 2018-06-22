@@ -6,10 +6,14 @@ interface ServiceNode : Node {
 
 data class SimpleServiceNode(
     val value: String,
-    val param1: String?,
-    val param2: String?
+    val param1: String? = null,
+    val param2: String? = null
 ) : ServiceNode, Node by NodeIdGen() {
-    override fun toParams(): Any = TODO()
+    override fun toParams(): Any = mapOf<String, Any?>(
+        "value" to value,
+        "param1" to param1,
+        "param2" to param2
+    )
 }
 
 data class LayoutServiceNode(
