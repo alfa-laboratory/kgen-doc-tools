@@ -53,3 +53,6 @@ filesExample/output/pages/
 **/public_react/public/
 
 **/output/static/images/
+
+jvm_server/src/main/resources/static/
+jvm_server/src/main/resources/files.zip
