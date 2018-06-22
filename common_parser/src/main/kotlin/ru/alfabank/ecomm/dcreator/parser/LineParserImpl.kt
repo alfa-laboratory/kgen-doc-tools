@@ -26,7 +26,12 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
     suspend fun parse(line: String): Node = parseForLineResult(line).node
 
     suspend fun parseForLineResult(line: String): ParseLineResult {
-        val result = parseLine(line)
+        var preparedLine = line
+        escapedSymbols.forEach { (key, value) ->
+            preparedLine = preparedLine.replace(key, value)
+        }
+
+        val result = parseLine(preparedLine)
 
         return ParseLineResult(result.nodes.merge(), result.findUnboundParser)
     }
@@ -72,7 +77,7 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
 
             //process with all first special symbols
             val (notParsedLine: String, node: Node?, _, localFindUnboundParser) =
-                    parseLineByParsers(lineToProcess, suitedParsers, startCheckIndex = 2)
+                parseLineByParsers(lineToProcess, suitedParsers, startCheckIndex = 2)
 
             if (node != null) {
                 parseLine(
@@ -201,7 +206,10 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
         return null
     }
 
-    private suspend fun tryParse(allParsers: MutableList<Pair<Int, List<LineParser>>>, lineToProcess: String): ParseResult? {
+    private suspend fun tryParse(
+        allParsers: MutableList<Pair<Int, List<LineParser>>>,
+        lineToProcess: String
+    ): ParseResult? {
         allParsers.reversed()
             .forEach { (index, parsers) ->
 
@@ -237,5 +245,11 @@ class LineParserImpl(private val lineParsers: List<LineParser>) {
         }
 
         return FindSuitedResult(false, emptyList())
+    }
+
+    companion object {
+        private val escapedSymbols = mapOf(
+            "\\_" to "&lowbar;"
+        )
     }
 }
