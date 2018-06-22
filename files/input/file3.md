@@ -9,7 +9,6 @@ file 3 some text line 2
 | column1 | column2 |
 | :----:  | :---:   | 
 | data11  | asdfasdf
-| data21  | data2a afasdf2  ::include "file2.md"   |
 | ----    | ---   |
 | column1 | column2   |
 
