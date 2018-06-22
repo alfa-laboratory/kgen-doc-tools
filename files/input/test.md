@@ -2,6 +2,8 @@
 
 **some text** ::include "test2.md" **end**
 
+include from subdirectory ::include "test123/newFile.md" 
+
 | column1 | column2 | 
 | :----:  | :---:   |
 | line 1   | ::include "test3.md" |

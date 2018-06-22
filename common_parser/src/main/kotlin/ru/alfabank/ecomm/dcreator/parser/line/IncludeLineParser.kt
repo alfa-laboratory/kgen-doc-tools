@@ -25,7 +25,7 @@ class IncludeLineParser(
     }
 
     override fun endSymbolsSuited(endSymbols: String): BoundSymbolsSuiteResult {
-        return if (endSymbols.endsWith(END_SYMBOLS)) {
+        return if (endSymbols == END_SYMBOLS) {
             BoundSymbolsSuiteResult(true, true, this)
         } else {
             BoundSymbolsSuiteResult(true, false, this)
@@ -84,7 +84,7 @@ class IncludeLineParser(
         """.trimIndent().toPattern()
 
         private val START_PREDICATE = """
-            ^$KEYWORD_PATTERN$SPACE_PATTERN+"?$
+            ^$KEYWORD_PATTERN$SPACE_PATTERN+"$
         """.trimIndent().toPattern().asPredicate()
     }
 
