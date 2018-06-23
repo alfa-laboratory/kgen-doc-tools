@@ -11,6 +11,16 @@
 </template>
 
 <script>
+  function enableEditor(self) {
+    self.isEditEnable = !self.isEditEnable;
+    self.$emit('editChange', self.isEditEnable);
+  }
+
+  function enablePreview(self) {
+    self.isPreviewEnable = !self.isPreviewEnable;
+    self.$emit('previewChange', self.isPreviewEnable)
+  }
+
   export default {
     name: 'controlls',
     data() {
@@ -21,12 +31,16 @@
     },
     methods: {
       onDocumentClick() {
-        this.isEditEnable = !this.isEditEnable;
-        this.$emit('editChange', this.isEditEnable)
+        enableEditor(this);
+        if (!this.isEditEnable && !this.isPreviewEnable) {
+          enablePreview(this);
+        }
       },
       onViewClick() {
-        this.isPreviewEnable = !this.isPreviewEnable;
-        this.$emit('previewChange', this.isPreviewEnable)
+        enablePreview(this);
+        if (!this.isEditEnable && !this.isPreviewEnable) {
+          enableEditor(this);
+        }
       }
     }
   }
