@@ -11,6 +11,16 @@
 </template>
 
 <script>
+  function enableEditor(self) {
+    self.isEditEnable = !self.isEditEnable;
+    self.$emit('editChange', self.isEditEnable);
+  }
+
+  function enablePreview(self) {
+    self.isPreviewEnable = !self.isPreviewEnable;
+    self.$emit('previewChange', self.isPreviewEnable)
+  }
+
   export default {
     name: 'controlls',
     data() {
@@ -21,12 +31,16 @@
     },
     methods: {
       onDocumentClick() {
-        this.isEditEnable = !this.isEditEnable;
-        this.$emit('editChange', this.isEditEnable)
+        enableEditor(this);
+        if (!this.isEditEnable && !this.isPreviewEnable) {
+          enablePreview(this);
+        }
       },
       onViewClick() {
-        this.isPreviewEnable = !this.isPreviewEnable;
-        this.$emit('previewChange', this.isPreviewEnable)
+        enablePreview(this);
+        if (!this.isEditEnable && !this.isPreviewEnable) {
+          enableEditor(this);
+        }
       }
     }
   }
@@ -47,20 +61,20 @@
     }
     &.disable::before {
       position: absolute;
-      border-top: 1px solid red;
+      border-top: 2px solid red;
       content: ' ';
       top: 50%;
-      left: 0;
-      right: 0;
+      left: -5px;
+      right: -5px;
       transform: rotate(45deg);
     }
     &.disable::after {
       position: absolute;
-      border-top: 1px solid red;
+      border-top: 2px solid red;
       content: ' ';
       top: 50%;
-      left: 0;
-      right: 0;
+      left: -5px;
+      right: -5px;
       rotation: 45grad;
       transform: rotate(-45deg);
     }
