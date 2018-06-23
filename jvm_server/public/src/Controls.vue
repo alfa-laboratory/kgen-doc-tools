@@ -61,20 +61,20 @@
     }
     &.disable::before {
       position: absolute;
-      border-top: 1px solid red;
+      border-top: 2px solid red;
       content: ' ';
       top: 50%;
-      left: 0;
-      right: 0;
+      left: -5px;
+      right: -5px;
       transform: rotate(45deg);
     }
     &.disable::after {
       position: absolute;
-      border-top: 1px solid red;
+      border-top: 2px solid red;
       content: ' ';
       top: 50%;
-      left: 0;
-      right: 0;
+      left: -5px;
+      right: -5px;
       rotation: 45grad;
       transform: rotate(-45deg);
     }
