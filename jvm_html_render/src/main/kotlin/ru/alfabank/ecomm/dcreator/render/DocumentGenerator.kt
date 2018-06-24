@@ -11,12 +11,14 @@ import ru.alfabank.ecomm.dcreator.render.serialize.NodeSerializer
 import java.io.File
 
 class DocumentGenerator(
-    private val inputDirectory: File,
-    private val outputDirectory: File,
-    private val rootLayoutDir: File
+    val inputDirectory: File,
+    val outputDirectory: File,
+    val rootLayoutDir: File
 ) {
     private var init = false
     private val lock = Mutex(false)
+
+    private val outputPageDirectory = File(outputDirectory, "pages")
 
     private val freemarkerRenders: MutableMap<String, FreemarkerRender> = mutableMapOf()
     private val nodeProcessors: MutableMap<String, NodeProcessor> = mutableMapOf()
@@ -103,7 +105,7 @@ class DocumentGenerator(
             return
 
         nodesData.forEach { (data, _, relativePath) ->
-            val outputFile = File(outputDirectory, relativePath.toRelativeFilePath())
+            val outputFile = File(outputPageDirectory, relativePath.toRelativeFilePath())
 
             outputFile.parentFile.apply {
                 if (!exists()) mkdirs()
@@ -130,7 +132,7 @@ class DocumentGenerator(
             return emptyList()
 
         if (generateFile.extension.toLowerCase() != MD_EXTENSION) {
-            generateFile.copyTo(File(outputDirectory, generateFile.name), overwrite = true)
+            generateFile.copyTo(File(outputPageDirectory, generateFile.name), overwrite = true)
             return emptyList()
         }
 

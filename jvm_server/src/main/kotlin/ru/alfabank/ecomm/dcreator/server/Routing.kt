@@ -5,12 +5,12 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.content.files
-import io.ktor.content.resources
-import io.ktor.content.static
+import io.ktor.content.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.receiveMultipart
 import io.ktor.request.receiveText
+import io.ktor.response.header
 import io.ktor.response.respond
 import io.ktor.response.respondFile
 import io.ktor.response.respondText
@@ -20,6 +20,7 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import ru.alfabank.ecomm.dcreator.server.responses.*
+import ru.alfabank.ecomm.dcreator.server.utils.copyToSuspend
 import ru.alfabank.ecomm.dcreator.server.utils.doAndDisplayDiff
 import java.io.File
 import java.io.FileNotFoundException
@@ -182,6 +183,39 @@ class RenderRouterConfiguration(
             val newFile = File(file.parent, newName)
 
             Files.move(file.toPath(), newFile.toPath())
+
+            call.respond(StatusResponse(true))
+        }
+
+        get("downloadZip") {
+            var zipFile: File? = null
+            try {
+                zipFile = zipFiles(documentGenerator.outputDirectory)
+                call.response.header("Content-Disposition", "attachment; filename=\"output.zip\"")
+                call.respondFile(zipFile)
+            } finally {
+                zipFile?.delete()
+            }
+        }
+
+        post("uploadImage") {
+            val fileName = call.parameters["name"]!!
+
+            val imagesDirectory = File(documentGenerator.outputDirectory, "static/images")
+            val uplodingFile = File(imagesDirectory, fileName).apply {
+                if (exists() && isFile) delete()
+            }
+
+            val multipart = call.receiveMultipart()
+            multipart.forEachPart { part ->
+                when (part) {
+                    is PartData.FileItem -> {
+                        part.streamProvider().use { its -> uplodingFile.outputStream().buffered().use { its.copyToSuspend(it) } }
+                    }
+                }
+
+                part.dispose()
+            }
 
             call.respond(StatusResponse(true))
         }

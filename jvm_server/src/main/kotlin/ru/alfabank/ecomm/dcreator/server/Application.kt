@@ -19,8 +19,6 @@ import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
 
 private val zipFiles by lazy {
     ClassLoader::class.java.getResourceAsStream("/files.zip")
@@ -36,7 +34,7 @@ fun main(args: Array<String>) {
         workDir.mkdirs()
 
     if (workDir.list().isEmpty())
-        unpackFiles(workDir)
+        unzipFiles(workDir)
 
     val mode = if (args.size >= 2 && args[1] == "test")
         ApplicationMode.TEST
@@ -48,27 +46,6 @@ fun main(args: Array<String>) {
     }
 }
 
-private fun unpackFiles(workDir: File) {
-    ZipInputStream(zipFiles).use { zipInputStream ->
-        while (true) {
-            val entry: ZipEntry = zipInputStream.nextEntry ?: break
-
-            try {
-                val output = File(workDir, entry.name)
-
-                if (entry.isDirectory) {
-                    output.mkdirs()
-                } else {
-                    output.createNewFile()
-                    output.outputStream().use { zipInputStream.copyTo(it) }
-                }
-            } finally {
-                zipInputStream.closeEntry()
-            }
-        }
-    }
-}
-
 enum class ApplicationMode(val publicFolder: File = File("")) {
     TEST(File("jvm_server/public")),
     PROD;
@@ -77,7 +54,7 @@ enum class ApplicationMode(val publicFolder: File = File("")) {
 class Application(
     workDir: File,
     private val inputDirectory: File = File(workDir, "input"),
-    outputDirectory: File = File(workDir, "output/pages"),
+    outputDirectory: File = File(workDir, "output"),
     private val layoutDirectory: File = File(workDir, "layout"),
     mode: ApplicationMode = ApplicationMode.PROD
 ) {
