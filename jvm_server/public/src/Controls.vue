@@ -1,5 +1,8 @@
 <template>
   <div class="controlls-block">
+    <div class="controll-element" @click="onDownload">
+      <img class="control-icon-element" src="/images/download.svg"/>
+    </div>
     <div class="controll-element" :class="{ disable: !isEditEnable }" @click="onDocumentClick">
       <img class="control-icon-element" src="/images/document.svg"/>
     </div>
@@ -41,6 +44,12 @@
         if (!this.isEditEnable && !this.isPreviewEnable) {
           enableEditor(this);
         }
+      },
+      onDownload() {
+        const link = document.createElement('a');
+        link.href = "/downloadZip";
+        document.body.appendChild(link);
+        link.click();
       }
     }
   }

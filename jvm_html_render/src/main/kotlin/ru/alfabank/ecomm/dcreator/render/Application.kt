@@ -8,7 +8,7 @@ fun main(args: Array<String>) = runBlocking {
     val fileDirectory = "filesExample"
 
     val inputDirectory = File("$fileDirectory/input")
-    val outputDirectory = File("$fileDirectory/output/pages")
+    val outputDirectory = File("$fileDirectory/output")
     val layoutPath = File("$fileDirectory/layout")
 
     val documentGenerator = DocumentGenerator(

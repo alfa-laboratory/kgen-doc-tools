@@ -11,6 +11,7 @@ import io.ktor.content.static
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveText
+import io.ktor.response.header
 import io.ktor.response.respond
 import io.ktor.response.respondFile
 import io.ktor.response.respondText
@@ -184,6 +185,17 @@ class RenderRouterConfiguration(
             Files.move(file.toPath(), newFile.toPath())
 
             call.respond(StatusResponse(true))
+        }
+
+        get("downloadZip") {
+            var zipFile: File? = null
+            try {
+                zipFile = zipFiles(documentGenerator.outputDirectory)
+                call.response.header("Content-Disposition", "attachment; filename=\"output.zip\"")
+                call.respondFile(zipFile)
+            } finally {
+                zipFile?.delete()
+            }
         }
     }
 
