@@ -202,7 +202,7 @@ class RenderRouterConfiguration(
             val fileName = call.parameters["name"]!!
 
             val imagesDirectory = File(documentGenerator.outputDirectory, "static/images")
-            val uplodingFile = File(imagesDirectory, fileName).apply {
+            val uploadingFile = File(imagesDirectory, fileName).apply {
                 if (exists() && isFile) delete()
             }
 
@@ -210,7 +210,7 @@ class RenderRouterConfiguration(
             multipart.forEachPart { part ->
                 when (part) {
                     is PartData.FileItem -> {
-                        part.streamProvider().use { its -> uplodingFile.outputStream().buffered().use { its.copyToSuspend(it) } }
+                        part.streamProvider().use { its -> uploadingFile.outputStream().buffered().use { its.copyToSuspend(it) } }
                     }
                 }
 
