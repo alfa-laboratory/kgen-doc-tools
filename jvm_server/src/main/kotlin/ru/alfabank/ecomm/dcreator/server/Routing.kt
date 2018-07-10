@@ -22,6 +22,7 @@ import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import ru.alfabank.ecomm.dcreator.server.responses.*
 import ru.alfabank.ecomm.dcreator.server.utils.copyToSuspend
 import ru.alfabank.ecomm.dcreator.server.utils.doAndDisplayDiff
+import ru.alfabank.ecomm.dcreator.server.utils.zipFiles
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Files

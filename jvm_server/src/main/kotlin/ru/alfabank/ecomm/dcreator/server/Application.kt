@@ -16,13 +16,10 @@ import kotlinx.coroutines.experimental.newFixedThreadPoolContext
 import kotlinx.coroutines.experimental.runBlocking
 import org.slf4j.LoggerFactory
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import ru.alfabank.ecomm.dcreator.server.utils.unzipFiles
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-
-private val zipFiles by lazy {
-    ClassLoader::class.java.getResourceAsStream("/files.zip")
-}
 
 fun main(args: Array<String>) {
     val workDir = if (args.isEmpty())

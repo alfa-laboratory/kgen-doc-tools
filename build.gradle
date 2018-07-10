@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.60-eap-7'
+        kotlinVersion = '1.2.60-eap-27'
         junitVersion = '5.2.0'
         coroutinesVersion = '0.23.3'
     }
@@ -23,6 +23,7 @@ subprojects {
         mavenLocal()
         jcenter()
         maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
