@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.60-eap-27'
+        kotlinVersion = '1.2.60-eap-44'
         junitVersion = '5.2.0'
         coroutinesVersion = '0.23.3'
     }
