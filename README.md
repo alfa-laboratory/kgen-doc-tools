@@ -1,7 +1,7 @@
 # kgen-doc-tools
 
 [![travis build](https://travis-ci.org/alfa-laboratory/kgen-doc-tools.svg?branch=master)](https://travis-ci.org/alfa-laboratory/kgen-doc-tools)
-<a href="http://slack.kotlinlang.org/"><img src="http://slack.kotlinlang.org/badge.svg" height="20"></a>
+<a href="https://kotlinlang.slack.com/"><img src="https://img.shields.io/badge/style-ask%20in%20slack-red.svg?logo=slack&style=flat" height="20"></a>
 [![codecov](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/alfa-laboratory/kgen-doc-tools)
 [![MIT Licence](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/alfa-laboratory/kgen-doc-tools/blob/master/LICENSE)
 
