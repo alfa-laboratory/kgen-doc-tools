@@ -1,8 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render
 
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import java.io.File
-import java.lang.Exception
 
 fun main(args: Array<String>) = runBlocking {
     val fileDirectory = "filesExample"

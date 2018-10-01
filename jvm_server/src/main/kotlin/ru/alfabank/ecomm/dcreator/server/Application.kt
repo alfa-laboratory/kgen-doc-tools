@@ -11,18 +11,15 @@ import io.ktor.server.engine.applicationEngineEnvironment
 import io.ktor.server.engine.connector
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
+import ru.alfabank.ecomm.dcreator.server.utils.unzipFiles
 import java.io.File
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-
-private val zipFiles by lazy {
-    ClassLoader::class.java.getResourceAsStream("/files.zip")
-}
 
 fun main(args: Array<String>) {
     val workDir = if (args.isEmpty())

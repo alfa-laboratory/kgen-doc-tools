@@ -1,14 +1,27 @@
 package ru.alfabank.ecomm.dcreator.nodes
 
 import ru.alfabank.ecomm.dcreator.common.UUID
-import ru.alfabank.ecomm.dcreator.utils.LazyMutable
 
 interface Node {
     var nodeId: String
 }
 
 class NodeIdGen : Node {
-    override var nodeId: String by LazyMutable { UUID.randomUUID().print() }
+    override var nodeId: String = NOT_INITIALIZED_VALUE
+        get() = if (field == NOT_INITIALIZED_VALUE) {
+            field = _nodeId
+            field
+        } else
+            field
+        set(value) {
+            field = value
+        }
+
+    private val _nodeId: String by lazy { UUID.randomUUID().print() }
+
+    companion object {
+        private const val NOT_INITIALIZED_VALUE = "-100500"
+    }
 }
 
 interface NestedNode : Node {

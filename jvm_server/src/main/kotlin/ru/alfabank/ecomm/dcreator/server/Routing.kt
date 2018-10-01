@@ -5,9 +5,9 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
-import io.ktor.content.*
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.*
 import io.ktor.request.receiveMultipart
 import io.ktor.request.receiveText
 import io.ktor.response.header
@@ -22,6 +22,7 @@ import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import ru.alfabank.ecomm.dcreator.server.responses.*
 import ru.alfabank.ecomm.dcreator.server.utils.copyToSuspend
 import ru.alfabank.ecomm.dcreator.server.utils.doAndDisplayDiff
+import ru.alfabank.ecomm.dcreator.server.utils.zipFiles
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Files
@@ -202,7 +203,7 @@ class RenderRouterConfiguration(
             val fileName = call.parameters["name"]!!
 
             val imagesDirectory = File(documentGenerator.outputDirectory, "static/images")
-            val uplodingFile = File(imagesDirectory, fileName).apply {
+            val uploadingFile = File(imagesDirectory, fileName).apply {
                 if (exists() && isFile) delete()
             }
 
@@ -210,7 +211,7 @@ class RenderRouterConfiguration(
             multipart.forEachPart { part ->
                 when (part) {
                     is PartData.FileItem -> {
-                        part.streamProvider().use { its -> uplodingFile.outputStream().buffered().use { its.copyToSuspend(it) } }
+                        part.streamProvider().use { its -> uploadingFile.outputStream().buffered().use { its.copyToSuspend(it) } }
                     }
                 }
 

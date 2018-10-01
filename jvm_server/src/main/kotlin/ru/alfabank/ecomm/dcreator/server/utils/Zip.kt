@@ -1,4 +1,4 @@
-package ru.alfabank.ecomm.dcreator.server
+package ru.alfabank.ecomm.dcreator.server.utils
 
 import java.io.File
 import java.util.zip.ZipEntry

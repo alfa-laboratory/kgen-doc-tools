@@ -1,6 +1,6 @@
 package ru.alfabank.ecomm.dcreator.js.main
 
-import kotlinx.coroutines.experimental.promise
+import kotlinx.coroutines.promise
 import ru.alfabank.ecomm.dcreator.common.File
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
 

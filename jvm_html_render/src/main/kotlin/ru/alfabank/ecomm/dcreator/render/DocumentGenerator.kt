@@ -1,7 +1,7 @@
 package ru.alfabank.ecomm.dcreator.render
 
-import kotlinx.coroutines.experimental.sync.Mutex
-import kotlinx.coroutines.experimental.sync.withLock
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import ru.alfabank.ecomm.dcreator.nodes.LayoutServiceNode
 import ru.alfabank.ecomm.dcreator.nodes.ServiceNode
 import ru.alfabank.ecomm.dcreator.parser.MarkdownParser
