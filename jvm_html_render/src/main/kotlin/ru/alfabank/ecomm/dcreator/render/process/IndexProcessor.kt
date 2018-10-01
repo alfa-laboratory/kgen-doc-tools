@@ -1,7 +1,8 @@
 package ru.alfabank.ecomm.dcreator.render.process
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.newFixedThreadPoolContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.newFixedThreadPoolContext
 import ru.alfabank.ecomm.dcreator.nodes.*
 import ru.alfabank.ecomm.dcreator.render.DocumentGenerator
 import java.io.File
@@ -53,7 +54,9 @@ class IndexProcessor(
         )
 
         val subFilesResults: Map<IncludeServiceNode, FileProcessData> = includeFiles.map { value ->
-            value to async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
+            value to coroutineScope {
+                async(filesProcessingContext) { generateData(value.first.file, nodes, value.second) }
+            }
         }.map { (value, future) ->
             val processResults: List<FileProcessData> = future.await()
 

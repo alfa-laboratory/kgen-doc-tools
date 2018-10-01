@@ -2,7 +2,7 @@ package ru.alfabank.ecomm.dcreator.common
 
 import buf.Buffer
 import fs.NodeJS
-import kotlinx.coroutines.experimental.await
+import kotlinx.coroutines.await
 import kotlin.js.Promise
 
 actual class File {

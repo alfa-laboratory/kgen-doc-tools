@@ -1,9 +1,9 @@
 package ru.alfabank.ecomm.dcreator.server.utils
 
 import io.ktor.network.util.ioCoroutineDispatcher
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.withContext
-import kotlinx.coroutines.experimental.yield
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.io.InputStream
 import java.io.OutputStream
 
