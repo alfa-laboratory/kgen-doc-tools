@@ -9,12 +9,12 @@ dependencies {
 
 def nodeModules = project.getProjectDir().getPath() + '/node_modules'
 
-node {
+//node {
 //    version = "$node_version"
 //    npmVersion = "$npm_version"
 //    download = true
-    nodeModulesDir = file(nodeModules)
-}
+//    nodeModulesDir = file(nodeModules)
+//}
 
 // Configures testing for JS modules
 
