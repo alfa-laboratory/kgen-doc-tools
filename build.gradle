@@ -108,7 +108,7 @@ configure(projectsWithFlags('jococo_test')) {
     apply plugin: 'jacoco'
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.3"
     }
 
     task jacocoJupTestReport(type: JacocoReport) {
@@ -120,7 +120,7 @@ configure(projectsWithFlags('jococo_test')) {
         reports {
             xml.enabled true
             xml.destination file("${buildDir}/reports/jacoco/report.xml")
-            html.enabled false
+            html.enabled true
             csv.enabled false
         }
     }
